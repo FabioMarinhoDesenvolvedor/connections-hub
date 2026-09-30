@@ -100,14 +100,14 @@ export function createConceptScene(host: HTMLElement, { compact, onFrame }: Opti
   const room = new RoomEnvironment();
   const environment = pmrem.fromScene(room, 0.035).texture;
   scene.environment = environment;
-  scene.environmentIntensity = 0.6;
+  scene.environmentIntensity = 0.5;
   room.dispose?.();
 
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 60);
   camera.position.set(0, 0, 10);
 
   // Daylight, as the manual's photography asks: warm key, sand bounce, cool rim.
-  const key = new THREE.DirectionalLight('#fff4e4', 1.5);
+  const key = new THREE.DirectionalLight('#fff4e4', 1.3);
   key.position.set(-4, 6, 6);
   const bounce = new THREE.DirectionalLight('#E8D8C5', 0.3);
   bounce.position.set(3, -5, 3);
@@ -115,16 +115,16 @@ export function createConceptScene(host: HTMLElement, { compact, onFrame }: Opti
   rim.position.set(5, 3, -6);
   scene.add(key, bounce, rim);
 
-  // Satin ceramic. The C and the dot share a colour that travels navy → off-white.
+  // Matte ceramic: no glossy highlights. The C and the dot share a colour, navy → off-white.
   const navy = new THREE.Color(NAVY);
   // Small and far back, the hub catches proportionally more light: it starts a shade deeper
   // so it reads as the brand navy from its first frame.
   const navyDeep = navy.clone().multiplyScalar(0.62);
   const offWhite = new THREE.Color(OFF_WHITE);
-  const finish = { color: NAVY, roughness: 0.42, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.5, sheen: 0.12, sheenColor: new THREE.Color('#E8D8C5'), sheenRoughness: 0.9 };
+  const finish = { color: NAVY, roughness: 0.68, metalness: 0, clearcoat: 0.12, clearcoatRoughness: 0.7, sheen: 0.1, sheenColor: new THREE.Color('#E8D8C5'), sheenRoughness: 0.9 };
   const material = new THREE.MeshPhysicalMaterial(finish);
   const sphereMaterial = new THREE.MeshPhysicalMaterial(finish);
-  const tileMaterial = new THREE.MeshPhysicalMaterial({ color: NAVY, roughness: 0.5, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3 });
+  const tileMaterial = new THREE.MeshPhysicalMaterial({ color: NAVY, roughness: 0.7, metalness: 0, clearcoat: 0.1, clearcoatRoughness: 0.7 });
   material.customProgramCacheKey = () => 'concept-tube';
   const uniforms = tubeUniforms();
   const tubeShader = (shader: THREE.WebGLProgramParametersWithUniforms) => patchTubeShader(shader, uniforms);
@@ -274,7 +274,8 @@ export function createConceptScene(host: HTMLElement, { compact, onFrame }: Opti
     const aspect = width / height;
     const narrow = aspect < 1.2;
     const seconds = time / 1000;
-    const intro = easeOut(clamp(time / 1800));
+    // No entrance: the seed is simply there from the first frame.
+    const intro = 1;
     // Concept
     const travel = ease(range(c, 0.16, 1.2));
     const breath = Math.sin(Math.PI * range(c, 0.8, 1.44));

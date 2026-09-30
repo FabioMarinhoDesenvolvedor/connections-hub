@@ -98,6 +98,9 @@ export function ConceptStage() {
     };
 
     const eligible = () => !reduced.matches && !connection?.saveData && (navigator.hardwareConcurrency || 4) > 2;
+    // While the scene is on its way the stage stays empty: the opening assembles it from points.
+    const expect = () => { element.dataset.webgl = eligible() ? 'pending' : 'off'; };
+    expect();
     const load = async () => {
       if (!eligible() || scene) return;
       try {
@@ -113,6 +116,7 @@ export function ConceptStage() {
     const hasIdle = typeof window.requestIdleCallback === 'function';
     const idle = hasIdle ? window.requestIdleCallback(load, { timeout: 1200 }) : setTimeout(load, 300);
     const onPreference = () => {
+      expect();
       if (!eligible()) { scene?.dispose(); scene = undefined; } else load();
       update();
     };
@@ -134,7 +138,7 @@ export function ConceptStage() {
     };
   }, []);
 
-  return <div className="concept-stage" ref={stage} aria-hidden="true">
+  return <div className="concept-stage" ref={stage} data-webgl="pending" aria-hidden="true">
     <svg ref={svg} className="concept-fallback" viewBox="-1.6 -1.6 3.2 3.2">
       <g transform="scale(1,-1)">
         <circle data-ring cx="0" cy="0" r="0.54" />

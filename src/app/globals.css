@@ -42,11 +42,12 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .button-small { min-height: 36px; padding: 0 16px; font-size: 13px; }
 .button-large { min-height: 56px; padding: 0 30px; font-size: 16px; }
 
-/* Entrance: a short rise, only when motion is allowed and JS is present. */
-/* Entrances: rise, sharpen, settle. Siblings follow each other by 90ms. */
-.motion [data-reveal] { opacity: 0; transform: translateY(24px); filter: blur(8px); transition: opacity 1.1s var(--ease-out), transform 1.3s var(--ease-out), filter 1.1s var(--ease-out); transition-delay: calc(var(--d, 0) * 90ms); }
-.motion [data-reveal].is-in { opacity: 1; transform: none; filter: none; }
-.motion :is(h2)[data-reveal] { clip-path: inset(-12% -4% 100% -4%); transform: translateY(.35em); filter: none; transition: clip-path 1.25s var(--ease-out), transform 1.25s var(--ease-out), opacity .8s var(--ease-out); transition-delay: calc(var(--d, 0) * 90ms); }
+/* Entrances: a short rise, only when motion is allowed and JS is present. Kept near 500ms:
+   longer scroll reveals read as slow and get scrolled past (NN/g). Siblings follow by 70ms.
+   Headings rise from behind their own baseline (a mask), like the lockup's name. */
+.motion [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity 500ms var(--ease-decelerate), transform 700ms var(--ease-decelerate); transition-delay: calc(var(--d, 0) * 70ms); }
+.motion [data-reveal].is-in { opacity: 1; transform: none; }
+.motion :is(h2)[data-reveal] { opacity: 1; clip-path: inset(-12% -4% 100% -4%); transform: translateY(.4em); transition: clip-path 700ms var(--ease-decelerate), transform 700ms var(--ease-decelerate); transition-delay: calc(var(--d, 0) * 70ms); }
 .motion :is(h2)[data-reveal].is-in { clip-path: inset(-12% -4% -30% -4%); transform: none; }
 [data-reveal]:nth-child(2) { --d: 1; } [data-reveal]:nth-child(3) { --d: 2; } [data-reveal]:nth-child(4) { --d: 3; } [data-reveal]:nth-child(5) { --d: 4; }
 
@@ -97,7 +98,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .story { --grow: 0; --handoff: 0; --line-1: 0; --line-2: 0; --final: 0; --lw: clamp(300px, 48vw, 720px); }
 @media (max-aspect-ratio: 6/5) { .story { --lw: min(86vw, 560px); } }
 .concept-stage { position: absolute; inset: 0; z-index: 1; opacity: calc(1 - var(--handoff)); }
-.concept-webgl { position: absolute; inset: 0; opacity: 0; transition: opacity 1400ms var(--ease-out); }
+.concept-webgl { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-out); }
 .concept-webgl[data-ready="true"] { opacity: 1; }
 .concept-webgl canvas { display: block; width: 100%; height: 100%; }
 
@@ -113,6 +114,8 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 /* Without WebGL, the flat drawing clears the stage before the lockup assembles. */
 .concept-stage:not(:has(.concept-webgl[data-ready="true"])) .concept-fallback { opacity: calc(1 - clamp(0, (var(--chapter) - 3.3) / .2, 1)); }
 .concept-stage:has(.concept-webgl[data-ready="true"]) .concept-fallback { opacity: 0; }
+/* Until the scene answers, show nothing rather than a flat disc that the opening would replace. */
+.concept-stage[data-webgl="pending"]:not(:has(.concept-webgl[data-ready])) .concept-fallback { opacity: 0; transition: none; }
 
 /* Official lockup, revealed and never faded (manual p.21). With WebGL, the symbol appears
    under the landed 3D hub (identical pixels); without it, it opens as a circle from its
@@ -129,7 +132,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .lockup-line-2 { clip-path: inset(47% 0 -6% 22%); }
 .lockup-line-1 img { clip-path: inset(0 0 55% 22%); transform: translateY(calc((1 - var(--line-1)) * 52%)); }
 .lockup-line-2 img { clip-path: inset(50% 0 0 22%); transform: translateY(calc((1 - var(--line-2)) * 56%)); }
-.final-copy { position: absolute; z-index: 0; left: 50%; top: calc(43.5% + var(--lw) * .11 + clamp(32px, 4vw, 56px)); width: min(28ch, calc(100% - var(--gutter) * 2)); transform: translate(-50%, calc((1 - var(--final)) * 16px)); text-align: center; font-size: var(--text-lead); line-height: 1.5; color: var(--text-muted); opacity: var(--final); filter: blur(calc((1 - var(--final)) * 6px)); }
+.final-copy { position: absolute; z-index: 0; left: 50%; top: calc(43.5% + var(--lw) * .11 + clamp(32px, 4vw, 56px)); width: min(28ch, calc(100% - var(--gutter) * 2)); transform: translate(-50%, calc((1 - var(--final)) * 12px)); text-align: center; font-size: var(--text-lead); line-height: 1.5; color: var(--text-muted); opacity: var(--final); }
 
 .story-chapters { position: relative; z-index: 1; margin-top: -100vh; margin-top: -100svh; }
 .chapter { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; }
@@ -146,10 +149,12 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .scroll-cue-line::after { content: ''; position: absolute; inset: 0; background: var(--brand-navy); transform: translateY(-100%); animation: cue 2.4s var(--ease-in-out) infinite; }
 @keyframes cue { 0% { transform: translateY(-100%); } 55%, 100% { transform: translateY(100%); } }
 
-.motion .hero-copy > * { animation: rise 1.1s var(--ease-out) both; animation-delay: calc(var(--d, 0) * 90ms + 120ms); }
+.motion .hero-copy > * { animation: rise 700ms var(--ease-decelerate) both; animation-delay: calc(var(--d, 0) * 70ms + 200ms); }
 .hero-copy > :nth-child(2) { --d: 1; } .hero-copy > :nth-child(3) { --d: 2; } .hero-copy > :nth-child(4) { --d: 3; }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.chapter-concept .chapter-copy { --vis: min(1, calc(var(--progress, .5) * 3), calc((1 - var(--progress, .5)) * 3)); max-width: 440px; opacity: var(--vis); filter: blur(calc((1 - var(--vis)) * 6px)); transform: translateY(calc((.5 - var(--progress, .5)) * 48px)); will-change: opacity, transform; }
+/* Each chapter is legible only around the middle of its viewport and gone well before it
+   reaches the top, so two chapters never overlap. */
+.chapter-concept .chapter-copy { --vis: clamp(0, min(calc((var(--progress, .5) - .14) * 5), calc((.66 - var(--progress, .5)) * 5)), 1); max-width: 440px; opacity: var(--vis); transform: translateY(calc((.5 - var(--progress, .5)) * 40px)); will-change: opacity, transform; }
 .chapter-count { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; font-size: var(--text-caption); font-weight: 500; letter-spacing: var(--tracking-label); color: var(--text-muted); font-variant-numeric: tabular-nums; }
 .chapter-count span { color: var(--text-strong); }
 /* The orange stroke echoes the arrows between concept stages in the manual, p.8. */
