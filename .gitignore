@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.audit/
+tsconfig.tsbuildinfo
+.env*
+!.env.example
+output/qa/
+Referências/

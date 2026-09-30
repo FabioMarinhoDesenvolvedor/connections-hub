@@ -1,0 +1,90 @@
+/*
+  Connections Hub design tokens.
+  Values: brand manual p.16, plus the intact SVG fills for orange (the p.16 label
+  for orange repeats the sand hex by mistake; the vector files are authoritative).
+  Structure: the Apple reference on Refero (4px base, ~1440 canvas, 8px media
+  radius, pill actions, hairlines, no shadows), re-mapped semantically.
+*/
+:root {
+  /* Brand — never used directly in components, only through roles below. */
+  --brand-ink: #20252B;
+  --brand-navy: #183255;
+  --brand-slate: #6B7C8E;
+  --brand-mist: #CCD6DB;
+  --brand-off-white: #F8F6F0;
+  --brand-sand: #E8D8C5;
+  --brand-orange: #C16042;
+
+  /* Surfaces — hierarchy comes from surface changes, not from boxes. */
+  --surface-canvas: var(--brand-off-white);
+  --surface-warm: var(--brand-sand);
+  --surface-cool: var(--brand-mist);
+  --surface-deep: var(--brand-navy);
+  --surface-deepest: var(--brand-ink);
+
+  /* Text */
+  --text-strong: var(--brand-navy);
+  --text-body: var(--brand-ink);
+  --text-muted: color-mix(in srgb, var(--brand-ink) 72%, var(--brand-off-white));
+  --text-display-soft: var(--brand-slate);
+  --text-on-deep: var(--brand-off-white);
+  --text-on-deep-muted: var(--brand-mist);
+
+  /* Action & accent. Orange is a punctuation mark, not a paint. */
+  --action: var(--brand-navy);
+  --action-hover: var(--brand-ink);
+  --accent: var(--brand-orange);
+
+  /* Lines */
+  --hairline: color-mix(in srgb, var(--brand-navy) 14%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--brand-navy) 28%, transparent);
+  --hairline-on-deep: color-mix(in srgb, var(--brand-mist) 22%, transparent);
+
+  /* Space — 4px base */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --section: clamp(96px, 11vw, 176px);
+  --page-max: 1360px;
+  --gutter: clamp(20px, 4.4vw, 64px);
+  --nav-height: 64px;
+
+  /* Shape */
+  --radius-media: 8px;
+  --radius-panel: 20px;
+  --radius-pill: 999px;
+
+  /* Type — Satoshi, 400 for reading, 500 for display and navigation. */
+  --font-sans: var(--font-satoshi), Arial, sans-serif;
+  --text-caption: 12px;
+  --text-small: 14px;
+  --text-base: 17px;
+  --text-lead: clamp(18px, 1.35vw, 21px);
+  --text-h3: clamp(22px, 1.8vw, 28px);
+  --text-h2: clamp(36px, 4.4vw, 64px);
+  --text-h1: clamp(46px, 6.6vw, 104px);
+  --text-statement: clamp(32px, 3.9vw, 58px);
+  --tracking-display: -0.045em;
+  --tracking-tight: -0.02em;
+  --tracking-label: 0.08em;
+
+  /* Motion — short, decelerating, never elastic. */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-reveal: 900ms;
+}
+@media (max-width: 767px) {
+  :root { --nav-height: 56px; --section: 88px; }
+}
