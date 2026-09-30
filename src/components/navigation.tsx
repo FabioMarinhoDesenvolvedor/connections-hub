@@ -28,17 +28,23 @@ export function Navigation() {
 
   useEffect(() => {
     if (!open) return;
+    // The page behind stays put while the menu is open.
+    const root = document.documentElement;
+    root.classList.add('menu-open');
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { setOpen(false); toggle.current?.focus(); }
     };
     const onResize = () => { if (window.innerWidth >= 900) setOpen(false); };
     document.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
-    return () => { document.removeEventListener('keydown', onKey); window.removeEventListener('resize', onResize); };
+    return () => { root.classList.remove('menu-open'); document.removeEventListener('keydown', onKey); window.removeEventListener('resize', onResize); };
   }, [open]);
 
   const close = () => setOpen(false);
-  return <header className="site-header" data-scrolled={scrolled || open} data-theme={dark && !open ? 'dark' : 'light'}>
+  // The panel is a sibling of the header, not a child: the header's backdrop-filter would
+  // otherwise become the containing block of the fixed panel and collapse it to the bar.
+  return <>
+  <header className="site-header" data-scrolled={scrolled || open} data-theme={dark && !open ? 'dark' : 'light'}>
     <div className="navigation shell">
       <a href="#inicio" className="brand-link" aria-label="Connections Hub — início" onClick={close}>
         {/* Official artwork, without filters, opacity or effects. */}
@@ -53,11 +59,12 @@ export function Navigation() {
         <span /><span />
       </button>
     </div>
-    <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navegação móvel" data-open={open} inert={!open}>
+  </header>
+  <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navegação móvel" data-open={open} inert={!open} data-lenis-prevent>
       <div className="shell">
         {site.navigation.map((item, index) => <a key={item.href} href={item.href} onClick={close} style={{ '--i': index } as React.CSSProperties}>{item.label}</a>)}
         <a className="mobile-contact" href="#contato" onClick={close} style={{ '--i': site.navigation.length } as React.CSSProperties}>Fale conosco<Arrow diagonal /></a>
       </div>
-    </nav>
-  </header>;
+  </nav>
+  </>;
 }

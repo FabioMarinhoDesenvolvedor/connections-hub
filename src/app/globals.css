@@ -74,6 +74,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .desktop-navigation a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; color: var(--text-body); transition: color var(--duration-fast), background-color var(--duration-fast); }
 .desktop-navigation a:hover { color: var(--text-strong); background: color-mix(in srgb, var(--brand-navy) 6%, transparent); }
 .menu-toggle { display: none; }
+html.menu-open, html.menu-open body { overflow: hidden; }
 .mobile-navigation { display: none; }
 
 @media (max-width: 899px) {
@@ -84,7 +85,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
   .menu-toggle span { display: block; width: 20px; height: 1.5px; background: var(--text-strong); border-radius: 2px; transition: transform var(--duration-base) var(--ease-out); }
   .menu-toggle[aria-expanded="true"] span:first-child { transform: translateY(3.75px) rotate(45deg); }
   .menu-toggle[aria-expanded="true"] span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
-  .mobile-navigation { display: block; position: fixed; inset: var(--nav-height) 0 0; background: var(--surface-canvas); padding: 24px 0 calc(32px + env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--duration-base) var(--ease-out), visibility 0s linear var(--duration-base); overflow-y: auto; }
+  .mobile-navigation { display: block; position: fixed; z-index: 39; inset: var(--nav-height) 0 0; background: var(--surface-canvas); padding: 24px 0 calc(32px + env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--duration-base) var(--ease-out), visibility 0s linear var(--duration-base); overflow-y: auto; }
   .mobile-navigation[data-open="true"] { opacity: 1; visibility: visible; transition: opacity var(--duration-base) var(--ease-out); }
   .mobile-navigation a { display: flex; align-items: center; justify-content: space-between; min-height: 64px; border-bottom: 1px solid var(--hairline); font-size: 30px; font-weight: 500; letter-spacing: var(--tracking-tight); color: var(--text-strong); opacity: 0; transform: translateY(8px); transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out); transition-delay: calc(var(--i) * 40ms); }
   .mobile-navigation[data-open="true"] a { opacity: 1; transform: none; }
