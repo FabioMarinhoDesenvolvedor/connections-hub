@@ -1,12 +1,14 @@
 import { FRAGMENT, VERTEX } from './shader';
-import type { Placement, Pose, Shape } from './timeline';
+import { cameraBasis, type Camera } from './camera';
+import type { Placement, Shape } from './timeline';
 
 /*
   A single full-screen pass; no scene graph is needed, so no engine is loaded.
-  Draws only when asked (scroll or pointer changed), only inside the object's bounding box
-  (scissor), at an internal resolution that adapts to the device.
+  Draws only when asked (scroll or pointer changed), at an internal resolution that adapts to
+  the device. Object rays are bounded by a sphere; the floor is one analytic plane.
 */
-export type Frame = { placement: Placement; shape: Shape; pose: Pose; visible: boolean };
+export type Floor = { fold: number; height: number; visibility: number; cell: number; alignX: number; alignY: number };
+export type Frame = { placement: Placement; shape: Shape; camera: Camera; floor: Floor; visible: boolean };
 export type StoryRenderer = {
   draw: (frame: Frame) => void;
   resize: (width: number, height: number) => void;
@@ -95,13 +97,15 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
   const uniform = (name: string) => gl.getUniformLocation(program, name);
-  const u = { res: uniform('uRes'), place: uniform('uPlace'), shape: uniform('uShape'), flat: uniform('uFlat'), rotation: uniform('uToObject'), field: uniform('uField') };
+  const u = { res: uniform('uRes'), place: uniform('uPlace'), shape: uniform('uShape'), flat: uniform('uFlat'), camera: uniform('uCamera'), lens: uniform('uLens'), grid: uniform('uGrid'), bound: uniform('uBound'), field: uniform('uField') };
   gl.uniform1i(u.field, 0);
   gl.clearColor(0, 0, 0, 0);
 
   // Internal resolution: device pixels × quality, under a pixel budget. The surfaces are matte
   // and the silhouettes carry analytic anti-aliasing, so retina density is not needed.
-  // Quality only ever steps down, driven by measured GPU time where the browser exposes it.
+  // Quality adapts with hysteresis to measured GPU time where the browser exposes it: a
+  // sustained overrun steps down, a sustained margin steps back up, so one heavy beat does
+  // not soften the rest of the story.
   const maxRatio = compact ? 1.25 : 1.5;
   const pixelBudget = compact ? 0.9e6 : 2.4e6;
   let quality = compact ? 0.9 : 1;
@@ -110,6 +114,8 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
   let gpuAverage = 0;
   let gpuSamples = 0;
   let gpuOver = 0;
+  let gpuUnder = 0;
+  const startQuality = compact ? 0.9 : 1;
   let cssWidth = 1;
   let cssHeight = 1;
   let ratio = 1;
@@ -130,9 +136,10 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
     stats.scale = ratio;
   };
 
-  const draw = ({ placement, shape, pose, visible }: Frame) => {
+  const draw = ({ placement, shape, camera, floor, visible }: Frame) => {
     if (lost) return;
-    const stepDown = () => { if (quality > 0.55) { quality *= 0.85; resize(cssWidth, cssHeight); } };
+    const stepDown = () => { if (quality > 0.6) { quality *= 0.85; resize(cssWidth, cssHeight); } };
+    const stepUp = () => { if (quality < startQuality) { quality = Math.min(startQuality, quality / 0.85); resize(cssWidth, cssHeight); } };
     if (timer && query) {
       // Read the previous frame's GPU time once it is ready; never block waiting for it.
       if (gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE)) {
@@ -145,8 +152,10 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
           stats.gpu = Math.round(gpuAverage * 10) / 10;
           // Keep the object well inside a 60 Hz frame, leaving room for the compositor.
           // Only a sustained overrun steps down; then measure afresh at the new size.
-          gpuOver = gpuAverage > 10 ? gpuOver + 1 : 0;
-          if (gpuOver > 15) { stepDown(); gpuOver = 0; gpuAverage = 0; gpuSamples = 0; }
+          gpuOver = gpuAverage > 12 ? gpuOver + 1 : 0;
+          gpuUnder = gpuAverage < 6.5 ? gpuUnder + 1 : 0;
+          if (gpuOver > 20) { stepDown(); gpuOver = gpuUnder = 0; gpuAverage = 0; gpuSamples = 0; }
+          else if (gpuUnder > 90) { stepUp(); gpuOver = gpuUnder = 0; gpuAverage = 0; gpuSamples = 0; }
         }
       }
     } else if (!timer) {
@@ -158,30 +167,22 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
       }
       last = now;
     }
-    gl.disable(gl.SCISSOR_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT);
     if (!visible) return;
 
     const x = placement.x * ratio;
     const y = (cssHeight - placement.y) * ratio;
     const s = placement.scale * ratio;
-    // World → object is the transpose of R = Ry(yaw)·Rx(pitch); its columns are R's rows.
-    const cp = Math.cos(pose.pitch), sp = Math.sin(pose.pitch), cy = Math.cos(pose.yaw), sy = Math.sin(pose.yaw);
-    matrix.set([cy, sy * sp, sy * cp, 0, cp, -sp, -sy, cy * sp, cy * cp]);
+    const { right, up, back } = cameraBasis(camera);
+    matrix.set([...right, ...up, ...back]);
     gl.uniform3f(u.place, x, y, s);
     gl.uniform4f(u.shape, shape.open, shape.split, shape.dot, shape.tile);
     gl.uniform1f(u.flat, shape.flat);
-    gl.uniformMatrix3fv(u.rotation, false, matrix);
-
-    // Shade only the object's bounds plus the cast shadow (down-right).
-    const reach = 1.85 * s;
-    const left = Math.max(0, Math.floor(x - reach));
-    const bottom = Math.max(0, Math.floor(y - reach - 0.9 * s));
-    const right = Math.min(canvas.width, Math.ceil(x + reach + 0.65 * s));
-    const top = Math.min(canvas.height, Math.ceil(y + reach));
-    if (right <= left || top <= bottom) return;
-    gl.enable(gl.SCISSOR_TEST);
-    gl.scissor(left, bottom, right - left, top - bottom);
+    gl.uniformMatrix3fv(u.camera, false, matrix);
+    gl.uniform4f(u.lens, camera.distance, camera.ortho, floor.fold, floor.visibility);
+    gl.uniform4f(u.grid, floor.cell, floor.alignX, floor.alignY, floor.height);
+    // Tight bound per stage: rays that cannot reach the object never start marching.
+    gl.uniform1f(u.bound, 1.16 + 0.64 * Math.min(1, shape.tile / 0.3));
     const timing = timer && !query ? gl.createQuery() : null;
     if (timing && timer) gl.beginQuery(timer.TIME_ELAPSED_EXT, timing);
     gl.drawArrays(gl.TRIANGLES, 0, 3);

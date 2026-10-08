@@ -58,6 +58,7 @@ export type Solution = {
   summary: string;
   solves: string;
   includes: string[];
+  figure: { title: string; caption: string };
 };
 
 export const solutions: Solution[] = [
@@ -65,24 +66,28 @@ export const solutions: Solution[] = [
     id: 'sites', number: '01', title: 'Sites',
     summary: 'Presença institucional que explica com clareza o que a sua empresa faz e facilita o primeiro contato.',
     solves: 'Empresas difíceis de encontrar, ou encontradas sem conseguir mostrar o que oferecem.',
+    figure: { title: 'Composição de front-end', caption: 'Um layout, todas as telas: os mesmos componentes reorganizados do desktop ao celular, com o contato sempre à mão.' },
     includes: ['Site institucional e páginas de serviço', 'Estrutura e conteúdo preparados para buscadores', 'Formulários e contato direto pelo WhatsApp', 'Gerenciamento de conteúdo', 'Publicação, domínio e métricas de acesso'],
   },
   {
     id: 'sistemas', number: '02', title: 'Sistemas e ERP',
     summary: 'Software para os processos internos que a operação usa todos os dias: cadastros, pedidos, estoque, financeiro.',
     solves: 'Processos espalhados em planilhas, retrabalho e informações que dependem de uma única pessoa.',
+    figure: { title: 'Processos integrados', caption: 'Cada área da empresa conectada a uma base de dados única, com acesso por perfil e integração ao que já existe.' },
     includes: ['Módulos sob medida para cada área', 'Perfis de acesso e permissões', 'Integração com sistemas e planilhas existentes', 'Relatórios e exportação de dados', 'Migração de dados e implantação acompanhada'],
   },
   {
     id: 'dashboards', number: '03', title: 'Dashboards',
     summary: 'Os indicadores da operação reunidos em um só lugar, atualizados a partir dos seus próprios dados.',
     solves: 'Decisões tomadas sem números confiáveis, ou relatórios que levam dias para serem montados.',
+    figure: { title: 'Dos dados à decisão', caption: 'Fontes de dados tratadas e reunidas em indicadores, com metas que mostram onde agir.' },
     includes: ['Definição dos indicadores com a sua equipe', 'Conexão com sistemas, bancos de dados e planilhas', 'Atualização automática', 'Filtros por período, unidade ou responsável', 'Acesso no computador e no celular'],
   },
   {
     id: 'ecommerce', number: '04', title: 'E-commerces',
     summary: 'Lojas virtuais para apresentar produtos, receber pedidos e vender online com uma operação organizada por trás.',
     solves: 'Vendas que dependem só do atendimento manual ou de canais de terceiros.',
+    figure: { title: 'Da vitrine ao pedido', caption: 'Do catálogo ao pedido, com pagamento, frete e estoque integrados à operação.' },
     includes: ['Catálogo, carrinho e checkout', 'Meios de pagamento e cálculo de frete', 'Gestão de pedidos e estoque', 'Integração com o sistema da empresa', 'Páginas preparadas para buscadores e campanhas'],
   },
 ];

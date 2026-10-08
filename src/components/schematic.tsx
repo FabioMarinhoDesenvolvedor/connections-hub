@@ -3,76 +3,160 @@ import type { Solution } from '@/data/site';
 
 /*
   Technical drawings of each deliverable, in the brand's palette. Not stock "technology"
-  imagery (manual p.20): each one is a plan of what is actually built. The orange point
-  marks where value happens: contact, an approval, the latest figure, the checkout.
-  Lines draw on with pathLength=1; --i staggers them.
+  imagery (manual p.20): each one is a plan of what is actually built — front-end composition
+  for sites, integrated processes for systems, the path from data to decision for dashboards,
+  the order flow for e-commerce. The orange point marks where value happens.
+
+  Primitives draw on with pathLength=1; --i staggers them. Labels and values fade in after.
 */
-type Draw = { d: string; i: number };
-const line = (d: string, i: number): Draw => ({ d, i });
-const box = (x: number, y: number, w: number, h: number, r = 6) =>
-  `M${x + r} ${y}H${x + w - r}A${r} ${r} 0 0 1 ${x + w} ${y + r}V${y + h - r}A${r} ${r} 0 0 1 ${x + w - r} ${y + h}H${x + r}A${r} ${r} 0 0 1 ${x} ${y + h - r}V${y + r}A${r} ${r} 0 0 1 ${x + r} ${y}Z`;
-
-const drawings: Record<Solution['id'], { lines: Draw[]; fills: [number, number, number, number][]; point: [number, number] }> = {
-  sites: {
-    lines: [
-      line(box(20, 20, 440, 320, 12), 0), line('M20 56H460', 1), line(box(160, 32, 160, 12, 6), 2),
-      line('M300 82H328M344 82H372M388 82H416', 3),
-      line('M44 188H252M44 202H228', 5), line(box(44, 222, 112, 28, 14), 6),
-      line(box(296, 112, 140, 138, 8), 4), line('M296 250A140 140 0 0 1 436 110', 5),
-      line('M44 292H140M180 292H276M316 292H412M44 306H112M180 306H236M316 306H380', 7),
-    ],
-    fills: [[44, 76, 44, 12], [44, 120, 228, 18], [44, 146, 168, 18]],
-    point: [138, 236],
-  },
-  sistemas: {
-    lines: [
-      line(box(20, 20, 440, 320, 12), 0), line('M124 20V340', 1), line('M124 64H460', 1),
-      line(box(144, 34, 150, 14, 7), 2), line('M422 41a9 9 0 1 0 18 0a9 9 0 1 0 -18 0', 2),
-      line('M40 88H100M40 112H94M40 162H92M40 186H98M40 210H86', 3),
-      line(box(144, 88, 296, 24, 4), 4),
-      line('M144 140H440M144 168H440M144 196H440M144 224H440M144 252H440', 5),
-      line('M156 128H220M244 128H300M156 156H210M244 156H316M156 184H226M244 184H292M156 212H204M244 212H310M156 240H218M244 240H288', 6),
-      line(`${box(376, 121, 48, 14, 7)}${box(376, 149, 48, 14, 7)}${box(376, 177, 48, 14, 7)}${box(376, 205, 48, 14, 7)}${box(376, 233, 48, 14, 7)}`, 7),
-      line(box(352, 290, 88, 28, 14), 8),
-    ],
-    fills: [[40, 38, 56, 12], [32, 126, 80, 24]],
-    point: [400, 156],
-  },
-  dashboards: {
-    lines: [
-      line(box(20, 20, 440, 320, 12), 0),
-      line(`${box(40, 40, 124, 68, 8)}${box(178, 40, 124, 68, 8)}${box(316, 40, 124, 68, 8)}`, 1),
-      line('M56 60H104M194 60H238M332 60H372', 2),
-      line(box(40, 124, 262, 196, 8), 3), line('M62 296H282M62 296V146', 4),
-      line('M62 280C96 272 112 238 146 242S196 212 222 202S262 174 276 164', 6),
-      line(box(316, 124, 124, 196, 8), 3),
-      line('M332 296H424', 4),
-    ],
-    fills: [[56, 76, 72, 16], [194, 76, 56, 16], [332, 76, 84, 16], [336, 236, 12, 60], [356, 206, 12, 90], [376, 222, 12, 74], [396, 180, 12, 116], [416, 196, 12, 100]],
-    point: [276, 164],
-  },
-  ecommerce: {
-    lines: [
-      line(box(20, 20, 440, 320, 12), 0),
-      line(`${box(40, 40, 100, 100, 8)}${box(156, 40, 100, 100, 8)}${box(40, 180, 100, 100, 8)}${box(156, 180, 100, 100, 8)}`, 1),
-      line('M40 156H112M40 168H84M156 156H220M156 168H196M40 296H104M40 308H80M156 296H228M156 308H190', 2),
-      line(box(276, 40, 164, 280, 10), 3), line('M296 70H360', 4),
-      line(`${box(296, 92, 28, 28, 4)}${box(296, 136, 28, 28, 4)}${box(296, 180, 28, 28, 4)}`, 5),
-      line('M336 100H404M336 112H372M336 144H396M336 156H364M336 188H410M336 200H376', 5),
-      line('M296 234H420', 6),
-      line(box(296, 258, 124, 34, 17), 7),
-    ],
-    fills: [[62, 62, 56, 56], [178, 62, 56, 56], [62, 202, 56, 56], [178, 202, 56, 56]],
-    point: [402, 275],
-  },
+type Draw = { i: number };
+const r = (x: number, y: number, w: number, h: number, rad = 6) =>
+  `M${x + rad} ${y}H${x + w - rad}A${rad} ${rad} 0 0 1 ${x + w} ${y + rad}V${y + h - rad}A${rad} ${rad} 0 0 1 ${x + w - rad} ${y + h}H${x + rad}A${rad} ${rad} 0 0 1 ${x} ${y + h - rad}V${y + rad}A${rad} ${rad} 0 0 1 ${x + rad} ${y}Z`;
+const arrowHead = (x: number, y: number, dx: number, dy: number, s = 5) => {
+  const l = Math.hypot(dx, dy) || 1, ux = dx / l, uy = dy / l;
+  return `M${x - ux * s - uy * s * 0.7} ${y - uy * s + ux * s * 0.7}L${x} ${y}L${x - ux * s + uy * s * 0.7} ${y - uy * s - ux * s * 0.7}`;
 };
+const arrow = (x1: number, y1: number, x2: number, y2: number) => `M${x1} ${y1}L${x2} ${y2}${arrowHead(x2, y2, x2 - x1, y2 - y1)}`;
+const tick = (x: number, y: number) => `M${x - 3} ${y + 3}L${x + 3} ${y - 3}`;
 
-export function Schematic({ id, className }: { id: Solution['id']; className?: string }): ReactNode {
-  const { lines, fills, point } = drawings[id];
-  return <svg className={`schematic ${className ?? ''}`} viewBox="0 0 480 360" aria-hidden="true" data-id={id}>
-    {fills.map(([x, y, w, h], i) => <rect key={i} className="schematic-fill" x={x} y={y} width={w} height={h} rx={3} style={{ '--i': i * 0.5 + 2 } as CSSProperties} />)}
-    {lines.map(({ d, i }, k) => <path key={k} className="schematic-line" d={d} pathLength={1} style={{ '--i': i } as CSSProperties} />)}
-    <circle className="schematic-halo" cx={point[0]} cy={point[1]} r={15} />
-    <circle className="schematic-point" cx={point[0]} cy={point[1]} r={7} />
+const style = (i: number) => ({ '--i': i } as CSSProperties);
+const Line = ({ d, i, soft }: { d: string } & Draw & { soft?: boolean }) => <path className={soft ? 'sch-soft' : 'sch-line'} d={d} pathLength={1} style={style(i)} />;
+const Fill = ({ d, i }: { d: string } & Draw) => <path className="sch-fill" d={d} style={style(i)} />;
+const Label = ({ x, y, children, i, anchor = 'start', value }: { x: number; y: number; children: ReactNode; anchor?: 'start' | 'middle' | 'end'; value?: boolean } & Draw) =>
+  <text className={value ? 'sch-value' : 'sch-label'} x={x} y={y} textAnchor={anchor} style={style(i)}>{children}</text>;
+const Point = ({ x, y }: { x: number; y: number }) => <>
+  <circle className="sch-halo" cx={x} cy={y} r={13} />
+  <circle className="sch-point" cx={x} cy={y} r={5.5} />
+</>;
+
+function Sites() {
+  return <>
+    {/* Viewport rulers: one layout, two widths. */}
+    <Line i={0} soft d={`M20 22H360${tick(20, 22)}${tick(360, 22)}M420 22H520${tick(420, 22)}${tick(520, 22)}`} />
+    <Label i={0} x={190} y={16} anchor="middle" value>1440</Label>
+    <Label i={0} x={470} y={16} anchor="middle" value>390</Label>
+    {/* Desktop */}
+    <Line i={1} d={`${r(20, 34, 340, 282, 10)}M20 54H360${r(130, 40, 120, 8, 4)}`} />
+    <Line i={2} soft d={`${r(30, 62, 320, 22, 3)}${r(30, 92, 320, 96, 3)}${r(30, 196, 320, 62, 3)}${r(30, 266, 320, 40, 3)}`} />
+    <Fill i={3} d={`${r(40, 68, 30, 10, 2)}${r(42, 106, 168, 14, 2)}${r(42, 126, 122, 14, 2)}`} />
+    <Line i={3} d="M240 73H262M272 73H294M304 73H326M42 154H200M42 164H176" />
+    <Line i={4} d={`${r(42, 174, 82, 8, 4)}${r(234, 104, 104, 72, 6)}M234 176A104 72 0 0 1 338 104`} />
+    <Line i={5} d={`${r(42, 206, 92, 42, 5)}${r(144, 206, 92, 42, 5)}${r(246, 206, 92, 42, 5)}M52 236H112M154 236H214M256 236H316`} />
+    <Line i={6} d="M42 280H124M42 290H96M200 280H260M276 280H336" />
+    {/* Mobile: the same components, stacked */}
+    <Line i={2} d={`${r(420, 34, 100, 282, 14)}`} />
+    <Line i={3} soft d={`${r(428, 46, 84, 14, 3)}${r(428, 66, 84, 88, 3)}${r(428, 160, 84, 98, 3)}${r(428, 264, 84, 40, 3)}`} />
+    <Fill i={4} d={`${r(434, 74, 62, 9, 2)}${r(434, 88, 44, 9, 2)}${r(434, 166, 72, 26, 3)}${r(434, 196, 72, 26, 3)}${r(434, 226, 72, 26, 3)}`} />
+    <Line i={5} d={`M434 106H500M434 114H488${r(434, 128, 50, 10, 5)}M434 278H490M434 288H470`} />
+    {/* Reflow mapping */}
+    <Line i={6} soft d={`${arrow(350, 73, 426, 53)}${arrow(350, 140, 426, 110)}${arrow(350, 227, 426, 209)}${arrow(350, 286, 426, 284)}`} />
+    <Label i={7} x={364} y={60}>NAV</Label>
+    <Label i={7} x={364} y={121}>HERO</Label>
+    <Label i={7} x={364} y={213}>SEÇÕES</Label>
+    <Label i={7} x={364} y={278}>CONTATO</Label>
+    <Point x={83} y={178} />
+  </>;
+}
+
+function Sistemas() {
+  const modules = [['PEDIDOS', 24], ['ESTOQUE', 160], ['FATURAMENTO', 296], ['FINANCEIRO', 432]] as const;
+  return <>
+    {/* Access profiles govern every module. */}
+    <Line i={0} soft d={`${r(150, 12, 260, 22, 11)}M76 34V64M212 34V64M348 34V64M484 34V64M76 34H484`} />
+    <Label i={1} x={280} y={27} anchor="middle">PERFIS DE ACESSO</Label>
+    {modules.map(([name, x], k) => <g key={name}>
+      <Line i={1 + k} d={`${r(x, 64, 104, 86, 6)}M${x} 84H${x + 104}`} />
+      <Label i={2 + k} x={x + 10} y={78}>{name}</Label>
+      <Line i={2 + k} soft d={`M${x + 10} 98H${x + 94}M${x + 10} 110H${x + 94}M${x + 10} 122H${x + 94}M${x + 10} 134H${x + 94}`} />
+      <Line i={3 + k} d={r(x + 66, 92, 28, 10, 5)} />
+    </g>)}
+    {/* The process runs through the modules, left to right. */}
+    <Line i={5} d={`${arrow(128, 107, 158, 107)}${arrow(264, 107, 294, 107)}${arrow(400, 107, 430, 107)}`} />
+    {/* One shared database: every module reads and writes the same records. */}
+    <Line i={6} d={`M76 150V200${arrowHead(76, 200, 0, 1)}M212 150V200${arrowHead(212, 200, 0, 1)}M348 150V200${arrowHead(348, 200, 0, 1)}M484 150V200${arrowHead(484, 200, 0, 1)}`} />
+    <Fill i={7} d={r(24, 204, 512, 40, 8)} />
+    <Line i={7} d={r(24, 204, 512, 40, 8)} />
+    <Label i={8} x={280} y={228} anchor="middle" value>BASE DE DADOS ÚNICA</Label>
+    {/* Integration with what already exists, and reports out. */}
+    <Line i={8} soft d={`${r(24, 282, 220, 40, 6)}${arrow(134, 282, 134, 248)}`} />
+    <Label i={9} x={134} y={306} anchor="middle">PLANILHAS · SISTEMA ATUAL</Label>
+    <Line i={8} d={`${r(316, 282, 220, 40, 6)}${arrow(426, 244, 426, 280)}`} />
+    <Label i={9} x={426} y={306} anchor="middle">RELATÓRIOS · EXPORTAÇÃO</Label>
+    <Label i={9} x={142} y={268}>integração</Label>
+    <Point x={280} y={204} />
+  </>;
+}
+
+function Dashboards() {
+  const sources = [['ERP', 30], ['PLANILHAS', 92], ['BANCO DE DADOS', 154]] as const;
+  return <>
+    {sources.map(([name, y], k) => <g key={name}>
+      <Line i={k} d={r(16, y, 112, 34, 6)} />
+      <Label i={1 + k} x={72} y={y + 21} anchor="middle">{name}</Label>
+    </g>)}
+    {/* Sources are cleaned and combined before they become indicators. */}
+    <Line i={3} soft d={`M128 47H140V108M128 109H140M128 171H140V110${arrow(140, 109, 156, 109)}`} />
+    <Line i={4} d={r(158, 90, 78, 38, 6)} />
+    <Label i={5} x={197} y={113} anchor="middle">TRATAMENTO</Label>
+    <Line i={5} d={arrow(236, 109, 262, 109)} />
+    {/* The dashboard: filters, indicators, a trend against its target, distribution. */}
+    <Line i={5} d={r(264, 14, 282, 306, 10)} />
+    <Line i={6} soft d={`${r(278, 28, 66, 16, 8)}${r(350, 28, 66, 16, 8)}`} />
+    <Label i={7} x={311} y={39} anchor="middle">PERÍODO</Label>
+    <Label i={7} x={383} y={39} anchor="middle">UNIDADE</Label>
+    <Line i={6} d={`${r(278, 54, 80, 46, 6)}${r(366, 54, 80, 46, 6)}${r(454, 54, 80, 46, 6)}`} />
+    <Fill i={7} d={`${r(288, 76, 52, 12, 2)}${r(376, 76, 38, 12, 2)}${r(464, 76, 58, 12, 2)}`} />
+    <Line i={7} soft d="M288 66H322M376 66H404M464 66H500" />
+    <Line i={8} d={`${r(278, 110, 256, 120, 6)}M292 216H522M292 216V124`} />
+    <Line i={8} soft d="M292 158H522" />
+    <Label i={9} x={298} y={153}>META</Label>
+    <Line i={9} d="M296 206C322 200 334 186 356 190S398 176 420 170S458 154 474 150S500 140 512 134" />
+    <Label i={11} x={494} y={128} anchor="end">decisão</Label>
+    <Line i={9} d={`${r(278, 240, 256, 66, 6)}`} />
+    <Fill i={10} d={`${r(294, 270, 14, 26, 2)}${r(318, 258, 14, 38, 2)}${r(342, 276, 14, 20, 2)}${r(366, 252, 14, 44, 2)}${r(390, 264, 14, 32, 2)}${r(414, 248, 14, 48, 2)}${r(438, 260, 14, 36, 2)}${r(462, 254, 14, 42, 2)}${r(486, 266, 14, 30, 2)}${r(510, 250, 14, 46, 2)}`} />
+    <Point x={512} y={134} />
+  </>;
+}
+
+function Ecommerce() {
+  const flow = ['CATÁLOGO', 'CARRINHO', 'CHECKOUT', 'PAGAMENTO', 'PEDIDO', 'ESTOQUE · ERP'];
+  return <>
+    {/* Product page */}
+    <Line i={0} d={r(16, 14, 204, 228, 10)} />
+    <Line i={1} d={`${r(28, 26, 180, 108, 6)}M118 112A30 30 0 1 1 118.1 112`} />
+    <Fill i={2} d={`${r(28, 146, 140, 12, 2)}${r(28, 166, 64, 14, 2)}`} />
+    <Line i={2} soft d="M28 194H190M28 204H160" />
+    <Line i={3} d={r(28, 216, 104, 18, 9)} />
+    <Label i={4} x={80} y={229} anchor="middle">ADICIONAR</Label>
+    <Line i={4} d={arrow(220, 225, 250, 225)} />
+    {/* Checkout */}
+    <Line i={1} d={r(252, 14, 292, 228, 10)} />
+    <Label i={2} x={266} y={34}>CHECKOUT</Label>
+    <Line i={2} soft d="M400 30H520M400 30A4 4 0 1 0 400.1 30M460 30A4 4 0 1 0 460.1 30M520 30A4 4 0 1 0 520.1 30" />
+    <Line i={3} d={`${r(266, 46, 130, 18, 4)}${r(404, 46, 126, 18, 4)}${r(266, 72, 264, 18, 4)}${r(266, 98, 130, 18, 4)}${r(404, 98, 126, 18, 4)}`} />
+    <Label i={4} x={266} y={136}>PAGAMENTO</Label>
+    <Line i={4} d={`${r(266, 144, 82, 30, 5)}${r(356, 144, 82, 30, 5)}${r(446, 144, 84, 30, 5)}M280 159A5 5 0 1 0 280.1 159`} />
+    <Label i={5} x={266} y={196}>FRETE</Label>
+    <Line i={5} soft d="M310 192H530M266 206H530" />
+    <Label i={6} x={530} y={196} anchor="end" value>TOTAL</Label>
+    <Line i={6} d={r(400, 214, 130, 20, 10)} />
+    <Label i={7} x={465} y={228} anchor="middle">FINALIZAR</Label>
+    {/* The order flow, end to end, integrated with stock and the company's system. */}
+    <Line i={6} d="M40 280H520" />
+    {flow.map((step, k) => <g key={step}>
+      <Line i={7 + k * 0.5} d={`M${40 + k * 96} 274A6 6 0 1 0 ${40.1 + k * 96} 274`} />
+      <Label i={8 + k * 0.5} x={40 + k * 96} y={302} anchor="middle">{step}</Label>
+    </g>)}
+    <Fill i={8} d="M232 280m-6 0a6 6 0 1 0 12 0a6 6 0 1 0 -12 0" />
+    <Point x={512} y={224} />
+  </>;
+}
+
+const drawings: Record<Solution['id'], () => ReactNode> = { sites: Sites, sistemas: Sistemas, dashboards: Dashboards, ecommerce: Ecommerce };
+
+export function Schematic({ id, className }: { id: Solution['id']; className?: string }) {
+  const Drawing = drawings[id];
+  return <svg className={`schematic ${className ?? ''}`} viewBox="0 0 560 330" aria-hidden="true" data-id={id}>
+    <Drawing />
   </svg>;
 }

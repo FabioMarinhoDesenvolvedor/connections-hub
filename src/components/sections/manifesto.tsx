@@ -14,7 +14,7 @@ export function Manifesto() {
       </p>
       <div className="manifesto-body">
         <h2 id="manifesto-title" data-reveal>{manifesto.opening}</h2>
-        {manifesto.paragraphs.map(text => <p key={text} data-reveal>{text}</p>)}
+        {manifesto.paragraphs.map(text => <p key={text} data-progress data-start="0.82" data-end="0.5">{text}</p>)}
       </div>
       <div className="values" data-reveal="rules">
         <p className="values-label">Valores</p>

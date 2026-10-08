@@ -27,3 +27,21 @@
 - Confirmar os escopos "Pode incluir" de cada serviço.
 - Enviar cases reais aprovados para a galeria.
 - Testar em aparelhos físicos depois da publicação.
+
+## Segunda iteração (08/10/2026)
+
+Diagnóstico e direção em `DESIGN.md` §8. Em resumo:
+- **História:** cada capítulo é um plano próprio, com câmera, enquadramento e atmosfera.
+- **Objeto:** artefato preciso em vez de inflado.
+- **Grid:** vira chão em perspectiva e depois se dobra na página.
+- **Cotas:** dimensões reais do símbolo.
+- **Hero:** selo técnico que vira o índice dos capítulos.
+- **Página:** folhas sobrepostas.
+- **Soluções:** direção preservada, com figuras específicas por serviço.
+- **Manifesto:** leitura progressiva.
+
+Desempenho medido em `VALIDATION.md`.
+
+**Não alterado:** vetores, fonte, conteúdo factual, escopo dos serviços, acessibilidade e reduced motion.
+
+**Ponto fraco ainda aberto:** a composição do hero (texto à esquerda, objeto à direita) é a que menos mudou.

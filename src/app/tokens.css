@@ -76,7 +76,7 @@
   --text-h3: clamp(24px, 2vw, 32px);
   --text-statement: clamp(26px, 2.6vw, 40px);
   --text-h2: clamp(40px, 5.4vw, 88px);
-  --text-display: clamp(42px, 5vw, 84px);
+  --text-display: clamp(42px, 5.6vw, 100px);
   --text-signature: clamp(26px, 5vw, 84px);
   --leading-display: 0.98;
   --leading-heading: 1.04;

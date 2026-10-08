@@ -1,6 +1,6 @@
 # Validação
 
-Medições de 08/10/2026 no build de produção local (`next start`, `127.0.0.1`). Máquina: Intel Core Ultra 5 125H com GPU integrada Intel Arc (ANGLE/D3D11), Chrome headless com GPU real. Nenhuma publicação externa foi realizada.
+Medições de 08/10/2026 (segunda iteração) no build de produção local (`next start`, `127.0.0.1`). Máquina: Intel Core Ultra 5 125H com GPU integrada Intel Arc (ANGLE/D3D11), Chrome headless com GPU real. Nenhuma publicação externa foi realizada.
 
 ## Verificações automáticas
 
@@ -12,39 +12,39 @@ Medições de 08/10/2026 no build de produção local (`next start`, `127.0.0.1`
 
 | Perfil | Performance | Acessibilidade | Boas práticas | SEO | FCP | LCP | TBT | CLS |
 |---|---|---|---|---|---|---|---|---|
-| Mobile (3 execuções) | 98 | 100 | 100 | 100 | 0,9 s | 2,4 s | 50–60 ms | 0 |
-| Desktop (2 execuções) | 100 | 100 | 100 | 100 | 0,2–0,3 s | 0,5–0,6 s | 0 ms | 0 |
+| Mobile (2 execuções) | 97–98 | 100 | 100 | 100 | 0,9 s | 2,4–2,5 s | 60–90 ms | 0 |
+| Desktop | 100 | 100 | 100 | 100 | 0,2 s | 0,6 s | 0 ms | 0 |
 
-O peso total da página é de 281 KiB e não há erros de console.
-
-O elemento de LCP é o parágrafo de abertura do hero: texto do servidor que não depende de JavaScript nem de 3D. O LCP de 2,4 s é o slow 4G simulado pelo Lighthouse; o atraso de renderização medido localmente é de cerca de 110 ms.
-
-Antes da compilação paralela do shader, o TBT mobile era de 810 ms, uma única tarefa longa causada pela compilação síncrona. Essas são medições de laboratório; Core Web Vitals reais (LCP, INP, CLS) dependem de publicação e tráfego.
+Não há erros de console. O LCP é texto do hero renderizado no servidor, e os 2,4–2,5 s vêm do slow 4G simulado pelo Lighthouse: está no limite da meta de 2,5 s, sem folga. São medições de laboratório; os Core Web Vitals reais dependem de publicação e tráfego.
 
 ## Cena 3D
 
-**Tempo de GPU por quadro**, com sincronização forçada após cada draw, ao longo de toda a história:
+**Quadros apresentados** ao percorrer toda a história em 8 s, com CPU normal:
 
-| Viewport | Canvas interno | Mediana | p95 |
+| Viewport | Quadros | Canvas interno | Thread principal por quadro |
 |---|---|---|---|
-| 1440 × 900 @1x | 1440 × 900 | 5,6 ms | 9,1 ms |
-| 1920 × 1080 @2x | 1756 × 988 | 7,4 ms | 9,7 ms |
-| 2560 × 1440 @1x | 1492 × 839 | 6,9 ms | 10,1 ms |
-| 390 × 844 @3x | 439 × 950 | 3,8 ms | 4,5 ms |
+| 1440 × 900 | 480/480 | 1440 × 900 (resolução total) | 1,7 ms |
+| 1920 × 1080 @2x | 480/480 | 2066 × 1162 (orçamento de pixels) | 1,7 ms |
+| 2560 × 1440 | 480/480 | 2066 × 1162 | 1,6 ms |
+| 390 × 844 @3x | 480/480 em 2 de 3 execuções (162 e 207 na primeira de cada sequência) | 439 × 950 | 1–2 ms |
 
-**Quadros apresentados** ao percorrer toda a história em 8 s:
-- **CPU normal:** 480/480 em todos os viewports acima (60 fps). A thread principal gasta 1,6–1,9 ms por quadro, sem tarefas longas, com heap JS de cerca de 4,5 MB.
-- **CPU 4× mais lenta (emulação CDP):** a thread principal sobe para 3–5 ms por quadro, mas o número de quadros apresentados variou entre execuções do mesmo build (de 480/480 a 57/478). A causa não foi isolada no modo headless.
+Nenhuma tarefa longa; heap JS entre 4 e 6 MB. Com a CPU 4× mais lenta (emulação CDP), o resultado varia entre execuções, como na iteração anterior; a causa não foi isolada no modo headless.
 
-Dois problemas encontrados e corrigidos durante o profiling:
-- A sombra marchada custava 20 amostras por pixel de fundo.
-- O `--story-p` era escrito no `<section>` a cada quadro, invalidando o estilo da subárvore inteira. Junto com o blur do cabeçalho sobre o canvas, isso derrubava 2560 × 1440 para cerca de 40 fps.
+**Tempo de GPU por quadro** (1440 × 900, resolução total, com sincronização forçada):
+- 6–8 ms na maior parte da história;
+- cerca de 10,5 ms no instante em que placa, C pressionado, núcleo e relevo coexistem.
 
-**Troca para o logo:** os quadros imediatamente antes (WebGL) e depois (SVG oficial) diferem em média 0,46/255 por canal. A área do navy difere 1,2% e o centróide do símbolo, 0,1 px na horizontal e 0,3 px na vertical. No fim da sequência, o estado plano é resolvido analiticamente em 2D com cobertura por pixel, o mesmo modelo de rasterização do SVG.
+A primeira versão desta iteração custava cerca de 10–13 ms e caía para metade da resolução. Para isolar o problema, cada recurso foi desligado separadamente: um passe vazio custa 0,5 ms e o chão sozinho cerca de 1 ms, então o custo estava no objeto. A otimização veio de três frentes: valores de etapa calculados uma vez por pixel, ramos uniformes e esfera envolvente por etapa.
+
+**Troca para o logo:** os quadros imediatamente antes (WebGL) e depois (SVG oficial) mostram:
+- área do navy com diferença de 1,3%;
+- centróide deslocado 0,5 px na horizontal e 0,3 px na vertical;
+- diferença média de 2,4/255 dentro da região do símbolo.
 
 ## Navegador e acessibilidade
 
-- **Viewports percorridos com captura:** 1440 × 900, 1920 × 1080, 820 × 1180, 390 × 844 e 360 × 640. Sem overflow horizontal.
+- **Viewports percorridos com captura nesta iteração:** 1440 × 900 e 390 × 844 em todas as seções e momentos da história; 820 × 1180 e 360 × 640 na história, em Soluções e no Processo; 1920 × 1080 e 2560 × 1440 no profiling. Comparação antes/depois em `output/qa/antes-depois-historia.png` e figuras de Soluções em `output/qa/solucoes-figuras.png`.
+- **Defeito menor conhecido:** em 360 px, o rótulo "Ø 128,94 · abertura" é empurrado para dentro da tela e cruza a própria linha de chamada.
 - **Reduced motion e sem JavaScript:** layout estático com a sequência do manual (p. 8) e o logo, sem pin e sem WebGL.
 - **Teclado:**
   - O skip link é o primeiro foco, e a ordem de tabulação segue a leitura.

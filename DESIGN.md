@@ -73,3 +73,39 @@ Os capítulos usam o texto literal do manual (p. 8).
 - **Fallbacks:** sem WebGL2 ou com economia de dados, os estados planos do conceito percorrem o mesmo caminho. Com reduced motion, sem JavaScript ou em telas muito baixas, a sequência estática do manual (p. 8) aparece seguida do logo oficial.
 
 Números medidos em `VALIDATION.md`.
+
+## 8. Segunda iteração: de apresentação de marca a prancheta de estúdio
+
+**O que deixava a versão anterior contida:**
+- A história era um único enquadramento repetido quatro vezes: câmera fixa, fundo fixo, objeto parado a 64% da largura, frase à esquerda, mesma mira técnica.
+- O objeto lia como macio e de brinquedo: filetes grandes, placa espessa (17% da largura), relevo inflado e luz ampla, sem arestas definidas nem contato com o chão.
+- As linhas técnicas eram decoração passiva, que apontava sem informar.
+- O fim isolava o logo em uma tela vazia e cortava seco para o conteúdo.
+
+**O que mudou:**
+- **Objeto como artefato preciso:** filetes pequenos, placa fina com chanfro, relevo nítido, costura gravada na semente marcando onde ela vai se abrir, acetinado com grão de jateamento e reflexos de softbox que definem a forma.
+- **Câmera com planos:** três-quartos para ver a casca abrir e a espessura da placa, frontal para ler o C, e perspectiva que vira ortográfica na troca para o logo.
+- **Grid como espaço:** vira o chão em perspectiva onde o objeto se apoia (com sombra de contato) e, no fim, dobra-se para cima até virar o grid plano da página atrás do logo.
+- **Cotas reais da marca, no momento em que cada parte se forma:**
+  - Ø 186,84 (C externo)
+  - Ø 128,94 (abertura)
+  - Ø 29,04 (ponto)
+  - 282,78 · R 72,76 (ícone)
+  - linhas de construção do lockup (topo do ícone = altura-x de "connections", base = linha de base de "hub", nome a 67,62 do ícone)
+- **Composição própria por capítulo:** o objeto atravessa o quadro; numeral grande, texto revelado por máscara, tons de atmosfera por etapa (areia na abertura, névoa no C).
+- **Selo técnico no hero:** entregas, método, contato e folha; vira o índice dos capítulos durante a história e se repete no rodapé (folha 06/06).
+- **Folhas:** cada seção é uma folha com topo arredondado sobre a anterior; a primeira desliza sobre a prancheta.
+- **Soluções (direção preservada e refinada):**
+  - Composição de front-end: 1440 → 390, componentes e refluxo.
+  - Processos integrados: módulos sobre uma base de dados única, com perfis e integração.
+  - Dos dados à decisão: fontes → tratamento → indicadores com meta.
+  - Da vitrine ao pedido: produto, checkout e o fluxo até estoque e ERP.
+  - Cada figura tem código (Fig. 03.x), título e legenda.
+- **Manifesto:** o texto ganha cor à medida que é lido.
+
+**Renderização:** continua em campos de distância. O briefing pediu mais mudança de topologia (e um chão que se dobra), e malhas continuariam exigindo trocas visíveis de peças. Para pagar pela nova luz e pela câmera:
+- valores de etapa calculados uma vez por pixel;
+- ramos uniformes que pulam etapas inativas;
+- esfera envolvente por etapa;
+- sombra de contato com uma amostra;
+- qualidade adaptativa com histerese (desce sob carga sustentada, sobe quando há folga).

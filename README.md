@@ -28,7 +28,9 @@ npm run assets          # regenera imagens e cópias oficiais a partir de Refer�
   - `story-stage.tsx`: relógio de scroll, overlay técnico e troca para o logo.
   - `concept-figure.tsx`: diagrama estático do manual.
 - `src/lib/story/`: cena 3D, isolada do React.
-  - `timeline.ts`: tempos e posições compartilhados por DOM e GPU.
+  - `timeline.ts`: tempos, planos de câmera, enquadramento, chão e atmosfera, compartilhados por DOM e GPU.
+  - `camera.ts`: câmera única (perspectiva → ortográfica) para o shader e para a projeção das cotas.
+  - `annotations.ts`: cotas reais do símbolo e linhas de construção do lockup.
   - `geometry.ts`: medidas do símbolo oficial.
   - `shader.ts`: campos de distância e iluminação.
   - `renderer.ts`: WebGL2, compilação paralela, resolução adaptativa e ciclo de vida.

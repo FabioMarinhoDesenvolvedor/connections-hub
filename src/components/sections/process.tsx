@@ -7,7 +7,7 @@ const RADIUS = 150;
 // and the meeting point travels at its head. Quarter notches mark the four steps.
 function Dial() {
   return <svg className="dial" viewBox="0 0 400 400" aria-hidden="true">
-    <circle className="dial-track" cx="200" cy="200" r={RADIUS} />
+    <circle className="dial-track" cx="200" cy="200" r={RADIUS} pathLength={4} transform="rotate(-90 200 200)" />
     <circle className="dial-arc" cx="200" cy="200" r={RADIUS} pathLength={1} transform="rotate(-90 200 200)" />
     {process.map((step, i) => {
       const angle = (i / process.length) * Math.PI * 2 - Math.PI / 2;
