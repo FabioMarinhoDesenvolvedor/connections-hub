@@ -15,6 +15,7 @@ export function ScrollEffects() {
     const root = document.documentElement;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (!reduced.matches) root.classList.add('motion');
+    const onPreference = () => { root.classList.toggle('motion', !reduced.matches); schedule(); };
 
     const reveal = new IntersectionObserver(entries => {
       for (const entry of entries) if (entry.isIntersecting) {
@@ -55,11 +56,14 @@ export function ScrollEffects() {
     update();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
+    reduced.addEventListener('change', onPreference);
     return () => {
       reveal.disconnect();
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
+      reduced.removeEventListener('change', onPreference);
+      root.classList.remove('motion');
     };
   }, []);
   return null;

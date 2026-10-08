@@ -1,46 +1,45 @@
 /*
   Connections Hub design tokens.
-  Values: brand manual p.16, plus the intact SVG fills for orange (the p.16 label
-  for orange repeats the sand hex by mistake; the vector files are authoritative).
-  Structure: the Apple reference on Refero (4px base, ~1440 canvas, 8px media
-  radius, pill actions, hairlines, no shadows), re-mapped semantically.
+  Brand values: manual p.16; terracotta taken from the official SVG fills (the manual's label
+  for orange repeats the sand hex by mistake; the vectors are authoritative).
+  Components use roles, never the raw brand values, so a surface change never needs a
+  component change.
 */
 :root {
-  /* Brand — never used directly in components, only through roles below. */
-  --brand-ink: #20252B;
-  --brand-navy: #183255;
-  --brand-slate: #6B7C8E;
-  --brand-mist: #CCD6DB;
-  --brand-off-white: #F8F6F0;
-  --brand-sand: #E8D8C5;
-  --brand-orange: #C16042;
+  /* Brand */
+  --ink: #20252B;
+  --navy: #183255;
+  --slate: #6B7C8E;
+  --mist: #CCD6DB;
+  --off-white: #F8F6F0;
+  --sand: #E8D8C5;
+  --orange: #C16042;
 
-  /* Surfaces — hierarchy comes from surface changes, not from boxes. */
-  --surface-canvas: var(--brand-off-white);
-  --surface-warm: var(--brand-sand);
-  --surface-cool: var(--brand-mist);
-  --surface-deep: var(--brand-navy);
-  --surface-deepest: var(--brand-ink);
+  /* Surfaces: hierarchy comes from surface changes, not from boxes and shadows. */
+  --surface: var(--off-white);
+  --surface-sand: var(--sand);
+  --surface-deep: var(--navy);
+  --surface-deepest: var(--ink);
 
-  /* Text */
-  --text-strong: var(--brand-navy);
-  --text-body: var(--brand-ink);
-  --text-muted: color-mix(in srgb, var(--brand-ink) 72%, var(--brand-off-white));
-  --text-display-soft: var(--brand-slate);
-  --text-on-deep: var(--brand-off-white);
-  --text-on-deep-muted: var(--brand-mist);
+  /* Text. Slate only at display sizes (4.1:1 on off-white); orange is punctuation, never body. */
+  --text-strong: var(--navy);
+  --text: var(--ink);
+  --text-muted: #4D5865;
+  --text-display-soft: var(--slate);
+  --text-on-deep: var(--off-white);
+  --text-on-deep-muted: var(--mist);
+  --accent: var(--orange);
 
-  /* Action & accent. Orange is a punctuation mark, not a paint. */
-  --action: var(--brand-navy);
-  --action-hover: var(--brand-ink);
-  --accent: var(--brand-orange);
+  /* Lines: hairlines carry structure, the drafting-sheet language. */
+  --rule: color-mix(in srgb, var(--navy) 15%, transparent);
+  --rule-strong: color-mix(in srgb, var(--navy) 34%, transparent);
+  --rule-on-deep: color-mix(in srgb, var(--mist) 20%, transparent);
+  --rule-on-deep-strong: color-mix(in srgb, var(--mist) 42%, transparent);
+  --grid-line: color-mix(in srgb, var(--navy) 6.5%, transparent);
+  --grid-line-on-deep: color-mix(in srgb, var(--mist) 7%, transparent);
+  --grid-cell: 72px;
 
-  /* Lines */
-  --hairline: color-mix(in srgb, var(--brand-navy) 14%, transparent);
-  --hairline-strong: color-mix(in srgb, var(--brand-navy) 28%, transparent);
-  --hairline-on-deep: color-mix(in srgb, var(--brand-mist) 22%, transparent);
-
-  /* Space — 4px base */
+  /* Space: 4px base. */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -54,40 +53,49 @@
   --space-20: 80px;
   --space-24: 96px;
   --space-32: 128px;
-  --section: clamp(96px, 11vw, 176px);
-  --page-max: 1360px;
-  --gutter: clamp(20px, 4.4vw, 64px);
-  --nav-height: 64px;
+  --section-space: clamp(104px, 12vw, 200px);
+
+  /* Layout: 12 columns, fluid margins. */
+  --page-max: 1440px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --column-gap: clamp(16px, 2vw, 32px);
+  --nav-height: 72px;
 
   /* Shape */
-  --radius-media: 8px;
-  --radius-panel: 20px;
+  --radius-s: 6px;
+  --radius-m: 12px;
+  --radius-l: 24px;
   --radius-pill: 999px;
 
-  /* Type — Satoshi, 400 for reading, 500 for display and navigation. */
-  --font-sans: var(--font-satoshi), Arial, sans-serif;
-  --text-caption: 12px;
+  /* Type: Satoshi only, never italic (manual p.17). */
+  --font: var(--font-satoshi), Arial, sans-serif;
+  --text-label: 12px;
   --text-small: 14px;
-  --text-base: 17px;
-  --text-lead: clamp(18px, 1.35vw, 21px);
-  --text-h3: clamp(22px, 1.8vw, 28px);
-  --text-h2: clamp(36px, 4.4vw, 64px);
-  --text-h1: clamp(46px, 6.6vw, 104px);
-  --text-statement: clamp(32px, 3.9vw, 58px);
+  --text-body: 17px;
+  --text-lead: clamp(18px, 1.3vw, 21px);
+  --text-h3: clamp(24px, 2vw, 32px);
+  --text-statement: clamp(26px, 2.6vw, 40px);
+  --text-h2: clamp(40px, 5.4vw, 88px);
+  --text-display: clamp(42px, 5vw, 84px);
+  --text-signature: clamp(26px, 5vw, 84px);
+  --leading-display: 0.98;
+  --leading-heading: 1.04;
+  --leading-body: 1.62;
   --tracking-display: -0.045em;
-  --tracking-tight: -0.02em;
-  --tracking-label: 0.08em;
+  --tracking-heading: -0.035em;
+  --tracking-label: 0.16em;
+  --tracking-signature: 0.3em;
 
-  /* Motion — short, decelerating, never elastic. */
-  --ease-out: cubic-bezier(.22, 1, .36, 1);
-  /* Material 3: emphasized decelerate for arrivals, standard for things that stay. */
-  --ease-decelerate: cubic-bezier(.05, .7, .1, 1);
-  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  /* Motion: arrivals decelerate (expo-out), state changes ease in-out. Never elastic. */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-in-out: cubic-bezier(.65, 0, .35, 1);
-  --duration-fast: 180ms;
-  --duration-base: 320ms;
-  --duration-reveal: 900ms;
+  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  --duration-micro: 160ms;
+  --duration-ui: 280ms;
+  --duration-reveal: 560ms;
+  --duration-scene: 900ms;
+  --stagger: 70ms;
 }
 @media (max-width: 767px) {
-  :root { --nav-height: 56px; --section: 88px; }
+  :root { --nav-height: 60px; --text-body: 16px; --grid-cell: 48px; }
 }

@@ -4,67 +4,95 @@ import { useEffect, useRef, useState } from 'react';
 import { site } from '@/data/site';
 import { Arrow } from './arrow';
 
+const NAV_LINE = 40; // px from the top where the bar samples the surface underneath
+
 export function Navigation() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
+  const [active, setActive] = useState('');
   const toggle = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // The bar takes the tone of the surface underneath it: navy sections turn it navy.
-    const dark = [...document.querySelectorAll<HTMLElement>('[data-nav-theme="dark"]')];
+    // The bar takes the tone of the surface beneath it, and marks the section being read.
+    const darkSurfaces = [...document.querySelectorAll<HTMLElement>('[data-nav-theme="dark"]')];
+    const sections = site.navigation.map(item => document.querySelector<HTMLElement>(item.href)).filter((s): s is HTMLElement => Boolean(s));
+    const story = document.querySelector<HTMLElement>('[data-story]');
     let frame = 0;
     const update = () => {
       frame = 0;
-      const line = 32;
-      setScrolled(window.scrollY > 8);
-      setDark(dark.some(section => { const r = section.getBoundingClientRect(); return r.top <= line && r.bottom >= line; }));
+      // Over the story's own paper the bar stays bare: no surface, and no backdrop blur
+      // recomputed every frame over the moving 3D canvas.
+      const overStory = Boolean(story && story.getBoundingClientRect().bottom > NAV_LINE);
+      setScrolled(window.scrollY > 8 && !overStory);
+      setDark(darkSurfaces.some(s => { const r = s.getBoundingClientRect(); return r.top <= NAV_LINE && r.bottom >= NAV_LINE; }));
+      const middle = window.innerHeight * 0.4;
+      const current = sections.find(s => { const r = s.getBoundingClientRect(); return r.top <= middle && r.bottom > middle; });
+      setActive(current ? `#${current.id}` : '');
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', onScroll); };
+    window.addEventListener('resize', onScroll);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
   }, []);
 
   useEffect(() => {
     if (!open) return;
-    // The page behind stays put while the menu is open.
+    // The page behind stays put and out of the focus order while the menu is open.
     const root = document.documentElement;
     root.classList.add('menu-open');
+    const background = [...document.querySelectorAll<HTMLElement>('main, .site-footer')];
+    const previousInert = background.map(element => element.inert);
+    background.forEach(element => { element.inert = true; });
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('#mobile-navigation a')];
+    links[0]?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { setOpen(false); toggle.current?.focus(); }
+      if (event.key === 'Tab') {
+        const controls = [toggle.current, ...links].filter((item): item is HTMLButtonElement | HTMLAnchorElement => Boolean(item));
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
     };
     const onResize = () => { if (window.innerWidth >= 900) setOpen(false); };
     document.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
-    return () => { root.classList.remove('menu-open'); document.removeEventListener('keydown', onKey); window.removeEventListener('resize', onResize); };
+    return () => {
+      root.classList.remove('menu-open');
+      background.forEach((element, i) => { element.inert = previousInert[i]; });
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+    };
   }, [open]);
 
   const close = () => setOpen(false);
-  // The panel is a sibling of the header, not a child: the header's backdrop-filter would
-  // otherwise become the containing block of the fixed panel and collapse it to the bar.
+  // The panel is a sibling of the header: the header's backdrop-filter would otherwise
+  // become the containing block of the fixed panel and collapse it to the bar.
   return <>
-  <header className="site-header" data-scrolled={scrolled || open} data-theme={dark && !open ? 'dark' : 'light'}>
-    <div className="navigation shell">
-      <a href="#inicio" className="brand-link" aria-label="Connections Hub — início" onClick={close}>
-        {/* Official artwork, without filters, opacity or effects. */}
-        <img className="logo-default" src="/brand/logo.svg" width="142" height="31" alt="Connections Hub" />
-        <img className="logo-light" src="/brand/logo-light.svg" width="142" height="31" alt="" aria-hidden="true" />
-      </a>
-      <nav className="desktop-navigation" aria-label="Navegação principal">
-        {site.navigation.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}
-      </nav>
-      <a className="button button-primary button-small header-contact" href="#contato">Fale conosco</a>
-      <button ref={toggle} className="menu-toggle" aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>
-        <span /><span />
-      </button>
-    </div>
-  </header>
-  <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navegação móvel" data-open={open} inert={!open} data-lenis-prevent>
-      <div className="shell">
-        {site.navigation.map((item, index) => <a key={item.href} href={item.href} onClick={close} style={{ '--i': index } as React.CSSProperties}>{item.label}</a>)}
-        <a className="mobile-contact" href="#contato" onClick={close} style={{ '--i': site.navigation.length } as React.CSSProperties}>Fale conosco<Arrow diagonal /></a>
+    <header className="site-header" data-scrolled={scrolled || open} data-theme={dark && !open ? 'dark' : 'light'}>
+      <div className="navigation shell">
+        <a href="#inicio" className="brand-link" aria-label="Connections Hub, início" onClick={close}>
+          {/* Official artwork, unaltered: navy on light surfaces, the light version on navy. */}
+          <img className="logo-default" src="/brand/logo.svg" width="142" height="31" alt="" />
+          <img className="logo-light" src="/brand/logo-light.svg" width="142" height="31" alt="" />
+        </a>
+        <nav className="desktop-navigation" aria-label="Navegação principal">
+          {site.navigation.map(item => <a key={item.href} href={item.href} aria-current={active === item.href ? 'location' : undefined}>{item.label}</a>)}
+        </nav>
+        <a className="button button-primary button-small header-contact" href="#contato">Fale conosco</a>
+        <button ref={toggle} className="menu-toggle" aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>
+          <span /><span />
+        </button>
       </div>
-  </nav>
+    </header>
+    <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navegação móvel" data-open={open} inert={!open}>
+      <div className="shell">
+        {site.navigation.map((item, index) => <a key={item.href} href={item.href} onClick={close} style={{ '--i': index } as React.CSSProperties}><span>{String(index + 2).padStart(2, '0')}</span>{item.label}</a>)}
+        <a className="mobile-contact" href="#contato" onClick={close} style={{ '--i': site.navigation.length } as React.CSSProperties}>Fale conosco<Arrow /></a>
+      </div>
+    </nav>
   </>;
 }

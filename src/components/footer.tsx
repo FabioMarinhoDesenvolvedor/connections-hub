@@ -1,21 +1,25 @@
 import { site } from '@/data/site';
 import { Arrow } from './arrow';
-import { FooterMark } from './footer-mark';
 
+// Manual p.14: the horizontal logo is reserved for use as a signature. Static, full opacity.
 export function Footer() {
   return <footer className="site-footer" data-nav-theme="dark">
     <div className="shell">
-      <div className="footer-main">
+      <div className="footer-top">
         <p className="footer-tagline">Conectando ideias.<br />Construindo soluções.</p>
-        <nav aria-label="Navegação do rodapé" className="footer-links">
+        <nav aria-label="Navegação do rodapé" className="footer-column">
+          <p className="footer-heading">Navegação</p>
           {site.navigation.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}
         </nav>
-        <div className="footer-links">
-          <a href={site.contact.href} target="_blank" rel="noopener noreferrer">WhatsApp<Arrow diagonal /><span className="sr-only"> (abre em uma nova aba)</span></a>
-          <a href={`mailto:${site.contact.email}`}>E-mail<Arrow diagonal /></a>
+        <div className="footer-column">
+          <p className="footer-heading">Contato</p>
+          <a href={site.contact.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp<Arrow /><span className="sr-only"> (abre em uma nova aba)</span></a>
+          <a href={`mailto:${site.contact.email}`}>E-mail<Arrow /></a>
         </div>
       </div>
-      <FooterMark />
+      <div className="footer-signature">
+        <img src="/brand/signature-sand.svg" width="2978" height="296" alt="Connections Hub" loading="lazy" />
+      </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} Connections Hub</span>
         <span>Pessoas. Ideias. Tecnologia.</span>
