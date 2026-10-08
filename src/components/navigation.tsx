@@ -90,7 +90,7 @@ export function Navigation() {
     </header>
     <nav id="mobile-navigation" className="mobile-navigation" aria-label="Navegação móvel" data-open={open} inert={!open}>
       <div className="shell">
-        {site.navigation.map((item, index) => <a key={item.href} href={item.href} onClick={close} style={{ '--i': index } as React.CSSProperties}><span>{String(index + 2).padStart(2, '0')}</span>{item.label}</a>)}
+        {site.navigation.map((item, index) => <a key={item.href} href={item.href} onClick={close} style={{ '--i': index } as React.CSSProperties}>{item.label}</a>)}
         <a className="mobile-contact" href="#contato" onClick={close} style={{ '--i': site.navigation.length } as React.CSSProperties}>Fale conosco<Arrow /></a>
       </div>
     </nav>

@@ -13,7 +13,7 @@ assert.match(html, /name="description"/, 'Description metadata');
 assert.match(html, /property="og:image"/, 'Social sharing image');
 assert.match(html, /rel="canonical"/, 'Canonical for the supplied production domain');
 for (const label of ['Aplicação da identidade', 'Conhecimento como pilar central', 'Personalizadas de acordo', 'Nenhuma trajetória']) assert.ok(!html.includes(label), `Internal or redundant copy must not be published: ${label}`);
-for (const text of ['Tudo começa com uma conexão.', 'A semente de uma ideia.', 'Tem um problema para resolver?']) assert.ok(html.includes(text), `Brand copy rendered as HTML: ${text}`);
+for (const text of ['Tudo começa com uma conexão.', 'A semente de uma ideia.', 'Tem um projeto, uma ideia ou um problema para resolver?']) assert.ok(html.includes(text), `Brand copy rendered as HTML: ${text}`);
 for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos']) assert.ok(html.includes(step), `Preserved process: ${step}`);
 assert.ok(!html.includes('O que construímos.'), 'Do not expose an empty project gallery');
 for (const id of ['inicio', 'conceito', 'sobre', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'processo', 'manifesto', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);

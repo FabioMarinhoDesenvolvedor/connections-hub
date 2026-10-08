@@ -109,3 +109,22 @@ Números medidos em `VALIDATION.md`.
 - esfera envolvente por etapa;
 - sombra de contato com uma amostra;
 - qualidade adaptativa com histerese (desce sob carga sustentada, sobe quando há folga).
+
+## 9. Terceira revisão: menos, melhor
+
+**Removido** (decoração que não informava):
+- numeração de seções e capítulos, "Folha 0x/06", selo técnico e índice;
+- cotas, linhas de chamada e de construção;
+- chão quadriculado e grids fora de Soluções;
+- bordas de folha entre todas as seções (fica só a entrada de Sobre sobre o palco);
+- numeração dos valores e do menu.
+
+**Objeto reconstruído com as medidas do símbolo:** em vez de uma esfera com "íris" e uniões de argila, uma esfera oca cuja parede é exatamente o anel do C, aberta por um único corte plano. A face de corte é o anel do C, de onde o C oficial é recortado. O ponto sai do núcleo areia (a ideia gera o ponto de encontro); a placa é o quadrado oficial crescendo por trás; uma linha de partição fina marca onde a semente abre. Arestas com filete de cerca de um pixel e luz de estúdio mais calma (uma leitura de ambiente, faixas de recorte suaves).
+
+**Narrativa:** 3 momentos em vez de 4 e 360svh de rolagem em vez de 520, com o texto do manual num lugar fixo e sem numerais.
+
+**Encerramento:** contato e rodapé numa única superfície navy (a mesma em que o filme da marca termina): um convite, dois canais diretos com o número e o endereço visíveis, uma linha final com o logo oficial claro, a navegação e o ©.
+
+**Preservado:** Soluções inteira (figuras, placa, interação), vetores, fonte, conteúdo factual, acessibilidade e reduced motion.
+
+**Renderização:** continua em campos de distância. O corte plano, o C recortado e a placa crescendo são operações exatas sobre as medidas do símbolo, e a troca de topologia continua inviável com malhas trocadas.

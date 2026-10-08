@@ -3,55 +3,50 @@ import { SYMBOL } from './geometry';
 
 /*
   The story's single clock. Story time s (0 → 1) maps to the object's shape, the camera, the
-  floor, the placement on screen and every DOM layer around it. The renderer and the DOM read
-  the same values in the same frame, so they cannot drift apart.
+  placement and the copy. Renderer and DOM read the same values in the same frame.
 
-  Manual p.8: seed → opening → meeting point → the hub, following the brand film
-  (Referências/ConnectionsHUb.mp4). Each beat is its own shot: the camera, framing and
-  atmosphere change with the narrative instead of holding one composition.
+  Manual p.8, in three beats: the seed opens · it needs a meeting point · the hub.
 */
 export const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 export const range = (v: number, a: number, b: number) => clamp((v - a) / (b - a));
 export const mix = (a: number, b: number, t: number) => a + (b - a) * t;
-/** Smooth in/out for shape changes. */
 export const smooth = (t: number) => t * t * (3 - 2 * t);
 /** Expo-like settle for arrivals; matches --ease-out in tokens.css. */
 export const settle = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)) / (1 - Math.pow(2, -10));
 
 /** Share of the pinned scroll the story uses; the rest is the next sheet sliding over it. */
-export const STORY_END = 0.88;
+export const STORY_END = 0.82;
 
 export const BEATS = {
-  heroOut: [0.025, 0.12],
-  travel: [0.02, 0.16],
-  open: [0.27, 0.46],
-  split: [0.46, 0.6],
-  dot: [0.52, 0.645],
-  tile: [0.645, 0.79],
-  land: [0.785, 0.885],
-  flat: [0.8, 0.885],
-  handoff: 0.888,
-  name: [0.895, 0.95],
-  final: [0.95, 0.99],
+  heroOut: [0.03, 0.12],
+  cut: [0.16, 0.38],
+  split: [0.42, 0.55],
+  dot: [0.47, 0.6],
+  plate: [0.62, 0.78],
+  land: [0.77, 0.87],
+  flat: [0.79, 0.87],
+  handoff: 0.875,
+  name: [0.88, 0.94],
+  final: [0.93, 0.98],
 } as const;
 
-/** Visibility windows for the four concept chapters: [in, out]. */
-export const CHAPTERS = [
-  [0.13, 0.28],
-  [0.3, 0.47],
-  [0.485, 0.655],
-  [0.665, 0.8],
+/** Copy: [in, out] per sentence. The first two share one block: the seed, then its opening. */
+export const LINES = [
+  [0.12, 0.42],
+  [0.27, 0.42],
+  [0.45, 0.61],
+  [0.64, 0.78],
 ] as const;
 
-export type Shape = { open: number; split: number; dot: number; tile: number; flat: number };
+export type Shape = { cut: number; split: number; dot: number; plate: number; flat: number };
 export type Placement = { x: number; y: number; scale: number };
 
 export function shapeAt(s: number): Shape {
   return {
-    open: smooth(range(s, ...BEATS.open)),
+    cut: smooth(range(s, ...BEATS.cut)),
     split: smooth(range(s, ...BEATS.split)),
     dot: smooth(range(s, ...BEATS.dot)),
-    tile: smooth(range(s, ...BEATS.tile)),
+    plate: smooth(range(s, ...BEATS.plate)),
     flat: smooth(range(s, ...BEATS.flat)),
   };
 }
@@ -68,18 +63,17 @@ function track(keys: readonly (readonly number[])[], s: number) {
   return keys[keys.length - 1].slice(1);
 }
 
-// Shots: [s, yaw, pitch]. The camera reveals depth where the form changes in depth (the shell
-// turning open, the slab) and squares up where the form is read as a figure (the C, the logo).
+// Camera [s, yaw, pitch]: three-quarter views where depth matters (the cut, the plate),
+// frontal where the figure must be read (the C, the logo).
 const SHOTS = [
-  [0, 0.2, 0.2],
-  [0.14, 0.04, 0.15],
-  [0.3, -0.5, 0.3],
-  [0.46, -0.1, 0.12],
-  [0.56, 0.2, 0.07],
-  [0.645, 0.02, 0.06],
-  [0.73, 0.44, 0.24],
-  [0.8, 0.16, 0.08],
-  [0.885, 0, 0],
+  [0, 0.32, 0.2],
+  [0.16, 0.5, 0.26],
+  [0.38, 0.3, 0.22],
+  [0.48, 0.04, 0.06],
+  [0.6, 0.02, 0.05],
+  [0.7, -0.38, 0.16],
+  [0.79, -0.2, 0.08],
+  [0.87, 0, 0],
 ] as const;
 
 export function cameraAt(s: number, narrow: boolean, tilt = { x: 0, y: 0 }): Camera {
@@ -87,61 +81,47 @@ export function cameraAt(s: number, narrow: boolean, tilt = { x: 0, y: 0 }): Cam
   const flat = smooth(range(s, BEATS.flat[0] - 0.02, BEATS.flat[1]));
   const free = 1 - flat;
   return {
-    yaw: (yaw * (narrow ? 0.6 : 1) + tilt.x * 0.16) * free,
-    pitch: (pitch + tilt.y * 0.08) * free,
+    yaw: (yaw * (narrow ? 0.7 : 1) + tilt.x * 0.12) * free,
+    pitch: (pitch + tilt.y * 0.06) * free,
     distance: 6.5,
     ortho: flat,
   };
 }
 
-/** The drafting floor: rests under the object, then folds up into the page for the hand-off. */
+/** The floor only carries the contact shadow; it settles with the object and fades at the end. */
 export function floorAt(s: number) {
-  const tile = smooth(range(s, BEATS.tile[0], BEATS.tile[1] - 0.04));
+  const plate = smooth(range(s, BEATS.plate[0], BEATS.plate[1] - 0.04));
   return {
-    fold: smooth(range(s, BEATS.land[0], BEATS.flat[1])),
-    height: -mix(SYMBOL.ring.outer, SYMBOL.tileHalf, tile) - 0.004,
-    visibility: 1 - smooth(range(s, BEATS.flat[1] - 0.01, BEATS.handoff + 0.01)),
+    height: -mix(SYMBOL.ring.outer, SYMBOL.tileHalf, plate) - 0.004,
+    visibility: 1 - smooth(range(s, BEATS.land[0], BEATS.flat[1])),
   };
-}
-
-/** Subtle shifts in the paper's tone per stage: warm as the sand is revealed, cool for the C. */
-export function atmosphereAt(s: number) {
-  const warm = smooth(range(s, 0.27, 0.38)) * (1 - smooth(range(s, 0.46, 0.55)));
-  const cool = smooth(range(s, 0.48, 0.58)) * (1 - smooth(range(s, 0.66, 0.76)));
-  return { warm, cool };
 }
 
 export type Layout = { width: number; height: number; narrow: boolean; heroSlot?: { top: number; bottom: number } };
 export const layoutFor = (width: number, height: number, heroSlot?: Layout['heroSlot']): Layout => ({ width, height, narrow: width / height < 1.05 || width < 760, heroSlot });
 
-// Framing per shot: [s, x (share of width), y (share of height), scale (share of min(h, .62w))].
-// The object travels across the frame so each chapter has its own composition.
+// Framing [s, x, y (shares of the viewport), scale (share of min(h, .62w))]. The copy keeps
+// one place on the left; the object stays on the right and only breathes.
 const FRAMES_WIDE = [
-  [0, 0.75, 0.58, 0.25],
+  [0, 0.76, 0.56, 0.23],
   [0.14, 0.66, 0.52, 0.27],
-  [0.3, 0.36, 0.53, 0.27],
-  [0.46, 0.38, 0.52, 0.28],
-  [0.56, 0.41, 0.5, 0.32],
-  [0.645, 0.44, 0.52, 0.29],
-  [0.72, 0.68, 0.52, 0.205],
-  [0.785, 0.66, 0.52, 0.2],
+  [0.4, 0.65, 0.52, 0.28],
+  [0.5, 0.64, 0.51, 0.3],
+  [0.62, 0.65, 0.52, 0.27],
+  [0.72, 0.66, 0.52, 0.2],
 ] as const;
 
 export function placementAt(s: number, { width: w, height: h, narrow, heroSlot }: Layout, landing?: Placement): Placement {
   const land = smooth(range(s, ...BEATS.land));
   let frame: Placement;
   if (narrow) {
-    // Narrow: the seed sits centred in whatever space the copy leaves, never over the headline.
+    // Narrow: the seed sits centred in the space the copy leaves, never over the headline.
     const slot = heroSlot ?? { top: h * 0.08, bottom: h * 0.42 };
     const heroScale = Math.max(28, Math.min(w * 0.21, (slot.bottom - slot.top) * 0.36));
     const stageScale = Math.min(w * 0.23, h * 0.13);
-    const travel = settle(range(s, ...BEATS.travel));
-    const tile = smooth(range(s, ...BEATS.tile));
-    frame = {
-      x: w / 2,
-      y: mix((slot.top + slot.bottom) / 2, h * 0.36, travel),
-      scale: mix(heroScale, stageScale, travel) * mix(1, 0.78, tile),
-    };
+    const travel = settle(range(s, BEATS.heroOut[0], BEATS.cut[0]));
+    const plate = smooth(range(s, ...BEATS.plate));
+    frame = { x: w / 2, y: mix((slot.top + slot.bottom) / 2, h * 0.36, travel), scale: mix(heroScale, stageScale, travel) * mix(1, 0.78, plate) };
   } else {
     const [x, y, k] = track(FRAMES_WIDE, s);
     frame = { x: x * w, y: y * h, scale: k * Math.min(h, 0.62 * w) };
@@ -150,20 +130,18 @@ export function placementAt(s: number, { width: w, height: h, narrow, heroSlot }
   return { x: mix(frame.x, target.x, land), y: mix(frame.y, target.y, land), scale: mix(frame.scale, target.scale, land) };
 }
 
-/** 0 → 1 → 0 visibility of a chapter, with a separate draw-on value for its annotations. */
-export function chapterAt(s: number, index: number) {
-  const [a, b] = CHAPTERS[index];
-  const enter = settle(range(s, a, a + 0.035));
+/** Visibility of a sentence: wipes in, then the whole block leaves together. */
+export function lineAt(s: number, index: number) {
+  const [a, b] = LINES[index];
+  const enter = settle(range(s, a, a + 0.04));
   const leave = smooth(range(s, b - 0.03, b));
-  return { visible: enter * (1 - leave), enter, leave, draw: smooth(range(s, a + 0.02, a + 0.075)) * (1 - leave) };
+  return { enter, leave, visible: enter * (1 - leave) };
 }
 
 export function finaleAt(s: number) {
   return {
     handed: s >= BEATS.handoff,
     name: smooth(range(s, ...BEATS.name)),
-    construction: smooth(range(s, BEATS.name[0], BEATS.name[0] + 0.03)) * (1 - smooth(range(s, BEATS.final[0], BEATS.final[1]))),
     final: settle(range(s, ...BEATS.final)),
-    frame: 1 - smooth(range(s, BEATS.tile[1] - 0.02, BEATS.land[1])),
   };
 }

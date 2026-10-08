@@ -5,7 +5,7 @@ import { manifesto, values } from '@/data/site';
 export function Manifesto() {
   return <section id="manifesto" className="manifesto surface-sand" aria-labelledby="manifesto-title">
     <div className="shell manifesto-grid">
-      <p className="label" data-reveal><span className="label-index">05</span>Manifesto</p>
+      <p className="label" data-reveal>Manifesto</p>
       <p className="signature-type" aria-label="Conectando ideias. Construindo soluções." data-reveal="lines">
         <span className="line"><span>Conectando</span></span>
         <span className="line"><span><b>ideias</b></span></span>
@@ -19,7 +19,7 @@ export function Manifesto() {
       <div className="values" data-reveal="rules">
         <p className="values-label">Valores</p>
         <ul aria-label="Valores da Connections Hub">
-          {values.map((value, i) => <li key={value}><span>{String(i + 1).padStart(2, '0')}</span>{value}</li>)}
+          {values.map(value => <li key={value}>{value}</li>)}
         </ul>
       </div>
     </div>

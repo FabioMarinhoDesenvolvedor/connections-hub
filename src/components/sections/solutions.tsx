@@ -11,7 +11,7 @@ import { solutions } from '@/data/site';
 export function Solutions() {
   return <section id="solucoes" className="solutions surface-deep" data-nav-theme="dark" aria-labelledby="solutions-title">
     <div className="shell">
-      <SectionHead index="03" label="Soluções" id="solutions-title" lines={['Do problema', 'à solução.']}
+      <SectionHead label="Soluções" id="solutions-title" lines={['Do problema', 'à solução.']}
         intro="Quatro frentes de trabalho, definidas com você a partir do que a operação precisa. Um mesmo projeto pode combinar mais de uma." />
       <div className="solutions-body">
         <div className="solutions-visual" aria-hidden="true">

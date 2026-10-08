@@ -1,5 +1,7 @@
 # Validação
 
+> Terceira revisão (08/10/2026): ver a seção ao final, que substitui os números de desempenho abaixo.
+
 Medições de 08/10/2026 (segunda iteração) no build de produção local (`next start`, `127.0.0.1`). Máquina: Intel Core Ultra 5 125H com GPU integrada Intel Arc (ANGLE/D3D11), Chrome headless com GPU real. Nenhuma publicação externa foi realizada.
 
 ## Verificações automáticas
@@ -59,3 +61,21 @@ A primeira versão desta iteração custava cerca de 10–13 ms e caía para met
 - Revisão de acessibilidade com leitor de tela real. A auditoria automática não é certificação.
 - Validação da copy de escopo dos serviços ("Pode incluir") pela empresa: ela descreve possibilidades de projeto, não trabalhos realizados.
 - Cases reais: a galeria só aparece quando `src/data/projects.ts` tiver projetos aprovados.
+
+## Terceira revisão
+
+Build de produção local, mesma máquina.
+
+- **Verificações:** `typecheck`, `build` e `verify` aprovados.
+- **Lighthouse mobile:** 97–98 · LCP 2,5 s (no limite da meta) · TBT 30–110 ms · CLS 0.
+- **Lighthouse desktop:** 100 · LCP 0,5 s · CLS 0.
+- **Lighthouse geral:** acessibilidade, boas práticas e SEO em 100; nenhum erro de console.
+- **Quadros apresentados** (história inteira em 8 s): 480/480 em 1440 × 900 (resolução total), 1920 × 1080 @2x, 2560 × 1440 e 390 × 844. Thread principal entre 1,2 e 1,4 ms por quadro, sem tarefas longas.
+- **Custo de GPU:** a primeira versão desta revisão custava cerca de 16 ms por quadro em 1440 a resolução total. Os cortes foram: uma leitura de ambiente em vez de duas, uma luz a menos, uma amostra de sombra e AO com 2 amostras. Com sincronização forçada, os momentos finais (placa e C) ainda medem 10–12 ms; é o trecho mais pesado.
+- **Movimento:** frames reais da tela foram gravados durante a rolagem, para frente e para trás e em velocidades rápidas, comparando cada quadro com o anterior. A gravação revelou um salto ao voltar a rolagem: o palco "pulava" de estado quando a distância entre o scroll e o estado mostrado passava de 0,2. A regra foi removida e saltos longos agora retrocedem em cerca de 250 ms. Depois da correção não há quadro isolado com salto; os picos restantes são sequências contínuas de movimento rápido.
+- **Comparação antes/depois:** `output/qa/revisao-3-antes-depois.png`.
+
+**Limitações:**
+- O núcleo areia continua sendo uma esfera simples.
+- A composição do hero (texto à esquerda, objeto à direita) mudou pouco.
+- Safari, Firefox e aparelhos físicos não foram testados.

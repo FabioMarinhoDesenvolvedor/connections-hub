@@ -5,9 +5,10 @@ import type { Placement, Shape } from './timeline';
 /*
   A single full-screen pass; no scene graph is needed, so no engine is loaded.
   Draws only when asked (scroll or pointer changed), at an internal resolution that adapts to
-  the device. Object rays are bounded by a sphere; the floor is one analytic plane.
+  the device. Object rays are bounded by a sphere; the floor is one analytic plane that
+  only carries the contact shadow.
 */
-export type Floor = { fold: number; height: number; visibility: number; cell: number; alignX: number; alignY: number };
+export type Floor = { height: number; visibility: number };
 export type Frame = { placement: Placement; shape: Shape; camera: Camera; floor: Floor; visible: boolean };
 export type StoryRenderer = {
   draw: (frame: Frame) => void;
@@ -97,7 +98,7 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
   const uniform = (name: string) => gl.getUniformLocation(program, name);
-  const u = { res: uniform('uRes'), place: uniform('uPlace'), shape: uniform('uShape'), flat: uniform('uFlat'), camera: uniform('uCamera'), lens: uniform('uLens'), grid: uniform('uGrid'), bound: uniform('uBound'), field: uniform('uField') };
+  const u = { res: uniform('uRes'), place: uniform('uPlace'), shape: uniform('uShape'), flat: uniform('uFlat'), camera: uniform('uCamera'), lens: uniform('uLens'), bound: uniform('uBound'), field: uniform('uField') };
   gl.uniform1i(u.field, 0);
   gl.clearColor(0, 0, 0, 0);
 
@@ -176,13 +177,12 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, field: Dist
     const { right, up, back } = cameraBasis(camera);
     matrix.set([...right, ...up, ...back]);
     gl.uniform3f(u.place, x, y, s);
-    gl.uniform4f(u.shape, shape.open, shape.split, shape.dot, shape.tile);
+    gl.uniform4f(u.shape, shape.cut, shape.split, shape.dot, shape.plate);
     gl.uniform1f(u.flat, shape.flat);
     gl.uniformMatrix3fv(u.camera, false, matrix);
-    gl.uniform4f(u.lens, camera.distance, camera.ortho, floor.fold, floor.visibility);
-    gl.uniform4f(u.grid, floor.cell, floor.alignX, floor.alignY, floor.height);
+    gl.uniform4f(u.lens, camera.distance, camera.ortho, floor.height, floor.visibility);
     // Tight bound per stage: rays that cannot reach the object never start marching.
-    gl.uniform1f(u.bound, 1.16 + 0.64 * Math.min(1, shape.tile / 0.3));
+    gl.uniform1f(u.bound, 1.16 + 0.64 * Math.min(1, shape.plate / 0.3));
     const timing = timer && !query ? gl.createQuery() : null;
     if (timing && timer) gl.beginQuery(timer.TIME_ELAPSED_EXT, timing);
     gl.drawArrays(gl.TRIANGLES, 0, 3);

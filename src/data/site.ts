@@ -113,9 +113,8 @@ export const manifesto = {
 // Manual p.9.
 export const values = ['Confiança', 'Conhecimento', 'Inovação', 'Criatividade', 'Seriedade', 'Otimização'];
 
-// Contact story post, verbatim.
+// Contact story post (its three questions, joined into one invitation).
 export const contact = {
-  questions: ['Tem um projeto?', 'Tem uma ideia?', 'Tem um problema para resolver?'],
-  title: 'Fale com a Connections Hub.',
+  title: 'Tem um projeto, uma ideia ou um problema para resolver?',
   lead: 'Conte o que você tem em mente. A primeira conversa serve para entender a necessidade e o melhor caminho para resolvê-la.',
 };

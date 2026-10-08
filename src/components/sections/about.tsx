@@ -6,7 +6,7 @@ import { about } from '@/data/site';
 export function About() {
   return <section id="sobre" className="about" aria-labelledby="about-title">
     <div className="shell about-grid">
-      <SectionHead index="02" label="Sobre" id="about-title" lines={about.title} className="about-head" />
+      <SectionHead label="Sobre" id="about-title" lines={about.title} className="about-head" />
       <div className="about-copy" data-reveal>
         {about.paragraphs.map(text => <p key={text}>{text}</p>)}
       </div>
