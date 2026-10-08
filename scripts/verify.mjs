@@ -18,7 +18,7 @@ for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos'
 assert.ok(!html.includes('O que construímos.'), 'Do not expose an empty project gallery');
 for (const id of ['inicio', 'conceito', 'sobre', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'processo', 'manifesto', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
 for (const link of ['https://wa.me/5511974589226', 'mailto:contato.connectionstree@gmail.com', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
-for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/brand-office.avif', '/images/brand-office-small.avif', '/images/brand-office.webp', '/images/brand-people.avif', '/images/brand-people-small.avif', '/images/brand-technology.avif', '/images/brand-technology-small.avif', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml', '/sdf/symbol-c.png']) assert.equal((await fetch(origin + asset)).status, 200, asset);
+for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/brand-office.avif', '/images/brand-office-small.avif', '/images/brand-office.webp', '/images/brand-people.avif', '/images/brand-people-small.avif', '/images/brand-technology.avif', '/images/brand-technology-small.avif', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
 const files = await fs.readdir(originals);
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
@@ -30,6 +30,6 @@ let transferred = 0;
 for (const src of mainJS) {
   const script = await (await fetch(origin + src)).text();
   transferred += Buffer.byteLength(script);
-  assert.ok(!script.includes('uToObject'), 'The WebGL renderer and shader must load on demand, never in an initial script');
+  assert.ok(!script.includes('THREE.WebGLRenderer'), 'three.js and the story renderer must load on demand, never in an initial script');
 }
 console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses and byte-for-byte SVG/font integrity. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);

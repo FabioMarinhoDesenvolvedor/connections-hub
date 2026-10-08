@@ -1,9 +1,7 @@
 import { Arrow } from '@/components/arrow';
+import { ConceptFigure } from '@/components/story/concept-figure';
 import { StoryStage } from '@/components/story/story-stage';
 import { concept, hero, solutions } from '@/data/site';
-
-// Manual p.8 in three beats: the seed and its opening share the first.
-const BEATS = [[0, 1], [2], [3]];
 
 /*
   01 — Hero and brand concept, one pinned stage. All copy is server-rendered HTML; the stage
@@ -14,26 +12,28 @@ export function Story() {
   return <section id="inicio" className="story" data-story aria-labelledby="hero-title">
     <span id="conceito" className="story-anchor" aria-hidden="true" />
     <div className="story-pin">
+      <div className="story-paper" aria-hidden="true" />
       <StoryStage />
 
       <header className="story-hero shell" data-story-hero>
         <p className="label"><span className="point" aria-hidden="true" />{hero.eyebrow}</p>
         <h1 id="hero-title" className="story-title">
-          {hero.lines.map(line => <span className="line" key={line}><span>{line}</span></span>)}
+          {hero.lines.map(line => <span key={line}>{line}</span>)}
         </h1>
         <p className="story-lead">{hero.lead}</p>
         <div className="actions">
           <a className="button button-primary" href="#contato">Fale sobre seu projeto<Arrow /></a>
           <a className="button button-secondary" href="#solucoes">Ver soluções</a>
         </div>
-        <nav className="story-services" aria-label="Soluções">
+        <nav className="story-index" aria-label="Soluções">
           {solutions.map(item => <a key={item.id} href={`#solucao-${item.id}`}>{item.title}</a>)}
         </nav>
       </header>
 
-      <ol className="story-beats shell" aria-label="O conceito da marca">
-        {BEATS.map((lines, beat) => <li key={beat} className="story-beat" data-beat={beat}>
-          {lines.map(i => <p key={i} className="story-line" data-line={i}>{concept[i].text}</p>)}
+      <ol className="story-chapters" aria-label="O conceito da marca">
+        {concept.map((item, index) => <li key={item.number} className="story-chapter" data-chapter={index}>
+          <ConceptFigure state={index} />
+          <p className="story-chapter-text">{item.text}</p>
         </li>)}
       </ol>
 
@@ -43,6 +43,8 @@ export function Story() {
         </div>
         <p className="story-lockup-line">Pessoas. Ideias. Tecnologia.</p>
       </div>
+
+      <a className="story-cue" href="#conceito" data-story-cue><span aria-hidden="true" />Role para conhecer o conceito</a>
     </div>
   </section>;
 }

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand Animation Directions</title>
+<style>
+  @font-face { font-family: Satoshi; src: url(brand/Satoshi-Variable.woff2) format('woff2'); font-weight: 300 900; }
+  :root { --navy: #183255; --paper: #F8F6F0; --sand: #E8D8C5; --orange: #C16042; --muted: #56677d; --rule: rgba(24, 50, 85, .14); }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--paper); color: var(--navy); font: 16px/1.55 Satoshi, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 32px, 1280px); margin: 0 auto; padding: 56px 0 120px; }
+  h1 { font-size: clamp(34px, 4.4vw, 60px); font-weight: 500; letter-spacing: -.03em; line-height: 1.04; }
+  h2 { font-size: clamp(26px, 2.8vw, 38px); font-weight: 500; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 14px; }
+  h3 { font-size: 15px; font-weight: 600; margin: 28px 0 10px; }
+  p, li { color: #2b3f5c; max-width: 70ch; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .lede { font-size: 19px; margin-top: 18px; }
+  section { padding-top: 72px; margin-top: 72px; border-top: 1px solid var(--rule); }
+  video, img { display: block; width: 100%; height: auto; border-radius: 6px; background: #eceae4; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .strip figure, .pair figure { margin: 0; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .details { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  ol.steps { padding-left: 20px; display: grid; gap: 6px; }
+  .links a { color: var(--navy); font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 12px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--rule); }
+  th { font-weight: 600; width: 18%; }
+  td { color: #2b3f5c; }
+  .verdict { background: var(--navy); color: var(--paper); border-radius: 10px; padding: 32px; margin-top: 24px; }
+  .verdict p, .verdict li { color: #dfe5ee; }
+  .verdict h2 { color: var(--paper); }
+  code { font-size: .92em; }
+  @media (max-width: 760px) {
+    .pair, .details { grid-template-columns: 1fr 1fr; }
+    .strip { grid-template-columns: 1fr 1fr; }
+    th { width: 30%; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Connections Hub · central brand animation · isolated prototypes, not integrated</p>
+  <h1>Two directions for the brand animation</h1>
+  <p class="lede">Both prototypes run in the real homepage context (official colours, Satoshi, the official <code>logo.svg</code>) and end on the official file. Nothing on the site was changed. Open each one and scroll: <span class="links"><a href="concept-a.html">Concept A — Machined seed</a> · <a href="concept-b.html">Concept B — Orbits</a></span>. Add <code>?p=0.56</code> to freeze any moment.</p>
+
+  <section>
+    <p class="eyebrow">Side by side · real-time render, 60 fps, full story at constant speed</p>
+    <video src="review/side-by-side.mp4" controls muted loop playsinline autoplay></video>
+    <p style="margin-top:10px;font-size:14px;color:var(--muted)">Left: A. Right: B. Each is 9 s for the whole scroll; on the site the reader sets the pace.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Concept A</p>
+    <h2>Machined seed</h2>
+    <p>One physical object, built only from the official symbol's measurements. It's no longer a ball: the seed is a thick, soft-edged navy disc whose seams already contain the C, the piece that closes it, and a centre plug. Every later state is made of those same parts. Nothing appears from nowhere.</p>
+    <ol class="steps">
+      <li><b>Seed:</b> a solid navy disc. A hairline seam hints at what's inside.</li>
+      <li><b>Opening:</b> the centre sinks and the disc becomes the ring (manual p.8).</li>
+      <li><b>Meeting point:</b> the segment that closed the ring pulls free and gathers into the dot. Measured: the C's gap segment, rounded, is 0.201 symbol units wide; the official dot is 0.205.</li>
+      <li><b>Connection:</b> the dot lights first, then light runs from it along both arms of the C.</li>
+      <li><b>Hub:</b> the sunken centre grows into the rounded square behind the C, then turns frontal and lies flat onto the official logo.</li>
+    </ol>
+    <h3>Movement</h3>
+    <video src="review/concept-a.mp4" controls muted loop playsinline></video>
+    <h3>Initial, transformation and final states (2×)</h3>
+    <div class="strip">
+      <figure><img src="review/a-0.000.webp" alt="" loading="lazy"><figcaption>Seed (hero)</figcaption></figure>
+      <figure><img src="review/a-0.400.webp" alt="" loading="lazy"><figcaption>Opening</figcaption></figure>
+      <figure><img src="review/a-0.560.webp" alt="" loading="lazy"><figcaption>Meeting point</figcaption></figure>
+      <figure><img src="review/a-0.720.webp" alt="" loading="lazy"><figcaption>Connection</figcaption></figure>
+      <figure><img src="review/a-1.000.webp" alt="" loading="lazy"><figcaption>Official logo</figcaption></figure>
+    </div>
+    <h3>Material and edges, close up</h3>
+    <div class="details">
+      <img src="review/a-detail-0.000.webp" alt="" loading="lazy"><img src="review/a-detail-0.400.webp" alt="" loading="lazy"><img src="review/a-detail-0.560.webp" alt="" loading="lazy"><img src="review/a-detail-0.800.webp" alt="" loading="lazy">
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Concept B</p>
+    <h2>Orbits</h2>
+    <p>No volume and no sphere. Thin cut card in the brand palette, layered a few millimetres apart and lit low from the left, so depth comes from shadow, the way paper sculpture is photographed. The metaphor shifts from "an object that opens" to "paths that align".</p>
+    <ol class="steps">
+      <li><b>Seed:</b> a navy point.</li>
+      <li><b>Opening:</b> it releases concentric arcs (the manual's ring vocabulary) that turn like dials at different speeds: possibilities in motion.</li>
+      <li><b>Meeting point:</b> the dials slow down, close onto one radius and lock into the four segments of the official C. The seed travels out to the gap and becomes the dot.</li>
+      <li><b>Connection:</b> each two-sided card turns over in sequence: brand colour on the face, light paper on the back.</li>
+      <li><b>Hub:</b> the navy tile opens out from beneath the meeting point, the layers settle onto it, and everything flattens onto the official logo.</li>
+    </ol>
+    <h3>Movement</h3>
+    <video src="review/concept-b.mp4" controls muted loop playsinline></video>
+    <h3>Initial, transformation and final states (2×)</h3>
+    <div class="strip">
+      <figure><img src="review/b-0.000.webp" alt="" loading="lazy"><figcaption>Seed (hero)</figcaption></figure>
+      <figure><img src="review/b-0.400.webp" alt="" loading="lazy"><figcaption>Opening: orbits</figcaption></figure>
+      <figure><img src="review/b-0.560.webp" alt="" loading="lazy"><figcaption>Locked into the C</figcaption></figure>
+      <figure><img src="review/b-0.720.webp" alt="" loading="lazy"><figcaption>Hub opening</figcaption></figure>
+      <figure><img src="review/b-1.000.webp" alt="" loading="lazy"><figcaption>Official logo</figcaption></figure>
+    </div>
+    <h3>Material and edges, close up</h3>
+    <div class="details">
+      <img src="review/b-detail-0.000.webp" alt="" loading="lazy"><img src="review/b-detail-0.400.webp" alt="" loading="lazy"><img src="review/b-detail-0.560.webp" alt="" loading="lazy"><img src="review/b-detail-0.800.webp" alt="" loading="lazy">
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Same states, A left / B right · and on a phone (A top, B bottom)</p>
+    <div class="pair"><img src="review/board-desktop.jpg" alt="Desktop comparison board" loading="lazy"><img src="review/board-mobile.jpg" alt="Mobile comparison board" loading="lazy"></div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Evaluation</p>
+    <h2>Strengths, limits, cost</h2>
+    <table>
+      <tr><th></th><th>A — Machined seed</th><th>B — Orbits</th></tr>
+      <tr><th>Relationship with the brand</th><td>Literal and exact: every part is a piece of the official symbol. The narrative follows manual p.8 step by step.</td><td>Brand-derived rather than literal: ring vocabulary, full palette, the seed becomes the dot. The narrative is still recognisable, through a new metaphor (alignment).</td></tr>
+      <tr><th>Visual strengths</th><td>Precision; a credible matte object; the gap-becomes-dot moment is the most meaningful single idea in either concept; a strong hub state.</td><td>The most distinctive image (the orbits frame); it reads as crafted rather than rendered; colour gives rhythm; the flips are physical and legible.</td></tr>
+      <tr><th>Limitations</th><td>The first half is navy on navy: form reads only through light, so the opening is quiet. It's still "an object becoming an icon", the genre that was criticised before. A thick disc can read as a puck.</td><td>More elements and colours: busier than A in the middle. Sand and orange aren't in the final symbol, so they have to leave (they flip away). Shadows are soft and slightly large; it needs one more art-direction pass on card spacing.</td></tr>
+      <tr><th>Technical approach</th><td colspan="2">Three.js meshes extruded from the official SVG (exact silhouettes, bevel inside the outline), physically based matte material, a purpose-built studio light (one large key softbox, paper bounce, fill), soft VSM shadows onto the page, GTAO ambient occlusion, PBR Neutral tone mapping (keeps brand hues). The hand-off lays the object flat on <code>logo.svg</code>: measured colour exactly <code>#183255</code> / <code>#F8F6F0</code>, mean edge difference 1.2/255.</td></tr>
+      <tr><th>Measured frame cost</th><td colspan="2">Intel Arc integrated GPU, synced per frame, on-demand rendering. Full quality: about 20 ms at 1440×900 (1×) and on a phone; about 54 ms at 2× density. Without AO: 11–19 ms. Without AO and shadows: 6–17 ms. Full-resolution AO is the cost: as built, this is a prototype for judging appearance, not a production budget.</td></tr>
+      <tr><th>Production path</th><td>Half-resolution AO plus adaptive resolution (as in the current site) to fit 60 fps; geometry is already cheap.</td><td>Same, or <b>pre-render</b>: B's camera is fixed and its motion deterministic, so it can be rendered offline (path-traced shadows) as a scroll-scrubbed image sequence. That's zero GPU cost but a larger download; the sequence size is an estimate to be measured.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <p class="eyebrow">Rendering approach · why this and not the alternatives</p>
+    <h2>Technology</h2>
+    <ul>
+      <li><b>Real meshes in Three.js (chosen for both):</b> extruding the brand's own vector paths gives exact silhouettes, and real geometry lets standard ambient occlusion and shadows work. The previous SDF raymarcher had neither: its recesses could only be shaded by approximations, which is part of why it read as "rubber".</li>
+      <li><b>Custom GLSL / SDF:</b> still the only way to morph topology continuously (sphere to shell to C). Neither concept needs that any more: both change by moving rigid parts, which looks more physical and is easier to light.</li>
+      <li><b>Blender:</b> best for path-traced light, but it isn't installed here, so I didn't use it. It's the natural tool if B is pre-rendered.</li>
+      <li><b>Hybrid 2D/3D:</b> used where it's strongest: the last step is the official 2D file, not a 3D imitation of it.</li>
+      <li><b>Continuous morph:</b> dropped on purpose. Both concepts use deliberate mechanical transitions (sink, separate, gather, turn over, grow).</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">References actually inspected · and what was taken from each</p>
+    <h2>Principles applied</h2>
+    <ul>
+      <li><b>Risk Solved, "3D Logo animation"</b> (Awwwards inspiration, tagged Blender), captured over time: concentric matte arc segments, close-cropped, rotating about one axis until they compose the mark. That's the basis of B's dials.</li>
+      <li><b>three.js GTAO example</b> (rendered live): ground-truth AO for contact and recesses, used in both. The <b>contact-shadow</b> and <b>physical-material</b> examples were also loaded; they informed the shadow-on-page treatment and the decision against clearcoat and gloss.</li>
+      <li><b>Active Theory, Lusion, Resn, 14islands</b> (captured with a real GPU in the previous session): the camera stays still and the object transforms; matte surfaces with strong occlusion; nothing decorative around the object.</li>
+      <li><b>Not accessed:</b> a Lusion technical case study (search found none; only their projects page was viewed) and blender.org (not needed without Blender installed). I make no claims about either.</li>
+    </ul>
+  </section>
+
+  <section class="verdict">
+    <h2>Recommendation: B, with A's gap-to-dot idea on the table</h2>
+    <p>B produces the strongest result. It is the one that stops being "a ball that turns into an icon": the opening frame is a genuinely new, ownable image built entirely from the identity (rings, palette, the dot). Card and shadow carry the premium quality instead of rendering tricks, and the metaphor (separate paths that align at one meeting point) states what Connections Hub does more clearly than an object opening.</p>
+    <p>A is the safer, more literal evolution, and its gap-to-dot move is the best single idea in either concept. But its first half is navy on navy, and it stays inside the genre that was already rejected.</p>
+    <p>If you choose B, the next pass is art direction only: card spacing and shadow size, the dial speeds, and whether the four segments should be fewer. Nothing will be integrated until you decide.</p>
+  </section>
+</main>
+</body>
+</html>

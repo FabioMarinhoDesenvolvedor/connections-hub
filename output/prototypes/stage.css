@@ -1,0 +1,50 @@
+@font-face { font-family: Satoshi; src: url(brand/Satoshi-Variable.woff2) format('woff2'); font-weight: 300 900; font-display: block; }
+:root {
+  --navy: #183255; --paper: #F8F6F0; --sand: #E8D8C5; --orange: #C16042;
+  --muted: #5B6B80; --rule: color-mix(in srgb, var(--navy) 15%, transparent);
+  --gutter: clamp(20px, 4vw, 56px); --page-max: 1320px; --nav-height: 72px;
+}
+* { box-sizing: border-box; margin: 0; }
+html { background: var(--paper); color: var(--navy); font-family: Satoshi, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { background: var(--paper); }
+.shell { width: min(100% - var(--gutter) * 2, var(--page-max)); margin-inline: auto; }
+.nav { position: fixed; inset: 0 0 auto; z-index: 5; height: var(--nav-height); display: flex; align-items: center; }
+.nav-row { display: flex; align-items: center; gap: 32px; }
+.nav-logo { height: 26px; width: auto; }
+.nav nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; font-weight: 500; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 500; white-space: nowrap; }
+.btn.small { min-height: 38px; padding: 0 16px; font-size: 14px; }
+.btn-primary { background: var(--navy); color: var(--paper); }
+.btn-secondary { border: 1px solid var(--rule); }
+.label { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+.label i { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+
+.story { position: relative; height: 520svh; }
+.pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero { position: absolute; inset: 0; display: grid; align-content: center; gap: 24px; padding-top: var(--nav-height); will-change: transform, opacity; }
+.hero > * { max-width: min(48vw, 820px); }
+.hero h1 { font-size: clamp(42px, 5vw, 84px); font-weight: 500; line-height: 1.02; letter-spacing: -0.035em; }
+.hero h1 span { display: block; }
+.hero h1 span + span { color: #4E6283; }
+.lead { max-width: 34ch !important; font-size: 18px; line-height: 1.5; color: var(--muted); }
+.actions { display: flex; gap: 12px; margin-top: 4px; }
+.chapters { position: absolute; left: 0; right: 0; top: 50%; list-style: none; padding: 0; pointer-events: none; }
+.chapters li { position: absolute; left: 0; bottom: 0; width: min(30vw, 420px); opacity: 0; font-size: clamp(28px, 2.6vw, 42px); font-weight: 500; line-height: 1.14; letter-spacing: -0.025em; }
+.lockup { position: absolute; left: 50%; top: 50%; width: min(680px, 72vw); transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 28px; pointer-events: none; }
+.lockup .mark { width: 100%; clip-path: inset(-2px 100% -2px 0); }
+.lockup .mark img { display: block; width: 100%; height: auto; }
+.lockup p { opacity: 0; font-size: 12px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase; }
+.tag { position: absolute; right: var(--gutter); bottom: 20px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.after { padding: 120px 0; }
+
+@media (max-width: 759px), (max-aspect-ratio: 21/20) {
+  .nav nav, .nav .btn { display: none; }
+  .hero { align-content: end; padding-bottom: 56px; gap: 18px; }
+  .hero > * { max-width: 100%; }
+  .hero h1 { font-size: clamp(36px, 10vw, 52px); }
+  .actions .btn { min-height: 44px; padding: 0 16px; font-size: 14px; }
+  .chapters { top: auto; bottom: clamp(56px, 11svh, 112px); }
+  .chapters li { position: absolute; width: 100%; text-align: center; font-size: clamp(22px, 6vw, 30px); }
+  .lockup { width: 84vw; top: 44%; }
+}
