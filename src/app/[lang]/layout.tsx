@@ -7,6 +7,7 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { ScrollEffects } from '@/components/scroll-effects';
 import { ConsoleGreeting } from '@/components/console-greeting';
+import { ThemePeel } from '@/components/theme-peel';
 import '../globals.css';
 
 const satoshi = localFont({
@@ -81,6 +82,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       {children}
       <Footer t={t} />
       <ScrollEffects />
+      <ThemePeel label={t.ui.theme.pull} />
       <ConsoleGreeting locale={lang} signature={t.console.signature} />
     </body>
   </html>;

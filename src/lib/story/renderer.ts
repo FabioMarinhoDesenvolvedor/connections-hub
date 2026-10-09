@@ -13,8 +13,11 @@ import type { Placement } from './timeline';
   Draws only when asked (scroll or pointer changed), at an internal resolution that adapts to
   the device and steps down on sustained GPU overrun.
 */
-/** adapt: false for frames that should not steer the adaptive resolution (hand play). */
-export type Frame = { placement: Placement; state: OrbitState; visible: boolean; adapt?: boolean };
+/**
+  adapt: false for frames that should not steer the adaptive resolution (hand play).
+  seedColour: the seed's face while it is being played with; absent, the theme's own.
+*/
+export type Frame = { placement: Placement; state: OrbitState; visible: boolean; adapt?: boolean; seedColour?: string };
 export type StoryRenderer = {
   draw: (frame: Frame) => void;
   resize: (width: number, height: number) => void;
@@ -226,11 +229,13 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
   c.geometry = extrude(officialC(), CARD);
   c.position.z = CARD + 0.002;
   let tileKey = '';
+  let seedDefault = COLOURS.navy, seedShown = '';
   const setTheme = (isDark: boolean) => {
     const colours = palette(isDark);
     const tint = (m: THREE.Mesh, colour: string) => (m.material as THREE.MeshPhysicalMaterial).color.set(colour);
     arcs.forEach((side, i) => tint(side.face, colours.arc(ARCS[i].colour)));
-    tint(seed.face, colours.seed);
+    seedDefault = colours.seed;
+    seedShown = '';
     tint(tile, colours.tile);
     page.material.color.set(colours.shadow.color);
     shadowOpacity = colours.shadow.opacity;
@@ -268,7 +273,8 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
     stats.scale = ratio;
   };
 
-  const pose = ({ placement, state }: Frame) => {
+  const pose = (frame: Frame) => {
+    const { placement, state } = frame;
     // Screen placement: centre in px, scale in px per world unit (tile half = SYMBOL.tileHalf).
     const half = placement.scale * SYMBOL.tileHalf / pxPerUnit;
     holder.position.set((placement.x - cssWidth / 2) / pxPerUnit, -(placement.y - cssHeight / 2) / pxPerUnit, 0);
@@ -293,6 +299,8 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
     });
     c.visible = state.fused;
 
+    const face = frame.seedColour ?? seedDefault;
+    if (face !== seedShown) { (seed.face.material as THREE.MeshPhysicalMaterial).color.set(face); seedShown = face; }
     reshape(seed, state.seed.r.toFixed(4), () => extrude(disc(state.seed.r), CARD));
     seed.pivot.position.set(state.seed.x, state.seed.y, state.seed.z);
     seed.pivot.rotation.y = Math.PI * state.seed.turn;

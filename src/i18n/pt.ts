@@ -24,7 +24,7 @@ export const pt: Dictionary = {
     contactShort: 'Fale conosco',
     newTab: '(abre em uma nova aba)',
     language: 'Idioma',
-    theme: { label: 'Tema', toDark: 'Usar tema escuro', toLight: 'Usar tema claro' },
+    theme: { label: 'Tema', toDark: 'Usar tema escuro', toLight: 'Usar tema claro', pull: 'Puxe a página para trocar o tema' },
   },
   nav: [
     { label: 'Sobre', href: '#sobre' },

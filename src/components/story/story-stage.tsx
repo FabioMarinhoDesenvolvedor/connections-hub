@@ -28,6 +28,19 @@ const BLOOM_HOLD = 2600;        // ms the full C· stays before folding back
 const HIT = 1.15;               // touch target, in seed radii
 
 /*
+  Each touch on the seed gives it the next colour of the brand palette (manual p.16), starting
+  from the theme's own seed colour and leaving out the colour of that theme's page.
+*/
+const SEED_COLOURS: Record<'light' | 'dark', string[]> = {
+  light: ['#183255', '#C16042', '#E8D8C5', '#6B7C8E', '#CCD6DB', '#20252B'],
+  dark: ['#E8D8C5', '#C16042', '#F8F6F0', '#CCD6DB', '#6B7C8E'],
+};
+const TINT_TIME = 0.32; // s
+
+const rgb = (hex: string) => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+const mixHex = (a: string, b: string, t: number) => '#' + rgb(a).map((v, i) => Math.round(v + (rgb(b)[i] - v) * t).toString(16).padStart(2, '0')).join('').toUpperCase();
+
+/*
   Drives the pinned story: one damped clock from native scroll progress feeds the WebGL
   object, the copy layers and the logo hand-off in the same frame.
   Nothing animates on its own: frames are requested only by scroll, resize or pointer, and
@@ -78,6 +91,10 @@ export function StoryStage() {
     let liftTarget = 0, pressTarget = 0, leanTarget = { x: 0, y: 0 };
     let dragging: { id: number; angle: number; time: number; touch: boolean } | undefined;
     let seedPx = { x: 0, y: 0, r: 0 };
+    const palette = () => SEED_COLOURS[isDark() ? 'dark' : 'light'];
+    let seedIndex = 0;
+    let tint = { from: palette()[0], to: palette()[0], t: 1 };
+    const tintNow = () => mixHex(tint.from, tint.to, smooth(tint.t));
     let hitKey = '';
 
     const isPinned = () => getComputedStyle(section).getPropertyValue('--story-mode').trim() === 'pinned';
@@ -117,6 +134,12 @@ export function StoryStage() {
         press: play.press * weight, lean: { x: play.lean.x * weight, y: play.lean.y * weight },
       };
     };
+    /** The seed's colour for the renderer: the played one in the hero, the authored one in the story. */
+    const seedColourAt = (p: number) => {
+      const weight = 1 - smooth(range(p, 0, PLAY_UNTIL));
+      if (weight <= 0 || (seedIndex === 0 && tint.t >= 1)) return undefined;
+      return mixHex(palette()[0], tintNow(), weight);
+    };
     const playing = () => play.open > 1e-3 || play.bloom > 1e-3 || play.lift > 1e-3 || play.press > 1e-3
       || Math.abs(play.lean.x) + Math.abs(play.lean.y) > 1e-3 || Boolean(dragging);
 
@@ -126,7 +149,7 @@ export function StoryStage() {
 
       // Object: WebGL when available, otherwise the flat concept states on the same path.
       const state = orbitAt(p, tilt, playAt(p));
-      renderer?.draw({ placement, state, visible: !finale.handed && inView, adapt: !playing() });
+      renderer?.draw({ placement, state, visible: !finale.handed && inView, adapt: !playing(), seedColour: seedColourAt(p) });
       fallback.style.transform = `translate3d(${placement.x - 2 * FALLBACK_UNIT}px, ${placement.y - 2 * FALLBACK_UNIT}px, 0) scale(${placement.scale / FALLBACK_UNIT})`;
       const open = smooth(range(p, ...BEATS.release)), locked = smooth(range(p, ...BEATS.lock));
       const weights = [1 - open, open * (1 - locked), locked * (1 - smooth(range(p, BEATS.land[0] - 0.04, BEATS.handoff)))];
@@ -193,10 +216,11 @@ export function StoryStage() {
       play.lean = { x: play.lean.x + (leanTarget.x - play.lean.x) * follow(9), y: play.lean.y + (leanTarget.y - play.lean.y) * follow(9) };
       play.bloom += (bloomTarget - play.bloom) * follow(bloomTarget ? 3.4 : 2.2);
       energy *= Math.exp(-0.2 * s);
+      if (tint.t < 1) tint.t = Math.min(1, tint.t + s / TINT_TIME);
       const moving = Math.abs(openVelocity) > 1e-3 || play.open > 1e-3 || spinVelocity !== 0 || Boolean(dragging)
         || Math.abs(liftTarget - play.lift) + Math.abs(pressTarget - play.press) > 1e-3
         || Math.abs(leanTarget.x - play.lean.x) + Math.abs(leanTarget.y - play.lean.y) > 1e-3
-        || Math.abs(bloomTarget - play.bloom) > 1e-3;
+        || Math.abs(bloomTarget - play.bloom) > 1e-3 || tint.t < 1;
       if (!moving) {
         // Settled: snap to exact rest so nothing lingers into the story.
         Object.assign(play, { open: 0, bloom: bloomTarget, lift: liftTarget, press: pressTarget, lean: { ...leanTarget } });
@@ -274,6 +298,8 @@ export function StoryStage() {
       dragVelocity = 0;
       pressTarget = liftTarget = 1;
       openVelocity += 5.5; // a press pops the arcs out of the seed
+      seedIndex = (seedIndex + 1) % palette().length;
+      tint = { from: tintNow(), to: palette()[seedIndex], t: 0 };
       buzz(8);
       addEnergy(260);
       request();
@@ -322,7 +348,8 @@ export function StoryStage() {
       } catch { stage.dataset.gl = 'off'; }
     };
 
-    const onTheme = () => { renderer?.setTheme(isDark()); measure(); apply(shown); };
+    // A new theme starts the seed again from that theme's own colour.
+    const onTheme = () => { seedIndex = 0; tint = { from: palette()[0], to: palette()[0], t: 1 }; renderer?.setTheme(isDark()); measure(); apply(shown); };
 
     const visibility = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; request(); });
     visibility.observe(section);

@@ -19,7 +19,7 @@ export const ja: Dictionary = {
     contactShort: 'お問い合わせ',
     newTab: '(新しいタブで開きます)',
     language: '言語',
-    theme: { label: 'テーマ', toDark: 'ダークテーマにする', toLight: 'ライトテーマにする' },
+    theme: { label: 'テーマ', toDark: 'ダークテーマにする', toLight: 'ライトテーマにする', pull: 'ページを引っぱってテーマを切り替える' },
   },
   nav: [
     { label: '私たちについて', href: '#sobre' },
