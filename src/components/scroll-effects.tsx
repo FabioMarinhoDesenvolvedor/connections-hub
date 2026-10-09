@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 /*
   The site's only motion primitive. One passive scroll listener, one rAF:
   - [data-reveal] gets .is-in once it enters the viewport;
+  - [data-draw] gets .is-drawn once 45% of it is visible (technical drawings);
   - [data-progress] receives --progress (0 → 1) while it crosses the viewport,
     from its top at data-start × viewport to its bottom at data-end × viewport;
   - [data-spy] marks the child closest to the viewport centre as data-active.
@@ -24,6 +25,19 @@ export function ScrollEffects() {
       }
     }, { rootMargin: '0px 0px -12% 0px' });
     document.querySelectorAll('[data-reveal]').forEach(element => reveal.observe(element));
+
+    // Drawings draw themselves once most of the figure is on screen (the inline schematics on
+    // phones; on wide screens the sticky plate draws per active service instead). A figure the
+    // reader has already passed (fast scroll, a link further down) is drawn too, never left blank.
+    const draw = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        const passed = entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0);
+        if (entry.intersectionRatio < 0.45 && !passed) continue;
+        entry.target.classList.add('is-drawn');
+        draw.unobserve(entry.target);
+      }
+    }, { threshold: [0, 0.45] });
+    document.querySelectorAll('[data-draw]').forEach(element => draw.observe(element));
 
     const tracked = [...document.querySelectorAll<HTMLElement>('[data-progress]')];
     const spies = [...document.querySelectorAll<HTMLElement>('[data-spy]')];
@@ -59,6 +73,7 @@ export function ScrollEffects() {
     reduced.addEventListener('change', onPreference);
     return () => {
       reveal.disconnect();
+      draw.disconnect();
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);

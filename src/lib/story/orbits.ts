@@ -52,10 +52,24 @@ export type OrbitState = {
   yaw: number;
 };
 
-export function orbitAt(p: number, tilt = { x: 0, y: 0 }): OrbitState {
-  const release = ease(range(p, ...BEATS.release));
-  const lock = ease(range(p, ...BEATS.lock));
-  const travel = ease(range(p, ...BEATS.meet));
+/*
+  Hands-on play in the hero (driven by story-stage.tsx): the reader can open the seed early.
+    open    arcs leave the seed, as in the release beat;
+    spin    degrees added to every dial, each at its own ratio and direction;
+    bloom   the dials lock into the C and the seed reaches the gap: the whole idea, briefly;
+    lift    the seed rises off the page towards the pointer (its shadow answers);
+    press   a small give under the finger;
+    lean    extra turn towards the pointer, in units of the tilt.
+  All zero at rest, so the scroll story is unchanged.
+*/
+export type Play = { open: number; spin: number; bloom: number; lift: number; press: number; lean: { x: number; y: number } };
+export const REST: Play = { open: 0, spin: 0, bloom: 0, lift: 0, press: 0, lean: { x: 0, y: 0 } };
+
+export function orbitAt(p: number, tilt = { x: 0, y: 0 }, play: Play = REST): OrbitState {
+  const storyRelease = ease(range(p, ...BEATS.release));
+  const release = Math.max(storyRelease, play.open, play.bloom);
+  const lock = Math.max(ease(range(p, ...BEATS.lock)), play.bloom);
+  const travel = Math.max(ease(range(p, ...BEATS.meet)), play.bloom);
   const hub = ease(range(p, ...BEATS.hub));
   const flat = ease(range(p, ...BEATS.flat));
   const spin = range(p, ...BEATS.spin);
@@ -65,13 +79,17 @@ export function orbitAt(p: number, tilt = { x: 0, y: 0 }): OrbitState {
   const span = (C_TO - C_FROM - 2 * CAP) / 4;
   const arcs = ARCS.map((a, i): ArcState => {
     const lockedFrom = C_FROM + CAP + span * i, lockedTo = lockedFrom + span;
-    const mid = a.phase + a.speed * slow;
-    const from = mix(mid - a.sweep * release / 2, lockedFrom, lock);
-    const to = mix(mid + a.sweep * release / 2, lockedTo, lock);
-    const half = mix(a.half, MARK.band / 2, lock) * smooth(range(release, 0, 0.25));
+    const mid = a.phase + a.speed * slow + a.speed / 100 * play.spin;
+    // Played open, the arcs leave one after another from the inside out, and reach their
+    // orbit early so a half-open seed still reads as rings. At rest this is the story's own.
+    const played = clamp(play.open * 1.35 - i * 0.12);
+    const own = Math.max(storyRelease, played, play.bloom);
+    const from = mix(mid - a.sweep * own / 2, lockedFrom, lock);
+    const to = mix(mid + a.sweep * own / 2, lockedTo, lock);
+    const half = mix(a.half, MARK.band / 2, lock) * smooth(range(own, 0, 0.25));
     return {
       from, to, half,
-      radius: mix(mix(0.12, a.r, release), MARK.mid, lock),
+      radius: mix(mix(0.12, a.r, Math.max(storyRelease, Math.sqrt(played), play.bloom)), MARK.mid, lock),
       z: mix(a.lift * LAYER, CARD / 2, hub),
       // locked segments turn over one after another, about their own centre line
       turn: ease(range(p, BEATS.turn[0] + i * 0.02, BEATS.turn[1] + i * 0.02)),
@@ -83,10 +101,10 @@ export function orbitAt(p: number, tilt = { x: 0, y: 0 }): OrbitState {
   return {
     arcs,
     seed: {
-      r: mix(0.34, MARK.dot.r, release),
+      r: mix(0.34, MARK.dot.r, release) * (1 - 0.06 * play.press),
       x: mix(MARK.centre.x, MARK.dot.x, travel),
       y: mix(MARK.centre.y, MARK.dot.y, travel),
-      z: mix(3 * LAYER + 2 * LAYER * release, CARD / 2, hub),
+      z: mix(3 * LAYER + 2 * LAYER * release, CARD / 2, hub) + play.lift * 0.16,
       turn: ease(range(p, ...BEATS.seedTurn)), // navy seed, light meeting point
     },
     // the hub opens out from beneath the meeting point and squares into the official tile
@@ -100,8 +118,8 @@ export function orbitAt(p: number, tilt = { x: 0, y: 0 }): OrbitState {
     fused,
     flat,
     // a fixed, slightly raised viewpoint so the layering reads; frontal for the hand-off
-    pitch: (0.2 + clamp(tilt.y, -1, 1) * 0.04) * (1 - flat),
-    yaw: (-0.16 + clamp(tilt.x, -1, 1) * 0.05) * (1 - flat),
+    pitch: (0.2 + clamp(tilt.y, -1, 1) * 0.04 + play.lean.y * 0.24) * (1 - flat),
+    yaw: (-0.16 + clamp(tilt.x, -1, 1) * 0.05 + play.lean.x * 0.32) * (1 - flat),
   };
 }
 

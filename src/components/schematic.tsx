@@ -1,5 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { Solution } from '@/data/site';
+import type { SolutionId } from '@/data/site';
+import type { Dictionary } from '@/i18n/types';
+
+type Labels = Dictionary['solutions']['schematic'];
 
 /*
   Technical drawings of each deliverable, in the brand's palette. Not stock "technology"
@@ -29,7 +32,7 @@ const Point = ({ x, y }: { x: number; y: number }) => <>
   <circle className="sch-point" cx={x} cy={y} r={5.5} />
 </>;
 
-function Sites() {
+function Sites({ t }: { t: Labels['sites'] }) {
   return <>
     {/* Viewport rulers: one layout, two widths. */}
     <Line i={0} soft d={`M20 22H360${tick(20, 22)}${tick(360, 22)}M420 22H520${tick(420, 22)}${tick(520, 22)}`} />
@@ -50,20 +53,20 @@ function Sites() {
     <Line i={5} d={`M434 106H500M434 114H488${r(434, 128, 50, 10, 5)}M434 278H490M434 288H470`} />
     {/* Reflow mapping */}
     <Line i={6} soft d={`${arrow(350, 73, 426, 53)}${arrow(350, 140, 426, 110)}${arrow(350, 227, 426, 209)}${arrow(350, 286, 426, 284)}`} />
-    <Label i={7} x={364} y={60}>NAV</Label>
-    <Label i={7} x={364} y={121}>HERO</Label>
-    <Label i={7} x={364} y={213}>SEÇÕES</Label>
-    <Label i={7} x={364} y={278}>CONTATO</Label>
+    <Label i={7} x={364} y={60}>{t.nav}</Label>
+    <Label i={7} x={364} y={121}>{t.hero}</Label>
+    <Label i={7} x={364} y={213}>{t.sections}</Label>
+    <Label i={7} x={364} y={278}>{t.contact}</Label>
     <Point x={83} y={178} />
   </>;
 }
 
-function Sistemas() {
-  const modules = [['PEDIDOS', 24], ['ESTOQUE', 160], ['FATURAMENTO', 296], ['FINANCEIRO', 432]] as const;
+function Sistemas({ t }: { t: Labels['sistemas'] }) {
+  const modules = t.modules.map((name, k) => [name, 24 + k * 136] as const);
   return <>
     {/* Access profiles govern every module. */}
     <Line i={0} soft d={`${r(150, 12, 260, 22, 11)}M76 34V64M212 34V64M348 34V64M484 34V64M76 34H484`} />
-    <Label i={1} x={280} y={27} anchor="middle">PERFIS DE ACESSO</Label>
+    <Label i={1} x={280} y={27} anchor="middle">{t.profiles}</Label>
     {modules.map(([name, x], k) => <g key={name}>
       <Line i={1 + k} d={`${r(x, 64, 104, 86, 6)}M${x} 84H${x + 104}`} />
       <Label i={2 + k} x={x + 10} y={78}>{name}</Label>
@@ -76,19 +79,19 @@ function Sistemas() {
     <Line i={6} d={`M76 150V200${arrowHead(76, 200, 0, 1)}M212 150V200${arrowHead(212, 200, 0, 1)}M348 150V200${arrowHead(348, 200, 0, 1)}M484 150V200${arrowHead(484, 200, 0, 1)}`} />
     <Fill i={7} d={r(24, 204, 512, 40, 8)} />
     <Line i={7} d={r(24, 204, 512, 40, 8)} />
-    <Label i={8} x={280} y={228} anchor="middle" value>BASE DE DADOS ÚNICA</Label>
+    <Label i={8} x={280} y={228} anchor="middle" value>{t.database}</Label>
     {/* Integration with what already exists, and reports out. */}
     <Line i={8} soft d={`${r(24, 282, 220, 40, 6)}${arrow(134, 282, 134, 248)}`} />
-    <Label i={9} x={134} y={306} anchor="middle">PLANILHAS · SISTEMA ATUAL</Label>
+    <Label i={9} x={134} y={306} anchor="middle">{t.sheets}</Label>
     <Line i={8} d={`${r(316, 282, 220, 40, 6)}${arrow(426, 244, 426, 280)}`} />
-    <Label i={9} x={426} y={306} anchor="middle">RELATÓRIOS · EXPORTAÇÃO</Label>
-    <Label i={9} x={142} y={268}>integração</Label>
+    <Label i={9} x={426} y={306} anchor="middle">{t.reports}</Label>
+    <Label i={9} x={142} y={268}>{t.integration}</Label>
     <Point x={280} y={204} />
   </>;
 }
 
-function Dashboards() {
-  const sources = [['ERP', 30], ['PLANILHAS', 92], ['BANCO DE DADOS', 154]] as const;
+function Dashboards({ t }: { t: Labels['dashboards'] }) {
+  const sources = t.sources.map((name, k) => [name, 30 + k * 62] as const);
   return <>
     {sources.map(([name, y], k) => <g key={name}>
       <Line i={k} d={r(16, y, 112, 34, 6)} />
@@ -97,29 +100,29 @@ function Dashboards() {
     {/* Sources are cleaned and combined before they become indicators. */}
     <Line i={3} soft d={`M128 47H140V108M128 109H140M128 171H140V110${arrow(140, 109, 156, 109)}`} />
     <Line i={4} d={r(158, 90, 78, 38, 6)} />
-    <Label i={5} x={197} y={113} anchor="middle">TRATAMENTO</Label>
+    <Label i={5} x={197} y={113} anchor="middle">{t.processing}</Label>
     <Line i={5} d={arrow(236, 109, 262, 109)} />
     {/* The dashboard: filters, indicators, a trend against its target, distribution. */}
     <Line i={5} d={r(264, 14, 282, 306, 10)} />
     <Line i={6} soft d={`${r(278, 28, 66, 16, 8)}${r(350, 28, 66, 16, 8)}`} />
-    <Label i={7} x={311} y={39} anchor="middle">PERÍODO</Label>
-    <Label i={7} x={383} y={39} anchor="middle">UNIDADE</Label>
+    <Label i={7} x={311} y={39} anchor="middle">{t.period}</Label>
+    <Label i={7} x={383} y={39} anchor="middle">{t.unit}</Label>
     <Line i={6} d={`${r(278, 54, 80, 46, 6)}${r(366, 54, 80, 46, 6)}${r(454, 54, 80, 46, 6)}`} />
     <Fill i={7} d={`${r(288, 76, 52, 12, 2)}${r(376, 76, 38, 12, 2)}${r(464, 76, 58, 12, 2)}`} />
     <Line i={7} soft d="M288 66H322M376 66H404M464 66H500" />
     <Line i={8} d={`${r(278, 110, 256, 120, 6)}M292 216H522M292 216V124`} />
     <Line i={8} soft d="M292 158H522" />
-    <Label i={9} x={298} y={153}>META</Label>
+    <Label i={9} x={298} y={153}>{t.target}</Label>
     <Line i={9} d="M296 206C322 200 334 186 356 190S398 176 420 170S458 154 474 150S500 140 512 134" />
-    <Label i={11} x={494} y={128} anchor="end">decisão</Label>
+    <Label i={11} x={494} y={128} anchor="end">{t.decision}</Label>
     <Line i={9} d={`${r(278, 240, 256, 66, 6)}`} />
     <Fill i={10} d={`${r(294, 270, 14, 26, 2)}${r(318, 258, 14, 38, 2)}${r(342, 276, 14, 20, 2)}${r(366, 252, 14, 44, 2)}${r(390, 264, 14, 32, 2)}${r(414, 248, 14, 48, 2)}${r(438, 260, 14, 36, 2)}${r(462, 254, 14, 42, 2)}${r(486, 266, 14, 30, 2)}${r(510, 250, 14, 46, 2)}`} />
     <Point x={512} y={134} />
   </>;
 }
 
-function Ecommerce() {
-  const flow = ['CATÁLOGO', 'CARRINHO', 'CHECKOUT', 'PAGAMENTO', 'PEDIDO', 'ESTOQUE · ERP'];
+function Ecommerce({ t }: { t: Labels['ecommerce'] }) {
+  const flow = t.flow;
   return <>
     {/* Product page */}
     <Line i={0} d={r(16, 14, 204, 228, 10)} />
@@ -127,20 +130,20 @@ function Ecommerce() {
     <Fill i={2} d={`${r(28, 146, 140, 12, 2)}${r(28, 166, 64, 14, 2)}`} />
     <Line i={2} soft d="M28 194H190M28 204H160" />
     <Line i={3} d={r(28, 216, 104, 18, 9)} />
-    <Label i={4} x={80} y={229} anchor="middle">ADICIONAR</Label>
+    <Label i={4} x={80} y={229} anchor="middle">{t.add}</Label>
     <Line i={4} d={arrow(220, 225, 250, 225)} />
     {/* Checkout */}
     <Line i={1} d={r(252, 14, 292, 228, 10)} />
-    <Label i={2} x={266} y={34}>CHECKOUT</Label>
+    <Label i={2} x={266} y={34}>{t.checkout}</Label>
     <Line i={2} soft d="M400 30H520M400 30A4 4 0 1 0 400.1 30M460 30A4 4 0 1 0 460.1 30M520 30A4 4 0 1 0 520.1 30" />
     <Line i={3} d={`${r(266, 46, 130, 18, 4)}${r(404, 46, 126, 18, 4)}${r(266, 72, 264, 18, 4)}${r(266, 98, 130, 18, 4)}${r(404, 98, 126, 18, 4)}`} />
-    <Label i={4} x={266} y={136}>PAGAMENTO</Label>
+    <Label i={4} x={266} y={136}>{t.payment}</Label>
     <Line i={4} d={`${r(266, 144, 82, 30, 5)}${r(356, 144, 82, 30, 5)}${r(446, 144, 84, 30, 5)}M280 159A5 5 0 1 0 280.1 159`} />
-    <Label i={5} x={266} y={196}>FRETE</Label>
+    <Label i={5} x={266} y={196}>{t.shipping}</Label>
     <Line i={5} soft d="M310 192H530M266 206H530" />
-    <Label i={6} x={530} y={196} anchor="end" value>TOTAL</Label>
+    <Label i={6} x={530} y={196} anchor="end" value>{t.total}</Label>
     <Line i={6} d={r(400, 214, 130, 20, 10)} />
-    <Label i={7} x={465} y={228} anchor="middle">FINALIZAR</Label>
+    <Label i={7} x={465} y={228} anchor="middle">{t.finish}</Label>
     {/* The order flow, end to end, integrated with stock and the company's system. */}
     <Line i={6} d="M40 280H520" />
     {flow.map((step, k) => <g key={step}>
@@ -152,11 +155,16 @@ function Ecommerce() {
   </>;
 }
 
-const drawings: Record<Solution['id'], () => ReactNode> = { sites: Sites, sistemas: Sistemas, dashboards: Dashboards, ecommerce: Ecommerce };
+function Drawing({ id, t }: { id: SolutionId; t: Labels }) {
+  if (id === 'sites') return <Sites t={t.sites} />;
+  if (id === 'sistemas') return <Sistemas t={t.sistemas} />;
+  if (id === 'dashboards') return <Dashboards t={t.dashboards} />;
+  return <Ecommerce t={t.ecommerce} />;
+}
 
-export function Schematic({ id, className }: { id: Solution['id']; className?: string }) {
-  const Drawing = drawings[id];
-  return <svg className={`schematic ${className ?? ''}`} viewBox="0 0 560 330" aria-hidden="true" data-id={id}>
-    <Drawing />
+/** drawOnView: draws itself in when scrolled into view (see [data-draw] in scroll-effects.tsx). */
+export function Schematic({ id, labels, className, drawOnView }: { id: SolutionId; labels: Labels; className?: string; drawOnView?: boolean }) {
+  return <svg className={`schematic ${className ?? ''}`} viewBox="0 0 560 330" aria-hidden="true" data-id={id} data-draw={drawOnView || undefined}>
+    <Drawing id={id} t={labels} />
   </svg>;
 }

@@ -13,14 +13,16 @@ import type { Placement } from './timeline';
   Draws only when asked (scroll or pointer changed), at an internal resolution that adapts to
   the device and steps down on sustained GPU overrun.
 */
-export type Frame = { placement: Placement; state: OrbitState; visible: boolean };
+/** adapt: false for frames that should not steer the adaptive resolution (hand play). */
+export type Frame = { placement: Placement; state: OrbitState; visible: boolean; adapt?: boolean };
 export type StoryRenderer = {
   draw: (frame: Frame) => void;
   resize: (width: number, height: number) => void;
+  setTheme: (dark: boolean) => void;
   dispose: () => void;
   readonly stats: { frames: number; scale: number; gpu: number };
 };
-type Options = { compact: boolean; onLost: () => void };
+type Options = { compact: boolean; dark: boolean; onLost: () => void };
 
 export function supportsWebGL2() {
   try {
@@ -30,7 +32,32 @@ export function supportsWebGL2() {
   } catch { return false; }
 }
 
-const COLOURS: Record<ArcColour, string> = { navy: '#183255', orange: '#C16042', sand: '#E8D8C5', paper: '#F8F6F0' };
+/** What the page is drawing with, for the developer console. Reads the live context. */
+export function describe(canvas: HTMLCanvasElement) {
+  const gl = canvas.getContext('webgl2');
+  let gpu = 'unknown';
+  if (gl) {
+    try {
+      const info = gl.getExtension('WEBGL_debug_renderer_info');
+      gpu = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    } catch { gpu = String(gl.getParameter(gl.RENDERER)); }
+  }
+  return { api: 'WebGL2', gpu, three: `r${THREE.REVISION}` };
+}
+
+const COLOURS: Record<ArcColour, string> ={ navy: '#183255', orange: '#C16042', sand: '#E8D8C5', paper: '#F8F6F0' };
+/*
+  On the dark page (ink) the object keeps the brand palette but swaps what would disappear
+  into the ground: navy parts become mist, the seed becomes sand, and the hub opens as the
+  orange tile of logo-light.svg, the official file the hand-off lands on in that theme.
+*/
+const DARK: Partial<Record<ArcColour, string>> = { navy: '#CCD6DB' };
+const palette = (dark: boolean) => ({
+  arc: (colour: ArcColour) => (dark && DARK[colour]) || COLOURS[colour],
+  seed: dark ? COLOURS.sand : COLOURS.navy,
+  tile: dark ? COLOURS.orange : COLOURS.navy,
+  shadow: dark ? { color: '#000000', opacity: 0.42 } : { color: '#0F3199', opacity: 0.16 },
+});
 // Flat states divide by the exposure so the last 3D frame lands on the brand colours exactly.
 const EXPOSURE = 1.42;
 const FOV = 16; // long lens: product-photography compression, almost no perspective drift
@@ -127,7 +154,7 @@ function card(colour: string, flat: { value: number }, sheen = 0.2) {
 /** Lets the browser handle input and paint between setup steps. */
 const yieldToBrowser = () => new Promise<void>(resolve => setTimeout(resolve, 0));
 
-export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, onLost }: Options): Promise<StoryRenderer> {
+export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, dark, onLost }: Options): Promise<StoryRenderer> {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'default' });
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -164,6 +191,7 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
   // The page receives the shadow; its colour stays CSS, never lighting. The shadow is a cool
   // navy-blue glaze (the approved prototype's look), composited outside tone mapping.
   const page = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.ShadowMaterial({ color: '#0F3199', opacity: 0.16, transparent: true, toneMapped: false }));
+  let shadowOpacity = 0.16;
   page.receiveShadow = true;
   scene.add(page);
 
@@ -198,6 +226,16 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
   c.geometry = extrude(officialC(), CARD);
   c.position.z = CARD + 0.002;
   let tileKey = '';
+  const setTheme = (isDark: boolean) => {
+    const colours = palette(isDark);
+    const tint = (m: THREE.Mesh, colour: string) => (m.material as THREE.MeshPhysicalMaterial).color.set(colour);
+    arcs.forEach((side, i) => tint(side.face, colours.arc(ARCS[i].colour)));
+    tint(seed.face, colours.seed);
+    tint(tile, colours.tile);
+    page.material.color.set(colours.shadow.color);
+    shadowOpacity = colours.shadow.opacity;
+  };
+  setTheme(dark);
   const axis = new THREE.Vector3();
   const reshape = (side: { face: THREE.Mesh; back: THREE.Mesh; key: string }, key: string, build: () => THREE.BufferGeometry) => {
     if (side.key === key) return;
@@ -241,7 +279,7 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
     Object.assign(key.shadow.camera, { left: -s, right: s, top: s, bottom: -s, near: 0.1, far: 40 * half });
     key.shadow.camera.updateProjectionMatrix();
     page.position.z = -0.3 * half;
-    page.material.opacity = 0.16 * (1 - state.flat);
+    page.material.opacity = shadowOpacity * (1 - state.flat);
 
     state.arcs.forEach((a, i) => {
       const side = arcs[i];
@@ -272,6 +310,8 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
 
   const draw = (frame: Frame) => {
     if (lost) return;
+    const measuring = frame.adapt !== false;
+    if (!measuring) last = 0;
     const stepDown = () => { if (quality > 0.55) { quality *= 0.85; resize(cssWidth, cssHeight); } };
     if (timer && query) {
       // Read the previous frame's GPU time once it is ready; never block waiting for it.
@@ -279,14 +319,14 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
         const disjoint = gl.getParameter(timer.GPU_DISJOINT_EXT);
         const ms = gl.getQueryParameter(query, gl.QUERY_RESULT) / 1e6;
         gl.deleteQuery(query); query = null;
-        if (!disjoint && ++gpuSamples > 6) {
+        if (!disjoint && measuring && ++gpuSamples > 6) {
           gpuAverage = gpuAverage ? gpuAverage * 0.85 + ms * 0.15 : ms;
           stats.gpu = Math.round(gpuAverage * 10) / 10;
           gpuOver = gpuAverage > 10 ? gpuOver + 1 : 0;
           if (gpuOver > 15) { stepDown(); gpuOver = 0; gpuAverage = 0; gpuSamples = 0; }
         }
       }
-    } else if (!timer) {
+    } else if (!timer && measuring) {
       // Fallback: consecutive frames slower than ~45 fps suggest a GPU-bound page.
       const now = performance.now();
       if (last && now - last < 60) {
@@ -317,6 +357,7 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
   return {
     draw,
     resize,
+    setTheme,
     stats,
     dispose: () => {
       canvas.removeEventListener('webglcontextlost', handleLost);
