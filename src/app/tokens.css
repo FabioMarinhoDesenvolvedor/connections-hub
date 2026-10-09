@@ -95,6 +95,57 @@
   --duration-reveal: 560ms;
   --duration-scene: 900ms;
   --stagger: 70ms;
+
+  /* Component roles that change with the theme. */
+  --header-glass: color-mix(in srgb, var(--off-white) 88%, transparent);
+  --button-bg: var(--navy);
+  --button-fg: var(--off-white);
+  --button-bg-hover: var(--ink);
+  --figure-ink: var(--navy);
+  --dial-track: var(--mist);
+  --dial-arc: var(--navy);
+  --outcome-bg: color-mix(in srgb, var(--sand) 45%, transparent);
+  --story-seed: var(--navy);
+  --story-arc-navy: var(--navy);
+  --manifesto-ink: var(--navy);
+  --manifesto-unread: color-mix(in srgb, var(--navy) 42%, transparent);
+}
+
+/*
+  Dark theme: the darkest tones of the identity, not a generic grey. Ink (#20252B) is the page,
+  as on the manual's mockups; navy (#183255) stays the deep surface for Solutions and the
+  closing, so the brand's own surface still reads as a step. Text is off-white and mist;
+  sand and terracotta keep their roles. Logos switch to the official light file, never recoloured.
+*/
+:root[data-theme="dark"] {
+  --surface: var(--ink);
+  --surface-sand: #191D22; /* a step below ink, so the manifesto parts from both neighbours */
+  --surface-deep: var(--navy);
+  --surface-deepest: #171B20;
+
+  --text-strong: var(--off-white);
+  --text: var(--mist);
+  --text-muted: color-mix(in srgb, var(--mist) 74%, var(--ink));
+  --text-display-soft: color-mix(in srgb, var(--slate) 45%, var(--mist));
+  --text-on-deep: var(--off-white);
+  --text-on-deep-muted: var(--mist);
+
+  --rule: color-mix(in srgb, var(--mist) 14%, transparent);
+  --rule-strong: color-mix(in srgb, var(--mist) 30%, transparent);
+  --grid-line: color-mix(in srgb, var(--mist) 5%, transparent);
+
+  --header-glass: color-mix(in srgb, var(--ink) 86%, transparent);
+  --button-bg: var(--off-white);
+  --button-fg: var(--navy);
+  --button-bg-hover: var(--sand);
+  --figure-ink: var(--sand);
+  --dial-track: color-mix(in srgb, var(--mist) 14%, transparent);
+  --dial-arc: var(--sand);
+  --outcome-bg: color-mix(in srgb, var(--navy) 70%, transparent);
+  --story-seed: var(--sand);
+  --story-arc-navy: var(--mist);
+  --manifesto-ink: var(--sand);
+  --manifesto-unread: color-mix(in srgb, var(--mist) 30%, transparent);
 }
 @media (max-width: 767px) {
   :root { --nav-height: 60px; --text-body: 16px; --grid-cell: 48px; }

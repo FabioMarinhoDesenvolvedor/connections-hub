@@ -17,7 +17,7 @@ for (const text of ['Tudo começa com uma conexão.', 'A semente de uma ideia.',
 for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos']) assert.ok(html.includes(step), `Preserved process: ${step}`);
 assert.ok(!html.includes('O que construímos.'), 'Do not expose an empty project gallery');
 for (const id of ['inicio', 'conceito', 'sobre', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'processo', 'manifesto', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
-for (const link of ['https://wa.me/5511974589226', 'mailto:contato.connectionstree@gmail.com', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
+for (const link of ['https://wa.me/5511974589226', 'mailto:contato@connectionshub.com.br', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
 for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/brand-office.avif', '/images/brand-office-small.avif', '/images/brand-office.webp', '/images/brand-people.avif', '/images/brand-people-small.avif', '/images/brand-technology.avif', '/images/brand-technology-small.avif', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
 const files = await fs.readdir(originals);
@@ -32,4 +32,25 @@ for (const src of mainJS) {
   transferred += Buffer.byteLength(script);
   assert.ok(!script.includes('THREE.WebGLRenderer'), 'three.js and the story renderer must load on demand, never in an initial script');
 }
-console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses and byte-for-byte SVG/font integrity. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
+
+// Languages: Portuguese at the root (/pt redirects there), English and Japanese under their prefixes,
+// each a complete page with the same anchors and no Portuguese copy left in it.
+assert.equal((await fetch(origin + '/pt', { redirect: 'manual' })).status, 308, '/pt redirects to the root');
+assert.equal((await fetch(origin + '/de')).status, 404, 'Unknown languages are not served');
+for (const lang of ['pt-BR', 'en', 'ja']) assert.match(html, new RegExp(`hrefLang="${lang}"`), `hreflang ${lang}`);
+const translated = { en: ['lang="en"', 'Connecting ideas.', 'The seed of an idea.', 'Everything starts with a connection.'], ja: ['lang="ja"', 'アイデアをつなぐ。', 'ひとつのアイデアの種。', 'すべては、ひとつのつながりから始まる。'] };
+for (const [path, expected] of Object.entries(translated)) {
+  const response = await fetch(`${origin}/${path}`);
+  assert.equal(response.status, 200, `/${path}`);
+  const page = await response.text();
+  for (const text of expected) assert.ok(page.includes(text), `/${path} renders ${text}`);
+  const copy = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
+  for (const portuguese of ['Fale conosco', 'Soluções', 'Você recebe', 'Tudo começa com uma conexão.']) assert.ok(!copy.includes(portuguese), `/${path} has no Portuguese copy: ${portuguese}`);
+  for (const id of ['inicio', 'sobre', 'solucoes', 'processo', 'manifesto', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
+}
+
+// Theme: chosen before first paint, and the hand-off has the official file for each theme.
+assert.match(html, /localStorage\.getItem\('theme'\)/, 'Theme is applied by an inline script before paint');
+assert.ok(html.includes('class="for-dark" src="/brand/logo-light.svg"'), 'Dark theme lands on the official light logo');
+
+console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, byte-for-byte SVG/font integrity, PT/EN/JA routes and copy, theme boot. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
