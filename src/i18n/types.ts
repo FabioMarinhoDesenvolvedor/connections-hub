@@ -18,7 +18,7 @@ export type Dictionary = {
     contactShort: string;
     newTab: string;
     language: string;
-    theme: { label: string; toDark: string; toLight: string };
+    theme: { label: string; toDark: string; toLight: string; pull: string };
   };
   nav: { label: string; href: string }[];
   hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string };

@@ -19,7 +19,7 @@ export const en: Dictionary = {
     contactShort: 'Contact us',
     newTab: '(opens in a new tab)',
     language: 'Language',
-    theme: { label: 'Theme', toDark: 'Use dark theme', toLight: 'Use light theme' },
+    theme: { label: 'Theme', toDark: 'Use dark theme', toLight: 'Use light theme', pull: 'Pull the page to switch theme' },
   },
   nav: [
     { label: 'About', href: '#sobre' },
