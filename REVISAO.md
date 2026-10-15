@@ -45,3 +45,13 @@ Desempenho medido em `VALIDATION.md`.
 **Não alterado:** vetores, fonte, conteúdo factual, escopo dos serviços, acessibilidade e reduced motion.
 
 **Ponto fraco ainda aberto:** a composição do hero (texto à esquerda, objeto à direita) é a que menos mudou.
+
+## Projetos abertos por dentro (15/10/2026)
+
+- A seção **Projetos** mostra cinco projetos: Marketing Dashboard, WorkHub, WSN Loja, Tasks e o próprio site. Clozi, Tina Tur e Cifra Pompeia saíram.
+- Cada projeto é uma pilha 3D interativa: no topo, a interface do sistema funcionando (no design dele, em claro e escuro); embaixo, serviços, dados e infraestrutura com os nomes reais do código.
+- Usar a interface manda a requisição descer pela stack até a tabela e o serviço externo. Clicar numa camada mostra o que roda nela.
+- Responsivo: no celular as placas viram retrato e "Ver de frente" deixa usar a interface.
+- Substitui as duas versões anteriores (pilha abstrata e prints em camadas), reprovadas.
+- Ícone do GitHub no menu, no rodapé e na seção. Links do menu para longe saltam direto, sem tocar as animações do caminho.
+- Decisões em `DESIGN.md` §10.

@@ -1,4 +1,6 @@
+import { github } from '@/data/projects';
 import { site } from '@/data/site';
+import { GithubMark } from './github-mark';
 import type { Dictionary } from '@/i18n';
 
 // Continues the closing section on the same surface: the official light logo, the way back
@@ -11,6 +13,7 @@ export function Footer({ t }: { t: Dictionary }) {
       </a>
       <nav aria-label={t.ui.footerNav} className="footer-nav">
         {t.nav.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}
+        <a className="footer-github" href={github} target="_blank" rel="noopener noreferrer"><GithubMark size={16} />GitHub<span className="sr-only"> {t.ui.newTab}</span></a>
       </nav>
       <p className="footer-legal">© {new Date().getFullYear()} {site.name} · {t.meta.tagline}</p>
     </div>

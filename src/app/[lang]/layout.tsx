@@ -5,6 +5,7 @@ import { site } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, locales } from '@/i18n';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
+import { AnchorJump } from '@/components/anchor-jump';
 import { ScrollEffects } from '@/components/scroll-effects';
 import { ConsoleGreeting } from '@/components/console-greeting';
 import { ThemePeel } from '@/components/theme-peel';
@@ -82,6 +83,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       {children}
       <Footer t={t} />
       <ScrollEffects />
+      <AnchorJump />
       <ThemePeel label={t.ui.theme.pull} />
       <ConsoleGreeting locale={lang} signature={t.console.signature} />
     </body>

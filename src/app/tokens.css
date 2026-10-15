@@ -105,6 +105,7 @@
   --dial-track: var(--mist);
   --dial-arc: var(--navy);
   --outcome-bg: color-mix(in srgb, var(--sand) 45%, transparent);
+  --bench: color-mix(in srgb, var(--sand) 32%, var(--off-white));
   --story-seed: var(--navy);
   --story-arc-navy: var(--navy);
   --manifesto-ink: var(--navy);
@@ -142,6 +143,7 @@
   --dial-track: color-mix(in srgb, var(--mist) 14%, transparent);
   --dial-arc: var(--sand);
   --outcome-bg: color-mix(in srgb, var(--navy) 70%, transparent);
+  --bench: #191D22;
   --story-seed: var(--sand);
   --story-arc-navy: var(--mist);
   --manifesto-ink: var(--sand);

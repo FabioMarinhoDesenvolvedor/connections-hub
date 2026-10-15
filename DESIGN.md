@@ -128,3 +128,30 @@ Números medidos em `VALIDATION.md`.
 **Preservado:** Soluções inteira (figuras, placa, interação), vetores, fonte, conteúdo factual, acessibilidade e reduced motion.
 
 **Renderização:** continua em campos de distância. O corte plano, o C recortado e a placa crescendo são operações exatas sobre as medidas do símbolo, e a troca de topologia continua inviável com malhas trocadas.
+
+## 10. Projetos: abertos por dentro (15/10/2026)
+
+**Histórico:** duas versões reprovadas. A primeira (14/10) era uma pilha abstrata de placas gravadas; não mostrava os projetos. A segunda (15/10) separava prints das telas em camadas no WebGL: imagem parada, sem tema, sem responsividade.
+
+**Direção:** cada projeto é desmontado na stack em que foi construído, em **DOM real com CSS 3D**: o texto continua nítido, o tema é o da página e a placa de cima é a interface funcionando.
+
+1. **Interface:** o produto reconstruído no próprio design (cores, raios e tipografia de cada sistema, em claro e escuro), com dados fictícios e ações de verdade: enviar um post ao cliente, atender um chamado, encher o carrinho até o frete grátis, criar tarefa escrevendo "amanhã !alta #casa", trocar idioma e tema.
+2. **Serviços**, **3. Dados**, **4. Infraestrutura:** módulos, tabelas e sistemas externos com os nomes que têm no código.
+
+- **Materiais por camada:** serviços numa placa escura de módulos, cada um com uma rota real e o número de rotas; dados como diagrama ER em papel, com colunas e chaves estrangeiras reais (lidas do esquema gerado pelas migrations de cada projeto) e as relações desenhadas; infraestrutura como sistemas num barramento de rede, cada um com seu papel. Clicar num nó abre os detalhes dele na ficha.
+- **Ver em ação:** um roteiro por projeto executa um fluxo real de trabalho na interface viva. O anel oficial da marca (`ring-orange.svg`, sem distorção) vai até cada controle, digita e clica; a pilha e o inspetor respondem como responderiam a um visitante; legenda e linha do tempo acompanham. Pôr a mão na interface pausa. No celular é a forma principal de ver.
+- **Raio-X:** passar o ponteiro num botão mostra, antes do clique, o caminho que ele percorre; num módulo, tabela ou sistema, liga tudo que depende dele nas quatro camadas. Linhas de chamada tracejadas; o resto esmaece.
+- **O dado nascendo:** a linha escrita aparece dentro da tabela no 3D (+ inserção, ~ atualização), e o inspetor mostra requisição (com o corpo, quando conhecido do código), serviço, SQL com as colunas reais e os valores da ação, efeito externo e resposta.
+- **Fidelidade à marca:** placa de serviços no navy oficial com o grid fino da marca; nada de LED, neon ou brilho. O ponto terracota é o ponto de encontro: marca o que a interface alcança e onde algo acontece; a resposta volta como o anel areia sobre navy.
+- **Fluxo:** cada ação da interface vira uma requisição desenhada no espaço 3D: um raio sai do controle clicado, acende o módulo do serviço, a tabela e o sistema externo, nesta ordem. Cada parada recebe o carimbo do que aconteceu ali (método HTTP no serviço, operação SQL na tabela) e a resposta sobe de volta até o controle. O painel escreve a mesma rota (por exemplo `POST /api/cards/:id/enviar-ao-cliente → UPDATE cards → Web Push`). Os raios vivem num mundo gêmeo por cima, para as placas não os esconderem.
+- **Desenho:** placas em escada (afastadas na normal e deslocadas para a frente), com espessura, linhas tracejadas ligando os cantos e chamadas laterais que sempre olham para o leitor, com o nome da camada e a stack. O que a interface alcança fica na faixa da placa que nunca é coberta.
+- **Vida:** a interface pega um brilho do ponteiro, mas nada se move sob ele (um alvo que foge do cursor não se clica); uma sombra de contato a assenta na bancada; o primeiro controle da interface pulsa até o primeiro uso; trocar de projeto recua a cena antes da próxima entrar; os números da ficha contam ao aparecer.
+- **Cliques confiáveis:** dentro do 3D o navegador pode reapontar um clique (ajuste de toque, ou a soltura do mouse caindo uns pixels fora); apertar e soltar no mesmo controle sempre o aciona, uma única vez. Usar a interface não muda a camada aberta na ficha.
+- **Interação:** arrastar gira; passar o mouse levanta a camada; clicar abre a ficha dela no painel (e vice-versa). "Ver de frente", ou a etiqueta da camada clicada de novo, traz ela para a frente; um clique solto na placa só a seleciona, plana e legível; no celular é assim que se usa a interface.
+- **Entrada:** a interface chega de frente e, ao entrar na tela, a pilha se abre embaixo dela.
+- **Enquadramento:** calculado com a perspectiva, para a pilha nunca encostar nas bordas. Tamanho da placa, espaçamento e pose mudam por breakpoint (placas em retrato no celular, onde cada interface se reorganiza por container query).
+- **Ficha:** números lidos dos repositórios (endpoints, tabelas, migrations, arquivos de teste), o papel de cada tecnologia e a última requisição.
+- **Sem JavaScript:** a ficha e as camadas estão no HTML. Com reduced motion, tudo funciona, sem transições e sem raios.
+- **Projetos:** Marketing Dashboard, WorkHub, WSN Loja, Tasks e este site. Só este site tem repositório público; o perfil do GitHub está no menu, no rodapé e na seção.
+
+**Menu:** um link interno que leva a mais de 1,5 tela de distância não rola: a página some em 150 ms, salta e volta já na seção, sem tocar as cenas no caminho (`src/components/anchor-jump.tsx`).

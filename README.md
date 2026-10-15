@@ -34,7 +34,11 @@ npm run assets          # regenera imagens e cópias oficiais a partir de Refer�
   - `geometry.ts`: medidas do símbolo oficial.
   - `shader.ts`: campos de distância e iluminação.
   - `renderer.ts`: WebGL2, compilação paralela, resolução adaptativa e ciclo de vida.
-- `src/components/sections/`: Sobre, Soluções, Processo, Manifesto e Contato. `schematic.tsx` contém os desenhos técnicos de cada serviço.
+- `src/components/sections/`: Sobre, Soluções, Projetos, Processo, Manifesto e Contato. `schematic.tsx` contém os desenhos técnicos de cada serviço.
+- `src/data/projects.ts`: cada projeto por camada (stack, módulos, tabelas, sistemas externos) e os fluxos de cada ação da interface.
+- `src/components/projects/`: `explorer.tsx` (abas e ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).
+- `src/components/anchor-jump.tsx`: links internos longos cortam direto para a seção em vez de rolar por todas as cenas.
+- `src/lib/three-studio.ts`: luz de estúdio da peça 3D da abertura.
 - `src/components/scroll-effects.tsx`: reveals, progresso e item ativo. Só funciona com motion permitido.
 - `src/app/tokens.css`: design system (cor, tipo, espaço, grid, forma, motion). `globals.css` contém os componentes.
 - `scripts/bake-symbol-sdf.mjs`: transforma o C oficial em campo de distância.
