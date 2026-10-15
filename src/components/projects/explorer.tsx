@@ -21,7 +21,8 @@ export type ExplorerItem = {
 export type ExplorerCopy = {
   tabs: string; layers: Record<LayerId, string>; facts: Record<string, string>; hint: string; tryLabel: string;
   front: string; back: string; reset: string; trace: string; traceIdle: string; more: string; stackLabel: string;
-  repo: string; privateRepo: string; newTab: string;
+  repo: string; privateRepo: string; privateOwn: string; newTab: string;
+  download: { label: string; note: string; releases: string };
   roles: Record<InfraRole, string>; routes: string; columns: string; response: string; clickNode: string;
   play: { start: string; pause: string; resume: string; again: string; label: string; step: string };
   inspect: { request: string; service: string; data: string; effect: string; response: string };
@@ -281,12 +282,19 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
         {project.facts.map(fact => <div key={fact.id}><dd><Count value={fact.value} /></dd><dt>{t.facts[fact.id]}</dt></div>)}
       </dl>
       <p className="xp-try"><b>{t.tryLabel}</b>{copy.try}</p>
+      {project.download && <div className="xp-download">
+        <a className="button button-primary" href={project.download.url} download>
+          <svg className="xp-download-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          {t.download.label}
+        </a>
+        <p>{t.download.note} · <a className="text-link" href={project.download.releases} target="_blank" rel="noopener noreferrer">{t.download.releases}<span className="sr-only"> {t.newTab}</span></a></p>
+      </div>}
       <footer className="xp-foot">
         <button type="button" className="button button-secondary button-small" aria-pressed={focus} onClick={() => setFocus(f => !f)}>{focus ? t.back : `${t.front} · ${t.layers[layer]}`}</button>
         <p className="xp-history">{item.history}</p>
         {project.repo
           ? <a className="text-link" href={project.repo} target="_blank" rel="noopener noreferrer">{t.repo}<span className="sr-only"> {t.newTab}</span><Arrow /></a>
-          : <span className="xp-private">{t.privateRepo}</span>}
+          : <span className="xp-private">{project.client ? t.privateRepo : t.privateOwn}</span>}
       </footer>
       </div>
 

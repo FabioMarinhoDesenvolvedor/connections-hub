@@ -564,6 +564,12 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .motion .xp-trace li:nth-child(2) { animation-delay: 260ms; }
 .motion .xp-trace li:nth-child(3) { animation-delay: 520ms; }
 @keyframes xp-step { from { opacity: 0; transform: translateX(-6px); } }
+/* A product anyone can install: the download sits right under what it is. */
+.xp-download { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+.xp-download .button { gap: var(--space-3); }
+.xp-download-icon { width: 16px; height: 16px; }
+.xp-download p { font-size: 13px; color: var(--text-muted); }
+.xp-download .text-link { min-height: 0; color: var(--text-strong); }
 .xp-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
 .xp-history, .xp-private { font-size: 13px; color: var(--text-muted); }
 .xp-note { margin-top: var(--space-12); padding-top: var(--space-4); border-top: 1px solid var(--rule); font-size: 13px; color: var(--text-muted); }

@@ -121,7 +121,10 @@ export type Dictionary = {
     /** {v} */
     version: string;
     repo: string;
+    download: { label: string; note: string; releases: string };
     privateRepo: string;
+    /** Private code of the studio's own products. */
+    privateOwn: string;
     github: string;
     note: string;
     items: Record<ProjectId, { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] }>;

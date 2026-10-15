@@ -216,7 +216,9 @@ export const ja: Dictionary = {
     since: '{date}から',
     version: 'バージョン {v}',
     repo: 'コードを見る',
+    download: { label: 'Windows版をダウンロード', note: '無料 · Windows 10/11 · 3 MB', releases: 'すべてのバージョン' },
     privateRepo: '非公開コード(顧客所有)',
+    privateOwn: '非公開コード',
     github: 'GitHubのリポジトリ',
     note: '各システムのデザインをもとに、架空のデータで再構成したインターフェースです。モジュール、ルート、テーブルの名前はコードのままです。',
     items: {
