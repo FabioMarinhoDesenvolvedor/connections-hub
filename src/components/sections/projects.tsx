@@ -36,7 +36,7 @@ export function Projects({ t, ui, locale, lang }: { t: Dictionary['projects']; u
       <ProjectExplorer items={items} hero={hero} locale={lang} t={{
         tabs: t.tabs, layers: t.layers, facts: t.facts, hint: t.hint, tryLabel: t.tryLabel, front: t.front, back: t.back,
         reset: t.reset, trace: t.trace, traceIdle: t.traceIdle, more: t.more, stackLabel: t.stackLabel,
-        repo: t.repo, privateRepo: t.privateRepo, newTab: ui.newTab,
+        repo: t.repo, privateRepo: t.privateRepo, privateOwn: t.privateOwn, newTab: ui.newTab, download: t.download,
         roles: t.roles, routes: t.routes, columns: t.columns, response: t.response, clickNode: t.clickNode,
         play: t.play, inspect: t.inspect,
       }} />

@@ -226,7 +226,9 @@ export const pt: Dictionary = {
     since: 'Desde {date}',
     version: 'Versão {v}',
     repo: 'Ver o código',
+    download: { label: 'Baixar para Windows', note: 'Grátis · Windows 10 e 11 · 3 MB', releases: 'Todas as versões' },
     privateRepo: 'Código privado, do cliente',
+    privateOwn: 'Código privado',
     github: 'Repositórios no GitHub',
     note: 'Interfaces reconstruídas a partir do design de cada sistema, com dados fictícios. Módulos, rotas e tabelas têm os nomes que estão no código.',
     items: {

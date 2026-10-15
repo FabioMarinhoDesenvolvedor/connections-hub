@@ -216,7 +216,9 @@ export const en: Dictionary = {
     since: 'Since {date}',
     version: 'Version {v}',
     repo: 'View the code',
+    download: { label: 'Download for Windows', note: 'Free · Windows 10 and 11 · 3 MB', releases: 'All versions' },
     privateRepo: 'Private code, owned by the client',
+    privateOwn: 'Private code',
     github: 'Repositories on GitHub',
     note: 'Interfaces rebuilt from each system’s design, on made-up data. Modules, routes and tables carry the names they have in the code.',
     items: {

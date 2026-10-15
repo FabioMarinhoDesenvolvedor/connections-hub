@@ -50,6 +50,8 @@ export type Project = {
   since?: string;
   version?: string;
   repo?: string;
+  /** A product anyone can install: the latest installer and the page with every version. */
+  download?: { url: string; releases: string };
   facts: { id: FactId; value: number }[];
   layers: Record<LayerId, Layer>;
   flows: Record<string, Flow>;
@@ -215,6 +217,10 @@ export const projects: Project[] = [
   },
   {
     id: 'tasks', name: 'Tasks', status: 'live', version: '0.4.0',
+    download: {
+      url: 'https://github.com/FabioMarinhoDesenvolvedor/tasks/releases/latest/download/Tasks_x64-setup.exe',
+      releases: 'https://github.com/FabioMarinhoDesenvolvedor/tasks/releases',
+    },
     facts: [{ id: 'commands', value: 12 }, { id: 'tests', value: 35 }],
     layers: {
       interface: {
