@@ -216,7 +216,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'tasks', name: 'Tasks', status: 'live', version: '0.4.0',
+    id: 'tasks', name: 'Tasks', status: 'live', version: '0.4.1',
     download: {
       url: 'https://github.com/FabioMarinhoDesenvolvedor/tasks/releases/latest/download/Tasks_x64-setup.exe',
       releases: 'https://github.com/FabioMarinhoDesenvolvedor/tasks/releases',
