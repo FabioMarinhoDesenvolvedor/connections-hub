@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
+import { studioEnvironment } from '@/lib/three-studio';
 import { SYMBOL } from './geometry';
 import { ARCS, CARD, C_PATH, C_UNIT, MARK, type ArcColour, type OrbitState } from './orbits';
 import type { Placement } from './timeline';
@@ -119,27 +120,6 @@ function officialC() {
   });
 }
 
-/*
-  Image-based light. Matte card only shows a light's shape as broad falloff, so the room is
-  simple: one large softbox high on the left, a warm bounce from the paper below, a weak fill,
-  a thin rim strip, dark elsewhere.
-*/
-function studio() {
-  const room = new THREE.Scene();
-  room.background = new THREE.Color(0.035, 0.035, 0.04);
-  const panel = (w: number, h: number, [x, y, z]: number[], colour: string, power: number) => {
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(colour).multiplyScalar(power), side: THREE.DoubleSide }));
-    mesh.position.set(x, y, z);
-    mesh.lookAt(0, 0, 0);
-    room.add(mesh);
-  };
-  panel(7, 7, [-5, 6, 6], '#ffffff', 5.5);
-  panel(14, 4, [0, -6, 3], '#F8F1E6', 0.9);
-  panel(4, 9, [7, 1, 4], '#EEF2F8', 0.9);
-  panel(10, 2, [0, 7, -4], '#ffffff', 1.2);
-  return room;
-}
-
 /** Matte card. uFlat blends lit colour to the exact flat colour for the hand-off. */
 function card(colour: string, flat: { value: number }, sheen = 0.2) {
   const material = new THREE.MeshPhysicalMaterial({
@@ -169,12 +149,8 @@ export async function createStoryRenderer(canvas: HTMLCanvasElement, { compact, 
 
   await yieldToBrowser();
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const room = studio();
-  const environment = pmrem.fromScene(room, 0).texture;
+  const environment = studioEnvironment(renderer);
   scene.environment = environment;
-  room.traverse(object => { if (object instanceof THREE.Mesh) { object.geometry.dispose(); object.material.dispose(); } });
-  pmrem.dispose();
 
   await yieldToBrowser();
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 200);

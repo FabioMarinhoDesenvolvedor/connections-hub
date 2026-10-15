@@ -1,3 +1,4 @@
+import type { FactId, InfraRole, LayerId, ProjectId, ProjectStatus } from '@/data/projects';
 import type { SolutionId } from '@/data/site';
 
 /*
@@ -17,6 +18,7 @@ export type Dictionary = {
     closeMenu: string;
     contactShort: string;
     newTab: string;
+    github: string;
     language: string;
     theme: { label: string; toDark: string; toLight: string; pull: string };
   };
@@ -85,6 +87,44 @@ export type Dictionary = {
     phone: string;
   };
   sticker: { peel: string; found: string; role: string; back: string };
-  projects: { label: string; title: string; delivered: string; visit: string };
+  projects: {
+    label: string;
+    title: string[];
+    intro: string;
+    status: Record<ProjectStatus, string>;
+    /** Client line for the studio's own products. */
+    own: string;
+    tabs: string;
+    layers: Record<LayerId, string>;
+    facts: Record<FactId, string>;
+    hint: string;
+    tryLabel: string;
+    front: string;
+    back: string;
+    reset: string;
+    trace: string;
+    traceIdle: string;
+    /** {n} */
+    more: string;
+    stackLabel: string;
+    roles: Record<InfraRole, string>;
+    /** {n} */
+    routes: string;
+    /** {n} */
+    columns: string;
+    response: string;
+    clickNode: string;
+    play: { start: string; pause: string; resume: string; again: string; label: string; step: string };
+    inspect: { request: string; service: string; data: string; effect: string; response: string };
+    /** {date} */
+    since: string;
+    /** {v} */
+    version: string;
+    repo: string;
+    privateRepo: string;
+    github: string;
+    note: string;
+    items: Record<ProjectId, { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] }>;
+  };
   console: { signature: string };
 };

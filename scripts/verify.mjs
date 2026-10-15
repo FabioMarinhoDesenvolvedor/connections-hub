@@ -15,8 +15,11 @@ assert.match(html, /rel="canonical"/, 'Canonical for the supplied production dom
 for (const label of ['Aplicação da identidade', 'Conhecimento como pilar central', 'Personalizadas de acordo', 'Nenhuma trajetória']) assert.ok(!html.includes(label), `Internal or redundant copy must not be published: ${label}`);
 for (const text of ['Tudo começa com uma conexão.', 'A semente de uma ideia.', 'Tem um projeto, uma ideia ou um problema para resolver?']) assert.ok(html.includes(text), `Brand copy rendered as HTML: ${text}`);
 for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos']) assert.ok(html.includes(step), `Preserved process: ${step}`);
-assert.ok(!html.includes('O que construímos.'), 'Do not expose an empty project gallery');
-for (const id of ['inicio', 'conceito', 'sobre', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'processo', 'manifesto', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
+for (const text of ['Código em uso.', 'Marketing Dashboard', 'WorkHub', 'WSN Loja', 'Tasks', '/api/cards/{id}/enviar-ao-cliente', 'card_approved_snapshots', 'Ver em ação', 'dados fictícios']) assert.ok(html.includes(text), `Projects rendered as HTML: ${text}`);
+for (const removed of ['Clozi', 'Cifra Pompeia', 'Tina Tur']) assert.ok(!html.includes(removed), `Project no longer shown: ${removed}`);
+assert.ok(html.includes('href="https://github.com/FabioMarinhoDesenvolvedor"'), 'GitHub profile linked');
+for (const image of ['alcool-gel', 'detergente', 'luva-nitrilica', 'papel-toalha']) assert.equal((await fetch(`${origin}/projects/wsn/${image}.webp`)).status, 200, `WSN product image ${image}`);
+for (const id of ['inicio', 'conceito', 'sobre', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'projetos', 'projeto-marketing', 'processo', 'manifesto', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
 for (const link of ['https://wa.me/5511974589226', 'mailto:contato@connectionshub.com.br', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
 for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/brand-office.avif', '/images/brand-office-small.avif', '/images/brand-office.webp', '/images/brand-people.avif', '/images/brand-people-small.avif', '/images/brand-technology.avif', '/images/brand-technology-small.avif', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
@@ -30,7 +33,7 @@ let transferred = 0;
 for (const src of mainJS) {
   const script = await (await fetch(origin + src)).text();
   transferred += Buffer.byteLength(script);
-  assert.ok(!script.includes('THREE.WebGLRenderer'), 'three.js and the story renderer must load on demand, never in an initial script');
+  assert.ok(!script.includes('THREE.WebGLRenderer') && !script.includes('WebGLRenderer'), 'three.js and the 3D renderers must load on demand, never in an initial script');
 }
 
 // Languages: Portuguese at the root (/pt redirects there), English and Japanese under their prefixes,
@@ -46,7 +49,7 @@ for (const [path, expected] of Object.entries(translated)) {
   for (const text of expected) assert.ok(page.includes(text), `/${path} renders ${text}`);
   const copy = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
   for (const portuguese of ['Fale conosco', 'Soluções', 'Você recebe', 'Tudo começa com uma conexão.']) assert.ok(!copy.includes(portuguese), `/${path} has no Portuguese copy: ${portuguese}`);
-  for (const id of ['inicio', 'sobre', 'solucoes', 'processo', 'manifesto', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
+  for (const id of ['inicio', 'sobre', 'solucoes', 'projetos', 'processo', 'manifesto', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
 }
 
 // Theme: chosen before first paint, and the hand-off has the official file for each theme.

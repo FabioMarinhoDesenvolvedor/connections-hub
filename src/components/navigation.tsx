@@ -3,12 +3,21 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Dictionary, Locale } from '@/i18n';
 import { localeInfo, locales } from '@/i18n/config';
+import { github } from '@/data/projects';
 import { Arrow } from './arrow';
+import { GithubMark } from './github-mark';
 import { ThemeToggle } from './theme-toggle';
 
 const NAV_LINE = 40; // px from the top where the bar samples the surface underneath
 
 type Props = { locale: Locale; t: Pick<Dictionary, 'ui' | 'nav'> };
+
+/** The studio's repositories: an icon in the bar, named for assistive tech. */
+function GithubLink({ t, onPick }: { t: Pick<Dictionary['ui'], 'github' | 'newTab'>; onPick?: () => void }) {
+  return <a className="github-link" href={github} target="_blank" rel="noopener noreferrer" title={t.github} onClick={onPick}>
+    <GithubMark /><span className="sr-only">{t.github} {t.newTab}</span>
+  </a>;
+}
 
 /** The three languages, each named in its own language; the current one is not a link. */
 function Languages({ locale, label, onPick }: { locale: Locale; label: string; onPick?: () => void }) {
@@ -100,6 +109,7 @@ export function Navigation({ locale, t }: Props) {
         </nav>
         <div className="header-tools">
           <Languages locale={locale} label={t.ui.language} />
+          <GithubLink t={t.ui} />
           <ThemeToggle labels={t.ui.theme} />
         </div>
         <a className="button button-primary button-small header-contact" href="#contato">{t.ui.contactShort}</a>
@@ -114,6 +124,7 @@ export function Navigation({ locale, t }: Props) {
         <a className="mobile-contact" href="#contato" onClick={close} style={{ '--i': t.nav.length } as React.CSSProperties}>{t.ui.contactShort}<Arrow /></a>
         <div className="mobile-tools" style={{ '--i': t.nav.length + 1 } as React.CSSProperties}>
           <Languages locale={locale} label={t.ui.language} onPick={close} />
+          <GithubLink t={t.ui} onPick={close} />
           <ThemeToggle labels={t.ui.theme} />
         </div>
       </div>
