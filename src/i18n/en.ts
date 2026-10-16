@@ -216,7 +216,7 @@ export const en: Dictionary = {
     since: 'Since {date}',
     version: 'Version {v}',
     repo: 'View the code',
-    download: { label: 'Download for Windows', note: 'Free · Windows 10 and 11 · 3 MB', releases: 'All versions' },
+    download: { label: 'Download for Windows', note: 'Free · Windows 10 and 11 · 3 MB', releases: 'All versions', disclaimer: { label: 'Test build', test: 'Tasks is still in development. Expect bugs and changes between versions, so make a backup before updating. Provided as is, without warranty.', privacy: 'Privacy: the app does not collect, send or share any data. No account and no internet; everything stays on your computer, in %LOCALAPPDATA%.' } },
     privateRepo: 'Private code, owned by the client',
     privateOwn: 'Private code',
     github: 'Repositories on GitHub',

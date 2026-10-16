@@ -216,7 +216,7 @@ export const ja: Dictionary = {
     since: '{date}から',
     version: 'バージョン {v}',
     repo: 'コードを見る',
-    download: { label: 'Windows版をダウンロード', note: '無料 · Windows 10/11 · 3 MB', releases: 'すべてのバージョン' },
+    download: { label: 'Windows版をダウンロード', note: '無料 · Windows 10/11 · 3 MB', releases: 'すべてのバージョン', disclaimer: { label: 'テスト版', test: 'Tasks は開発中です。不具合やバージョン間の変更がありえるため、更新前にバックアップを取ってください。現状のまま提供され、保証はありません。', privacy: 'プライバシー：アプリはデータを収集・送信・共有しません。アカウント不要、インターネット接続も不要で、すべてのデータはお使いのPCの %LOCALAPPDATA% に保存されます。' } },
     privateRepo: '非公開コード(顧客所有)',
     privateOwn: '非公開コード',
     github: 'GitHubのリポジトリ',

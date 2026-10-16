@@ -22,7 +22,7 @@ export type ExplorerCopy = {
   tabs: string; layers: Record<LayerId, string>; facts: Record<string, string>; hint: string; tryLabel: string;
   front: string; back: string; reset: string; trace: string; traceIdle: string; more: string; stackLabel: string;
   repo: string; privateRepo: string; privateOwn: string; newTab: string;
-  download: { label: string; note: string; releases: string };
+  download: { label: string; note: string; releases: string; disclaimer: { label: string; test: string; privacy: string } };
   roles: Record<InfraRole, string>; routes: string; columns: string; response: string; clickNode: string;
   play: { start: string; pause: string; resume: string; again: string; label: string; step: string };
   inspect: { request: string; service: string; data: string; effect: string; response: string };
@@ -288,6 +288,11 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
           {t.download.label}
         </a>
         <p>{t.download.note} · <a className="text-link" href={project.download.releases} target="_blank" rel="noopener noreferrer">{t.download.releases}<span className="sr-only"> {t.newTab}</span></a></p>
+        <div className="xp-disclaimer" role="note" aria-label={t.download.disclaimer.label}>
+          <p className="xp-disclaimer-label"><span aria-hidden="true" />{t.download.disclaimer.label}</p>
+          <p>{t.download.disclaimer.test}</p>
+          <p>{t.download.disclaimer.privacy}</p>
+        </div>
       </div>}
       <footer className="xp-foot">
         <button type="button" className="button button-secondary button-small" aria-pressed={focus} onClick={() => setFocus(f => !f)}>{focus ? t.back : `${t.front} · ${t.layers[layer]}`}</button>

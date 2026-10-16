@@ -226,7 +226,7 @@ export const pt: Dictionary = {
     since: 'Desde {date}',
     version: 'Versão {v}',
     repo: 'Ver o código',
-    download: { label: 'Baixar para Windows', note: 'Grátis · Windows 10 e 11 · 3 MB', releases: 'Todas as versões' },
+    download: { label: 'Baixar para Windows', note: 'Grátis · Windows 10 e 11 · 3 MB', releases: 'Todas as versões', disclaimer: { label: 'Versão de teste', test: 'O Tasks ainda está em desenvolvimento. Podem aparecer erros e mudanças entre versões, então faça um backup antes de atualizar. É distribuído como está, sem garantias.', privacy: 'Privacidade: o app não coleta, não envia e não compartilha dados. Não pede conta nem usa internet; tudo fica no seu computador, em %LOCALAPPDATA%.' } },
     privateRepo: 'Código privado, do cliente',
     privateOwn: 'Código privado',
     github: 'Repositórios no GitHub',
