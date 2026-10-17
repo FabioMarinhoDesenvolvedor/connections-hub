@@ -11,7 +11,7 @@ import type { Placement } from './timeline';
   shadow-casting key onto the page. No post-processing: the cards' depth reads through cast
   shadow, and ambient occlusion was measured to add nothing visible here.
 
-  Draws only when asked (scroll or pointer changed), at an internal resolution that adapts to
+  Draws only when asked (the intro, a resize or the pointer), at an internal resolution that adapts to
   the device and steps down on sustained GPU overrun.
 */
 /**

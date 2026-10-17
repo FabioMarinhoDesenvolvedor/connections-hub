@@ -37,7 +37,7 @@ function measure(vitals: Vitals) {
       : entry.initiatorType === 'img' || /\.(avif|webp|png|jpe?g|svg)(\?|$)/.test(entry.name) ? 'img' : 'other';
     bytes[type] += entry.transferSize || 0;
   }
-  const stage = document.querySelector<HTMLElement>('.story-stage')?.dataset;
+  const stage = document.querySelector<HTMLElement>('.hero-stage')?.dataset;
   return {
     build: process.env.NEXT_PUBLIC_BUILD_COMMIT,
     builtAt: process.env.NEXT_PUBLIC_BUILD_TIME,
@@ -103,7 +103,7 @@ export function ConsoleGreeting({ locale, signature }: { locale: Locale; signatu
     const onRenderer = (event: Event) => {
       const info = (event as CustomEvent<{ api: string; gpu: string; three: string }>).detail;
       window.setTimeout(() => {
-        const stage = document.querySelector<HTMLElement>('.story-stage')?.dataset;
+        const stage = document.querySelector<HTMLElement>('.hero-stage')?.dataset;
         console.log(`%crender  %c${info.api} · ${info.gpu} · three ${info.three} · ${stage?.gpu ? `${stage.gpu} ms GPU/frame` : 'GPU timer unavailable'} · scale ${stage?.scale ?? '1.00'}`, dim, text);
       }, 2500);
     };

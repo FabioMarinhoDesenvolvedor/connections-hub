@@ -155,3 +155,14 @@ Números medidos em `VALIDATION.md`.
 - **Projetos:** Marketing Dashboard, WorkHub, WSN Loja, Tasks e este site. Só este site tem repositório público; o perfil do GitHub está no menu, no rodapé e na seção.
 
 **Menu:** um link interno que leva a mais de 1,5 tela de distância não rola: a página some em 150 ms, salta e volta já na seção, sem tocar as cenas no caminho (`src/components/anchor-jump.tsx`).
+
+## 11. Abertura automática e conteúdo próprio (17/10/2026)
+
+**Por quê:** visitantes reclamaram que era preciso rolar muito para passar da história fixada (360svh), e o site publicava textos internos do manual da marca.
+
+- **Abertura em uma tela:** sem pin e sem relógio de scroll. A peça toca sozinha assim que a página abre, em cerca de 4,7 s: semente → anéis que giram → C oficial com o ponto → placa. Termina no símbolo em 3D, com leve inclinação seguindo o mouse; clicar repete. No celular, a peça fica acima do texto e tudo cabe na primeira tela.
+- **Mesma peça, mesma qualidade:** o renderer three.js e os estados (`orbits.ts`) são os mesmos; só o relógio mudou (`src/lib/hero/timeline.ts`). O motor carrega logo após o HTML; se não ficar pronto em 4,5 s, sem WebGL2, com economia de dados ou em aparelho fraco, a mesma coreografia toca em versão plana e termina no símbolo oficial. Com reduced motion, o símbolo aparece parado.
+- **Removido:** capítulos do conceito, assinatura com o logo, "Pessoas. Ideias. Tecnologia." (não é o slogan), a seção Manifesto e os valores. O slogan é "Conectando ideias. Construindo soluções.".
+- **Texto próprio:** "Sobre" reescrito sem frases do manual.
+- **Privacidade:** aviso fixo na primeira visita. O site não coleta dados pessoais, não usa cookies, rastreadores nem analytics; só o tema e o aviso visto ficam no navegador.
+

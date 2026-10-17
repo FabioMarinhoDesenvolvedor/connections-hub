@@ -1,8 +1,8 @@
 import type { Dictionary } from './types';
 
 /*
-  Source language. Sources: brand manual (p.8 concept, p.9 values, p.10 manifesto, p.11
-  tagline), initial posts (positioning, process names, contact story) and the Instagram bio.
+  Source language. Public copy only: the tagline, the public posts (process names, contact)
+  and the site's own text. Internal brand documents are not published here.
   No clients, metrics, team size or results are invented. Service scopes describe what a
   project *can* include; they are not claims about past work.
 */
@@ -32,7 +32,6 @@ export const pt: Dictionary = {
     { label: 'Soluções', href: '#solucoes' },
     { label: 'Projetos', href: '#projetos' },
     { label: 'Processo', href: '#processo' },
-    { label: 'Manifesto', href: '#manifesto' },
   ],
   hero: {
     eyebrow: 'Desenvolvimento de software sob medida',
@@ -42,31 +41,18 @@ export const pt: Dictionary = {
     secondary: 'Ver soluções',
     index: 'Soluções',
   },
-  // Manual p.8, verbatim. The fourth line is the brand's own definition of the company.
-  concept: {
-    label: 'O conceito da marca',
-    chapters: [
-      'A semente de uma ideia.',
-      'Ao abrir, se torna uma possibilidade de conexão.',
-      'Mas ela ainda precisa de um ponto de encontro.',
-      'A Connections Hub é o ponto central que reúne clientes aos melhores serviços.',
-    ],
-    lockupLine: 'Pessoas. Ideias. Tecnologia.',
-    cue: 'Role para conhecer o conceito',
-    secret: { title: 'Você abriu a semente antes da hora', hint: 'Role para ver a história inteira.' },
-  },
   about: {
     label: 'Sobre',
     title: ['Tecnologia só faz sentido', 'quando resolve alguma coisa.'],
     paragraphs: [
-      'A Connections Hub é o ponto de encontro entre quem tem uma necessidade e a solução tecnológica que vai atendê-la. Começamos pelo seu trabalho: o que a empresa faz, onde a operação trava e o que precisa mudar. Só então decidimos o que construir.',
-      'Nem todo negócio precisa da mesma tecnologia. Cada projeto é definido a partir da necessidade, para que a tecnologia se adapte ao negócio, e não o contrário.',
+      'A Connections Hub projeta e desenvolve software sob medida: sites, sistemas internos, dashboards, e-commerces e aplicativos. Antes de escrever qualquer linha de código, entendemos como a sua empresa trabalha, onde a operação trava e o que precisa mudar.',
+      'Não existe pacote pronto. Cada projeto nasce do problema que ele resolve, e você acompanha as decisões, vê versões funcionando durante o caminho e recebe um sistema que a sua equipe consegue usar no dia a dia.',
     ],
     facts: [
-      { term: 'Construímos', detail: 'Sites, sistemas e ERP, dashboards e e-commerces.' },
-      { term: 'Para', detail: 'Empresas, profissionais e pessoas com uma necessidade concreta.' },
-      { term: 'Do', detail: 'Planejamento à implantação, em etapas que você acompanha.' },
-      { term: 'Com', detail: 'Atendimento personalizado e o conhecimento técnico como base de cada decisão.' },
+      { term: 'Construímos', detail: 'Sites, sistemas e ERP, dashboards, e-commerces e aplicativos.' },
+      { term: 'Para', detail: 'Empresas e profissionais com um problema concreto para resolver.' },
+      { term: 'Do', detail: 'Diagnóstico à implantação, com entregas que você vê e revisa.' },
+      { term: 'Com', detail: 'Código próprio e conversa direta com quem desenvolve.' },
     ],
     imageAlt: 'Mockup de marca: ambiente de trabalho com a identidade Connections Hub nas paredes.',
   },
@@ -130,21 +116,6 @@ export const pt: Dictionary = {
       { title: 'Desenvolvemos', text: 'Construímos e testamos em ciclos curtos, com entregas que você vê e revisa durante o caminho.', outcome: 'Versões funcionais para validar antes da entrega final.' },
       { title: 'Implementamos', text: 'Colocamos o projeto em uso, orientamos quem vai operar e acompanhamos os primeiros passos.', outcome: 'Projeto em funcionamento e acompanhamento na implantação.' },
     ],
-  },
-  // Manual p.10 (official manifesto), excerpted without rewriting; p.11 signature; p.9 values.
-  manifesto: {
-    label: 'Manifesto',
-    signature: [{ text: 'Conectando', bold: false }, { text: 'ideias', bold: true }, { text: 'Construindo', bold: false }, { text: 'soluções', bold: true }],
-    signatureAria: 'Conectando ideias. Construindo soluções.',
-    opening: 'Tudo começa com uma conexão.',
-    paragraphs: [
-      'Quando uma ideia encontra outra, uma pessoa encontra uma oportunidade e o conhecimento encontra um propósito, algo novo começa a crescer.',
-      'Somos feitos de conexões. Conectamos pessoas, ideias, experiências e possibilidades para transformar encontros em movimento e movimento em crescimento.',
-      'Porque tecnologia aproxima, conhecimento expande e estratégia direciona. Mas são as conexões que fazem tudo acontecer.',
-    ],
-    valuesLabel: 'Valores',
-    valuesAria: 'Valores da Connections Hub',
-    values: ['Confiança', 'Conhecimento', 'Inovação', 'Criatividade', 'Seriedade', 'Otimização'],
   },
   // Contact story post (its three questions, joined into one invitation).
   contact: {
@@ -343,7 +314,7 @@ export const pt: Dictionary = {
         try: 'Troque o idioma e o tema da miniatura.',
         layers: {
           interface: 'React sem biblioteca de UI. Todo o visual sai de tokens de design escritos à mão, com tema claro e escuro.',
-          services: 'Next.js gera as três versões do site no build. A semente da abertura é um shader WebGL2 em campos de distância, carregado só quando aparece.',
+          services: 'Next.js gera as três versões do site no build. A animação da abertura é uma cena three.js em WebGL2, carregada depois da página e tocada sozinha.',
           data: 'Conteúdo em dicionários TypeScript por idioma, com o mesmo tipo: faltar uma frase em um idioma é erro de compilação.',
           infra: 'Páginas estáticas na CDN da Vercel e o código aberto no GitHub. O tema escolhido fica no navegador.',
         },
@@ -363,5 +334,6 @@ export const pt: Dictionary = {
       },
     },
   },
+  privacy: { label: 'Privacidade', text: 'Este site não coleta dados pessoais. Não usamos cookies, rastreadores nem ferramentas de análise; só a sua escolha de tema e este aviso ficam salvos, no seu próprio navegador.', dismiss: 'Entendi' },
   console: { signature: 'Design e código' },
 };

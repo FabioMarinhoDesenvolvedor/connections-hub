@@ -41,15 +41,10 @@ export function Navigation({ locale, t }: Props) {
     // The bar takes the tone of the surface beneath it, and marks the section being read.
     const darkSurfaces = [...document.querySelectorAll<HTMLElement>('[data-nav-theme="dark"]')];
     const sections = t.nav.map(item => document.querySelector<HTMLElement>(item.href)).filter((s): s is HTMLElement => Boolean(s));
-    const story = document.querySelector<HTMLElement>('[data-story]');
     let frame = 0;
     const update = () => {
       frame = 0;
-      // Over the story's own paper the bar stays bare: no surface, and no backdrop blur
-      // recomputed every frame over the moving 3D canvas.
-      // Only the pinned stage keeps it bare; the static story (reduced motion, short screens) scrolls like any section.
-      const overStory = Boolean(story && story.dataset.mode === 'pinned' && story.getBoundingClientRect().bottom > NAV_LINE);
-      setScrolled(window.scrollY > 8 && !overStory);
+      setScrolled(window.scrollY > 8);
       setDark(darkSurfaces.some(s => { const r = s.getBoundingClientRect(); return r.top <= NAV_LINE && r.bottom >= NAV_LINE; }));
       const middle = window.innerHeight * 0.4;
       const current = sections.find(s => { const r = s.getBoundingClientRect(); return r.top <= middle && r.bottom > middle; });

@@ -2,9 +2,8 @@ import type { FactId, InfraRole, LayerId, ProjectId, ProjectStatus } from '@/dat
 import type { SolutionId } from '@/data/site';
 
 /*
-  Every visible or announced string on the site, per language. Brand texts (manual p.8
-  concept, p.9 values, p.10 manifesto, p.11 tagline) are translated faithfully, never
-  rewritten; the Portuguese is the source.
+  Every visible or announced string on the site, per language. The Portuguese is the
+  source; the tagline is translated faithfully, never rewritten.
 */
 export type Dictionary = {
   meta: { title: string; description: string; tagline: string; socialAlt: string };
@@ -24,13 +23,6 @@ export type Dictionary = {
   };
   nav: { label: string; href: string }[];
   hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string };
-  concept: {
-    label: string;
-    chapters: [string, string, string, string];
-    lockupLine: string;
-    cue: string;
-    secret: { title: string; hint: string };
-  };
   about: {
     label: string;
     title: string[];
@@ -66,16 +58,6 @@ export type Dictionary = {
     intro: string;
     outcomeLabel: string;
     steps: { title: string; text: string; outcome: string }[];
-  };
-  manifesto: {
-    label: string;
-    signature: { text: string; bold: boolean }[];
-    signatureAria: string;
-    opening: string;
-    paragraphs: string[];
-    valuesLabel: string;
-    valuesAria: string;
-    values: string[];
   };
   contact: {
     label: string;
@@ -129,5 +111,6 @@ export type Dictionary = {
     note: string;
     items: Record<ProjectId, { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] }>;
   };
+  privacy: { label: string; text: string; dismiss: string };
   console: { signature: string };
 };

@@ -125,92 +125,73 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 /* Theme switch: a circle opens from the toggle (view transition); nothing else animates. */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
-/* ───────────────────────── 01 Story ─────────────────────────
-   Base styles are the static layout (no JavaScript, reduced motion, very short screens).
-   The pinned, scroll-driven stage is an enhancement below. */
-.story { --story-mode: static; position: relative; }
-.story-anchor { position: absolute; top: 0; }
-.story-pin { position: relative; padding-top: calc(var(--nav-height) + clamp(48px, 9vh, 120px)); padding-bottom: var(--section-space); }
-.story-paper { position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: var(--grid-cell) var(--grid-cell); background-position: center center; mask-image: radial-gradient(ellipse 70% 60% at 62% 50%, #000 0%, transparent 78%); pointer-events: none; }
-.story-stage, .story-cue, .story-secret, .story-seed { display: none; }
-.story-hero { position: relative; display: grid; justify-items: start; gap: var(--space-6); }
-.story-title { font-size: var(--text-display); line-height: var(--leading-display); letter-spacing: var(--tracking-display); }
-.story-title span { display: block; }
-.story-title span + span { color: var(--text-display-soft); }
-.story-lead { max-width: 34ch; font-size: var(--text-lead); line-height: 1.5; color: var(--text-muted); }
-.story-hero .actions { margin-top: var(--space-2); }
-.story-index { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--rule); font-size: var(--text-small); font-weight: 500; color: var(--text-strong); }
-.story-index a { display: inline-flex; align-items: baseline; gap: var(--space-2); min-height: 32px; padding-block: 4px; transition: color var(--duration-micro) var(--ease-standard); }
-.story-index a:hover { color: var(--accent); }
-.story-chapters { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--column-gap); width: min(calc(100% - var(--gutter) * 2), var(--page-max)); margin: var(--section-space) auto 0; padding-top: var(--space-8); border-top: 1px solid var(--rule); }
-.story-chapter { display: grid; align-content: start; gap: var(--space-3); }
-.concept-figure { width: 64px; height: 64px; margin-bottom: var(--space-4); }
-.concept-figure-symbol { display: block; overflow: hidden; }
-.concept-figure-symbol img { width: calc(64px * 1407.79 / 282.78); max-width: none; height: auto; margin-top: calc(-64px * 28.05 / 282.78); }
-.story-chapter-text { font-size: clamp(18px, 1.5vw, 22px); font-weight: 500; line-height: 1.3; letter-spacing: -0.015em; color: var(--text-strong); }
-.story-lockup { width: min(640px, calc(100% - var(--gutter) * 2)); margin: var(--section-space) auto 0; display: grid; justify-items: center; gap: var(--space-6); }
-.story-lockup-mark { width: 100%; }
-.story-lockup-mark img { width: 100%; height: auto; }
-.story-lockup-line { font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-signature); text-transform: uppercase; color: var(--text-strong); }
-@media (max-width: 767px) {
-  .story-chapters { grid-template-columns: 1fr 1fr; row-gap: var(--space-10); }
+/* ───────────────────────── 01 Opening ─────────────────────────
+   One screen. Copy on the left, the brand object on the right (above the copy on phones),
+   playing on its own. Base styles are the static layout (no JavaScript): the finished
+   symbol stands in for the animation. */
+.hero { position: relative; overflow: clip; }
+.hero-paper { position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: var(--grid-cell) var(--grid-cell); background-position: center center; mask-image: radial-gradient(ellipse 52% 62% at 70% 52%, #000 0%, transparent 76%); pointer-events: none; }
+.hero-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); align-items: center; min-height: min(100svh, 980px); padding-top: calc(var(--nav-height) + clamp(24px, 5vh, 64px)); padding-bottom: clamp(40px, 8vh, 96px); }
+.hero-copy { grid-column: 1 / span 7; grid-row: 1; position: relative; z-index: 1; display: grid; justify-items: start; gap: var(--space-6); }
+.hero-title { font-size: var(--text-display); line-height: var(--leading-display); letter-spacing: var(--tracking-display); }
+.hero-title span { display: block; }
+.hero-title span + span { color: var(--text-display-soft); }
+.hero-lead { max-width: 40ch; font-size: var(--text-lead); line-height: 1.5; color: var(--text-muted); }
+.hero-copy .actions { margin-top: var(--space-2); }
+.hero-index { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--rule); font-size: var(--text-small); font-weight: 500; color: var(--text-strong); }
+.hero-index a { display: inline-flex; align-items: baseline; min-height: 32px; padding-block: 4px; transition: color var(--duration-micro) var(--ease-standard); }
+.hero-index a:hover { color: var(--accent); }
+
+/* The stage: a square beside the copy. The canvas overhangs it so tilt and shadow never clip. */
+.hero-stage { grid-column: 8 / -1; grid-row: 1; position: relative; width: 100%; aspect-ratio: 1; max-height: min(64svh, 620px); justify-self: center; -webkit-tap-highlight-color: transparent; }
+.hero-symbol { position: absolute; left: 50%; top: 50%; width: 64%; aspect-ratio: 1; overflow: hidden; border-radius: 25.7%; transform: translate(-50%, -50%); }
+.hero-symbol img { width: calc(100% * 1407.79 / 282.78); max-width: none; height: auto; margin-top: calc(-100% * 28.05 / 282.78); }
+.hero-fallback, .hero-canvas { display: none; }
+.js .hero-symbol { opacity: 0; }
+.js .hero-stage[data-mode="still"] .hero-symbol { opacity: 1; }
+.js .hero-stage[data-mode="gl"], .js .hero-stage[data-mode="flat"] { cursor: pointer; }
+.js .hero-fallback { display: block; position: absolute; left: -14%; top: -14%; width: 400px; height: 400px; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); will-change: transform; pointer-events: none; }
+.js .hero-stage[data-ready] .hero-fallback { opacity: 1; }
+.js .hero-stage[data-mode="still"] .hero-fallback, .js .hero-stage[data-gl="on"] .hero-fallback { opacity: 0 !important; }
+.js .hero-fallback g { will-change: opacity; }
+.js .hero-canvas { display: block; position: absolute; inset: -14%; width: 128%; height: 128%; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); pointer-events: none; }
+.js .hero-stage[data-gl="on"] .hero-canvas { opacity: 1; }
+
+/* The copy arrives once, with the object (transform and opacity only; the headline stays put). */
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero-rise { animation: hero-rise var(--duration-scene) var(--ease-out) both; animation-delay: calc(120ms + var(--i, 0) * 90ms); }
+  .js .hero-title span { animation: hero-title 1100ms var(--ease-out) both; }
+  .js .hero-title span + span { animation-delay: 90ms; }
 }
+@keyframes hero-rise { from { opacity: 0; transform: translate3d(0, 14px, 0); } }
+@keyframes hero-title { from { transform: translate3d(0, 0.18em, 0); } }
 
-@media (prefers-reduced-motion: no-preference) and (min-height: 520px) {
-  .js .story { --story-mode: pinned; height: 520svh; }
-  .js .story-anchor { top: calc((100% - 100svh) * 0.17); }
-  .js .story-pin { position: sticky; top: 0; height: 100svh; padding: 0; overflow: hidden; }
-  .js .story-paper { mask-image: radial-gradient(ellipse 52% 62% at 64% 52%, #000 0%, transparent 76%); }
-  .js .story-stage { display: block; position: absolute; inset: 0; pointer-events: none; }
-  .js .story-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); }
-  .js .story-stage[data-gl="on"] .story-canvas { opacity: 1; }
-  .js .story-fallback { position: absolute; left: 0; top: 0; width: 400px; height: 400px; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); will-change: transform; }
-  .js .story-stage[data-ready] .story-fallback { opacity: 1; }
-  .js .story-stage[data-gl="on"] .story-fallback { opacity: 0; }
-  .js .story-fallback g { will-change: opacity; }
-
-  .js .story-hero { position: absolute; inset: 0; margin-inline: auto; align-content: center; padding-top: var(--nav-height); padding-bottom: clamp(24px, 6vh, 64px); will-change: transform, opacity; }
-  .js .story-hero > * { max-width: min(52vw, 880px); }
-  .js .story-cue { display: inline-flex; position: absolute; left: max(var(--gutter), calc((100% - var(--page-max)) / 2)); bottom: clamp(20px, 4vh, 40px); align-items: center; gap: var(--space-3); min-height: 44px; font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-muted); }
-  .js .story-cue span { width: 1px; height: 28px; background: var(--rule-strong); }
-  .js .story-seed { display: block; position: absolute; left: 0; top: 0; z-index: 2; border-radius: 50%; pointer-events: none; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; cursor: grab; }
-  .js .story-seed[data-live="true"] { pointer-events: auto; }
-  .js .story-seed:active { cursor: grabbing; }
-  .js .story-secret { display: grid; justify-items: center; gap: var(--space-2); position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; pointer-events: none; will-change: transform, opacity; }
-  .js .story-secret-title { display: inline-flex; align-items: center; gap: var(--space-3); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-strong); }
-  .js .story-secret-hint { font-size: var(--text-small); color: var(--text-muted); }
-
-  .js .story-chapters { position: absolute; left: max(var(--gutter), calc((100% - var(--page-max)) / 2)); top: 50%; display: block; width: min(30vw, 420px); margin: 0; padding: 0; border: 0; pointer-events: none; }
-  .js .story-chapter { position: absolute; left: 0; bottom: 0; width: 100%; opacity: 0; will-change: transform, opacity; }
-  .js .story-chapter:nth-child(n) { transform: translate3d(0, 18px, 0); }
-  .js .concept-figure { display: none; }
-  .js .story-chapter-text { font-size: var(--text-statement); line-height: 1.16; letter-spacing: -0.025em; }
-  .js .story-chapter { gap: var(--space-5); }
-
-  .js .story-lockup { position: absolute; left: 50%; top: 50%; width: min(680px, 72vw); margin: 0; transform: translate(-50%, -50%); pointer-events: none; }
-  .js .story-lockup-mark { clip-path: inset(-2px 100% -2px 0); }
-  .js .story-lockup-line { opacity: 0; }
-
-  @media (max-width: 759px), (max-aspect-ratio: 21/20) {
-    .js .story { height: 500svh; }
-    .js .story-hero { align-content: end; gap: var(--space-5); padding-bottom: clamp(48px, 8svh, 96px); }
-    .js .story-hero > * { max-width: 100%; }
-    .js .story-hero .story-index { display: none; }
-    .js .story-hero .button { min-height: 48px; padding-inline: 18px; font-size: 14px; }
-    .js .story-hero .actions { flex-wrap: nowrap; }
-    .js .story-paper { mask-image: radial-gradient(ellipse 90% 40% at 50% 28%, #000 0%, transparent 80%); }
-    .js .story-chapters { left: var(--gutter); right: var(--gutter); top: auto; bottom: clamp(56px, 11svh, 112px); width: auto; text-align: center; }
-    .js .story-chapter-text { font-size: clamp(22px, 6vw, 30px); }
-    .js .story-lockup { width: 84vw; top: 44%; }
-    .js .story-cue { display: none; }
-  }
-  /* Short phones: a tighter hero so the seed keeps a readable size above the copy. */
-  @media (max-width: 759px) and (max-height: 720px) {
-    .js .story-title { font-size: 34px; }
-    .js .story-lead { font-size: 15px; line-height: 1.45; }
-    .js .story-hero .label { font-size: 11px; letter-spacing: .12em; }
-    .js .story-hero { gap: var(--space-4); padding-bottom: 32px; }
-  }
+@media (max-width: 1099px) {
+  .hero-copy { grid-column: 1 / span 7; }
+  .hero-stage { grid-column: 8 / -1; }
+}
+/* Phones and narrow tablets: object on top, copy below, the whole opening in one screen. */
+@media (max-width: 899px) {
+  .hero-grid { align-content: center; row-gap: clamp(8px, 2svh, 24px); min-height: min(100svh, 900px); padding-top: calc(var(--nav-height) + 4px); padding-bottom: clamp(28px, 5svh, 56px); }
+  .hero-copy, .hero-stage { grid-column: 1 / -1; }
+  .hero-stage { grid-row: 1; width: auto; height: clamp(180px, 31svh, 340px); max-height: none; aspect-ratio: 1; }
+  .hero-copy { grid-row: 2; gap: var(--space-5); }
+  .hero-index { display: none; }
+  .hero-paper { mask-image: radial-gradient(ellipse 90% 40% at 50% 26%, #000 0%, transparent 80%); }
+}
+@media (max-width: 599px) {
+  .hero-title { font-size: clamp(34px, 9.4vw, 42px); }
+  .hero-lead { font-size: 16px; line-height: 1.5; }
+  .hero-copy .button { min-height: 48px; padding-inline: 18px; font-size: 14px; }
+  .hero-copy .actions { flex-wrap: nowrap; }
+}
+/* Short phones: a smaller object so the copy and both buttons stay on the first screen. */
+@media (max-width: 599px) and (max-height: 720px) {
+  .hero-stage { height: clamp(150px, 27svh, 220px); }
+  .hero-title { font-size: 32px; }
+  .hero-lead { font-size: 15px; line-height: 1.45; }
+  .hero-copy .label { font-size: 11px; letter-spacing: .12em; }
+  .hero-copy { gap: var(--space-4); }
 }
 
 /* ───────────────────────── 02 About ───────────────────────── */
@@ -905,28 +886,6 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
   .step h3 { grid-row: auto; }
 }
 
-/* ───────────────────────── 05 Manifesto ───────────────────────── */
-.manifesto { padding-block: var(--section-space); }
-.manifesto-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); row-gap: var(--space-16); }
-.manifesto-grid > .label { grid-column: 1 / -1; }
-/* Manual p.11: light and bold Satoshi alternating, generously tracked. */
-.signature-type { grid-column: 1 / span 8; display: grid; font-size: var(--text-signature); font-weight: 300; line-height: 1.12; letter-spacing: var(--tracking-signature); color: var(--manifesto-ink); }
-.signature-type .line { display: block; }
-.signature-type b { font-weight: 700; }
-.manifesto-body { grid-column: 9 / span 4; align-self: end; display: grid; gap: var(--space-5); color: var(--text); }
-.manifesto-body h2 { font-size: var(--text-statement); line-height: 1.12; letter-spacing: -0.025em; margin-bottom: var(--space-2); }
-.values { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); align-items: start; padding-top: var(--space-8); position: relative; }
-.values::before { content: ''; position: absolute; inset: 0 0 auto; height: 1px; background: var(--rule-strong); transform-origin: left; }
-.values-label { grid-column: 1 / span 2; font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-muted); padding-top: 6px; }
-.values ul { grid-column: 3 / -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-4); }
-.values li { display: grid; gap: var(--space-2); font-size: clamp(16px, 1.3vw, 20px); font-weight: 500; color: var(--text-strong); }
-.values li span { font-size: 11px; letter-spacing: .1em; color: var(--orange); }
-@media (max-width: 899px) {
-  .signature-type, .manifesto-body { grid-column: 1 / -1; }
-  .values-label { grid-column: 1 / -1; margin-bottom: var(--space-4); }
-  .values ul { grid-column: 1 / -1; grid-template-columns: repeat(2, 1fr); row-gap: var(--space-6); }
-}
-
 /* ───────────────────────── Closing: contact and footer ─────────────────────────
    One surface, the brand navy the identity closes on. An invitation, two direct ways to
    answer it, then the essentials. Hierarchy comes from scale and spacing, not from lines. */
@@ -1000,6 +959,24 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
   .footer-legal { text-align: left; }
 }
 
+/* ───────────────────────── Privacy notice ─────────────────────────
+   First visit only. A small sheet in the corner, in the page's own surface, label and button;
+   it never covers the edge pull-tab and leaves the opening's copy readable. */
+.privacy-notice { position: fixed; z-index: 45; left: var(--gutter); bottom: clamp(16px, 3vh, 32px); display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--space-3) var(--space-5); width: min(460px, calc(100% - var(--gutter) * 2)); padding: var(--space-5) var(--space-5) var(--space-5) var(--space-6); border: 1px solid var(--rule-strong); border-radius: 20px; background: var(--surface); box-shadow: 0 18px 48px -20px rgb(5 12 28 / .38); color: var(--text); animation: privacy-in var(--duration-reveal) var(--ease-out) both; }
+.privacy-notice[data-state="leaving"] { animation: privacy-out var(--duration-ui) var(--ease-standard) both; }
+.privacy-notice-label { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); line-height: 1.2; text-transform: uppercase; color: var(--text-strong); }
+.privacy-notice-text { font-size: 14px; line-height: 1.55; color: var(--text-muted); }
+.privacy-notice .button { min-height: 40px; }
+@keyframes privacy-in { from { opacity: 0; transform: translate3d(0, 16px, 0); } }
+@keyframes privacy-out { to { opacity: 0; transform: translate3d(0, 12px, 0); } }
+@media (prefers-reduced-motion: reduce) { .privacy-notice, .privacy-notice[data-state="leaving"] { animation: none; } }
+@media (max-width: 599px) {
+  .privacy-notice { left: 12px; right: 12px; bottom: 12px; width: auto; grid-template-columns: 1fr auto; align-items: center; gap: var(--space-2) var(--space-4); padding: 14px 14px 14px 18px; border-radius: 18px; }
+  .privacy-notice-label { grid-column: 1; }
+  .privacy-notice-text { grid-column: 1 / -1; grid-row: 2; font-size: 13px; line-height: 1.45; }
+  .privacy-notice .button { grid-column: 2; grid-row: 1; min-height: 36px; padding-inline: 16px; font-size: 13px; }
+}
+
 /* ───────────────────────── Motion ─────────────────────────
    Only under .motion (JavaScript on, no reduced-motion preference). Each element arrives
    once; nothing loops. Titles rise line by line inside a mask; hairlines draw from the left;
@@ -1031,21 +1008,19 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .motion [data-reveal="frame"].is-in .about-arc { transform: translateY(50%); opacity: 1; }
 
 /* Manifesto: the navy fills each paragraph from the top as it is read. */
-.motion .manifesto-body p[data-progress] { background-image: linear-gradient(180deg, var(--text) calc(var(--progress, 1) * 100% - 0.7em), var(--manifesto-unread) calc(var(--progress, 1) * 100% + 0.7em)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ───────────────────────── Japanese ─────────────────────────
    Satoshi carries the Latin; kana and kanji come from the system's Japanese sans. Japanese
    needs more leading and almost no negative tracking, and breaks lines at phrase boundaries. */
-html:lang(ja) { --font: var(--font-satoshi), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; --tracking-display: -0.01em; --tracking-heading: -0.005em; --leading-display: 1.16; --leading-heading: 1.2; --leading-body: 1.85; --text-display: clamp(34px, 4.1vw, 70px); --text-h2: clamp(32px, 4.4vw, 72px); --text-signature: clamp(22px, 4vw, 64px); }
+html:lang(ja) { --font: var(--font-satoshi), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; --tracking-display: -0.01em; --tracking-heading: -0.005em; --leading-display: 1.16; --leading-heading: 1.2; --leading-body: 1.85; --text-display: clamp(34px, 4.1vw, 70px); --text-h2: clamp(32px, 4.4vw, 72px); }
 /* Phrase segmentation is costly layout work: headings and short lines only; body text keeps strict kinsoku. */
 html:lang(ja) { line-break: strict; }
-:lang(ja) h1 > span, :lang(ja) .section-title .line > span, :lang(ja) .story-chapter-text, :lang(ja) .closing-title, :lang(ja) .manifesto-body h2, :lang(ja) .solution h3 { word-break: auto-phrase; }
-:lang(ja) .story-chapter-text, :lang(ja) .manifesto-body h2, :lang(ja) .closing-title, :lang(ja) .solution h3, :lang(ja) .step h3 { line-height: 1.32; letter-spacing: 0; }
-:lang(ja) .signature-type { --tracking-signature: 0.16em; line-height: 1.3; }
-:lang(ja) h1, :lang(ja) h2, :lang(ja) h3, :lang(ja) .story-chapter-text, :lang(ja) .signature-type b { font-weight: 600; }
+:lang(ja) h1 > span, :lang(ja) .section-title .line > span, :lang(ja) .closing-title, :lang(ja) .solution h3 { word-break: auto-phrase; }
+:lang(ja) .closing-title, :lang(ja) .solution h3, :lang(ja) .step h3 { line-height: 1.32; letter-spacing: 0; }
+:lang(ja) h1, :lang(ja) h2, :lang(ja) h3 { font-weight: 600; }
 /* Japanese CTAs are longer: on narrow screens they wrap instead of widening the hero. */
-.story-hero > * { min-width: 0; }
-html.js:lang(ja) .story-hero .actions { flex-wrap: wrap; }
+.hero-copy > * { min-width: 0; }
+html.js:lang(ja) .hero-copy .actions { flex-wrap: wrap; }
 /* Focus lands on the signature for screen readers when the sticker comes off; it is text, not a control. */
 .sticker-found:focus { outline: none; }
 

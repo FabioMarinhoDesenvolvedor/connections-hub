@@ -53,14 +53,13 @@ export type OrbitState = {
 };
 
 /*
-  Hands-on play in the hero (driven by story-stage.tsx): the reader can open the seed early.
+  Optional hands-on offsets for the object (all zero by default).
     open    arcs leave the seed, as in the release beat;
     spin    degrees added to every dial, each at its own ratio and direction;
     bloom   the dials lock into the C and the seed reaches the gap: the whole idea, briefly;
     lift    the seed rises off the page towards the pointer (its shadow answers);
     press   a small give under the finger;
     lean    extra turn towards the pointer, in units of the tilt.
-  All zero at rest, so the scroll story is unchanged.
 */
 export type Play = { open: number; spin: number; bloom: number; lift: number; press: number; lean: { x: number; y: number } };
 export const REST: Play = { open: 0, spin: 0, bloom: 0, lift: 0, press: 0, lean: { x: 0, y: 0 } };

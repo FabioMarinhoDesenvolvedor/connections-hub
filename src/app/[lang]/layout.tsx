@@ -7,6 +7,7 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { AnchorJump } from '@/components/anchor-jump';
 import { ScrollEffects } from '@/components/scroll-effects';
+import { PrivacyNotice } from '@/components/privacy-notice';
 import { ConsoleGreeting } from '@/components/console-greeting';
 import { ThemePeel } from '@/components/theme-peel';
 import '../globals.css';
@@ -63,7 +64,7 @@ export const viewport: Viewport = {
 
 /*
   Runs before first paint:
-  - the pinned story layout applies only when JavaScript will drive it (.js);
+  - the animated opening applies only when JavaScript will drive it (.js);
   - the theme is the visitor's saved choice, else the system's, so there is no flash of the
     wrong theme. Storage can be unavailable (private mode); then the system decides.
 */
@@ -85,6 +86,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       <ScrollEffects />
       <AnchorJump />
       <ThemePeel label={t.ui.theme.pull} />
+      <PrivacyNotice t={t.privacy} />
       <ConsoleGreeting locale={lang} signature={t.console.signature} />
     </body>
   </html>;

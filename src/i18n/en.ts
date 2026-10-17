@@ -1,6 +1,6 @@
 import type { Dictionary } from './types';
 
-// English. Brand texts follow the Portuguese source line by line.
+// English. Follows the Portuguese source line by line.
 export const en: Dictionary = {
   meta: {
     title: 'Connections Hub — Custom websites, systems, dashboards and e-commerce',
@@ -27,7 +27,6 @@ export const en: Dictionary = {
     { label: 'Solutions', href: '#solucoes' },
     { label: 'Projects', href: '#projetos' },
     { label: 'Process', href: '#processo' },
-    { label: 'Manifesto', href: '#manifesto' },
   ],
   hero: {
     eyebrow: 'Custom software development',
@@ -37,30 +36,18 @@ export const en: Dictionary = {
     secondary: 'See solutions',
     index: 'Solutions',
   },
-  concept: {
-    label: 'The brand concept',
-    chapters: [
-      'The seed of an idea.',
-      'As it opens, it becomes a possibility of connection.',
-      'But it still needs a meeting point.',
-      'Connections Hub is the central point that brings clients together with the best services.',
-    ],
-    lockupLine: 'People. Ideas. Technology.',
-    cue: 'Scroll to see the concept',
-    secret: { title: 'You opened the seed too early', hint: 'Scroll to see the whole story.' },
-  },
   about: {
     label: 'About',
     title: ['Technology only makes sense', 'when it solves something.'],
     paragraphs: [
-      'Connections Hub is the meeting point between people with a need and the technology that will meet it. We start with your work: what the company does, where operations get stuck and what needs to change. Only then do we decide what to build.',
-      'Not every business needs the same technology. Each project is defined by the need, so the technology adapts to the business, not the other way around.',
+      'Connections Hub designs and builds custom software: websites, internal systems, dashboards, e-commerce and apps. Before writing a single line of code, we learn how your company works, where operations get stuck and what needs to change.',
+      'There is no off-the-shelf package. Each project starts from the problem it solves: you follow the decisions, see working versions along the way and get a system your team can actually use every day.',
     ],
     facts: [
-      { term: 'We build', detail: 'Websites, systems and ERP, dashboards and e-commerce.' },
-      { term: 'For', detail: 'Companies, professionals and people with a concrete need.' },
-      { term: 'From', detail: 'Planning to launch, in stages you follow closely.' },
-      { term: 'With', detail: 'Personal service, and technical knowledge behind every decision.' },
+      { term: 'We build', detail: 'Websites, systems and ERP, dashboards, e-commerce and apps.' },
+      { term: 'For', detail: 'Companies and professionals with a concrete problem to solve.' },
+      { term: 'From', detail: 'Diagnosis to rollout, with deliveries you see and review.' },
+      { term: 'With', detail: 'Our own code, and a direct line to the people who build it.' },
     ],
     imageAlt: 'Brand mockup: an office with the Connections Hub identity on the walls.',
   },
@@ -123,20 +110,6 @@ export const en: Dictionary = {
       { title: 'We develop', text: 'We build and test in short cycles, with deliveries you see and review along the way.', outcome: 'Working versions to validate before final delivery.' },
       { title: 'We implement', text: 'We put the project into use, guide the people who will run it and support the first steps.', outcome: 'A working project and support during rollout.' },
     ],
-  },
-  manifesto: {
-    label: 'Manifesto',
-    signature: [{ text: 'Connecting', bold: false }, { text: 'ideas', bold: true }, { text: 'Building', bold: false }, { text: 'solutions', bold: true }],
-    signatureAria: 'Connecting ideas. Building solutions.',
-    opening: 'Everything starts with a connection.',
-    paragraphs: [
-      'When one idea meets another, a person meets an opportunity and knowledge meets a purpose, something new begins to grow.',
-      'We are made of connections. We connect people, ideas, experiences and possibilities to turn encounters into movement, and movement into growth.',
-      'Because technology brings closer, knowledge expands and strategy directs. But it is connections that make everything happen.',
-    ],
-    valuesLabel: 'Values',
-    valuesAria: 'Connections Hub values',
-    values: ['Trust', 'Knowledge', 'Innovation', 'Creativity', 'Integrity', 'Optimisation'],
   },
   contact: {
     label: 'Contact',
@@ -333,7 +306,7 @@ export const en: Dictionary = {
         try: 'Switch the miniature’s language and theme.',
         layers: {
           interface: 'React with no UI library. The whole look comes from hand-written design tokens, in light and dark themes.',
-          services: 'Next.js renders the three versions of the site at build time. The opening seed is a WebGL2 signed-distance shader, loaded only when it appears.',
+          services: 'Next.js renders the three versions of the site at build time. The opening animation is a three.js scene in WebGL2, loaded after the page and played on its own.',
           data: 'Content in TypeScript dictionaries per language, all of the same type: a sentence missing in one language is a compile error.',
           infra: 'Static pages on Vercel’s CDN and the open code on GitHub. The chosen theme stays in the browser.',
         },
@@ -353,5 +326,6 @@ export const en: Dictionary = {
       },
     },
   },
+  privacy: { label: 'Privacy', text: 'This site does not collect personal data. We use no cookies, trackers or analytics; only your theme choice and this notice are saved, in your own browser.', dismiss: 'Got it' },
   console: { signature: 'Design and code' },
 };
