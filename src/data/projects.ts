@@ -278,7 +278,7 @@ export const projects: Project[] = [
       services: {
         tech: [{ id: 'next', name: 'Next.js', version: '16' }, { id: 'three', name: 'three.js' }, { id: 'webgl', name: 'WebGL2' }],
         nodes: [
-          { id: 'seed', label: 'seed', meta: 'WebGL2 · SDF' },
+          { id: 'symbol', label: 'symbol', meta: 'three.js · WebGL2' },
           { id: 'pt', label: '/', meta: 'SSG · pt-BR' },
           { id: 'en', label: '/en', meta: 'SSG · en' },
           { id: 'ja', label: '/ja', meta: 'SSG · ja' },

@@ -19,16 +19,20 @@ export type Dictionary = {
     newTab: string;
     github: string;
     language: string;
-    theme: { label: string; toDark: string; toLight: string; pull: string };
+    theme: { label: string; toDark: string; toLight: string };
   };
   nav: { label: string; href: string }[];
-  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string };
+  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string; symbol: string };
   about: {
     label: string;
     title: string[];
     paragraphs: string[];
     facts: { term: string; detail: string }[];
-    imageAlt: string;
+    code: {
+      label: string; title: string; intro: string; solves: string; project: string; language: string; tabs: string;
+      files: { sla: string; backup: string; tokens: string; frete: string; ink: string };
+      play: { keys: string; hold: string; holding: string; typed: string; chars: string; done: string; next: string; area: string };
+    };
   };
   solutions: {
     label: string;

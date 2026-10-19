@@ -6,8 +6,7 @@ import { applyTheme, currentTheme, otherTheme, savedTheme, saveTheme, startViewT
 /*
   Light ↔ dark from the bar. The icon is drawn by CSS from html[data-theme], so the server
   markup never disagrees with the page. Where the browser supports view transitions, the
-  new theme opens as a circle from the button, like the seed opening; otherwise it swaps.
-  (The pull-tab on the page edge, theme-peel.tsx, is the other way to switch.)
+  new theme opens as a circle from the button; otherwise it swaps.
 */
 export function ThemeToggle({ labels, className = '' }: { labels: { toDark: string; toLight: string }; className?: string }) {
   const [theme, setTheme] = useState<Theme>('light');

@@ -69,6 +69,8 @@
 
   /* Type: Satoshi only, never italic (manual p.17). */
   --font: var(--font-satoshi), Arial, sans-serif;
+  /* Code only: the brand's type is Satoshi; code needs fixed-width glyphs. */
+  --font-mono: var(--font-jetbrains), ui-monospace, Menlo, Consolas, monospace;
   --text-label: 12px;
   --text-small: 14px;
   --text-body: 17px;
@@ -104,8 +106,6 @@
   --dial-arc: var(--navy);
   --outcome-bg: color-mix(in srgb, var(--sand) 45%, transparent);
   --bench: color-mix(in srgb, var(--sand) 32%, var(--off-white));
-  --story-seed: var(--navy);
-  --story-arc-navy: var(--navy);
 }
 
 /*
@@ -140,8 +140,6 @@
   --dial-arc: var(--sand);
   --outcome-bg: color-mix(in srgb, var(--navy) 70%, transparent);
   --bench: #191D22;
-  --story-seed: var(--sand);
-  --story-arc-navy: var(--mist);
 }
 @media (max-width: 767px) {
   :root { --nav-height: 60px; --text-body: 16px; --grid-cell: 48px; }

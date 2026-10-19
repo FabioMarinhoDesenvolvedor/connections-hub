@@ -55,3 +55,10 @@ Desempenho medido em `VALIDATION.md`.
 - Substitui as duas versões anteriores (pilha abstrata e prints em camadas), reprovadas.
 - Ícone do GitHub no menu, no rodapé e na seção. Links do menu para longe saltam direto, sem tocar as animações do caminho.
 - Decisões em `DESIGN.md` §10.
+
+## Abertura nova e sem fotos de escritório (19/10/2026)
+
+- **Abertura:** o símbolo oficial em 3D, como uma peça laqueada sob luz de estúdio. Entra girando, assenta em três-quartos e o ponto encaixa por último. Depois balança de leve, segue o mouse e gira quando arrastado ou clicado.
+- **Onde funciona:** temas claro e escuro, celular, sem WebGL (entra girando em CSS) e com movimento reduzido (parado).
+- **Sem fotos de escritório ou equipe:** o "Sobre" mostra um painel da marca e a imagem de compartilhamento usa só o logo oficial.
+- Decisões em `DESIGN.md` §12.

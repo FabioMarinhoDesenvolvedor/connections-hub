@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
+import { JetBrains_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { site } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, locales } from '@/i18n';
@@ -9,7 +10,6 @@ import { AnchorJump } from '@/components/anchor-jump';
 import { ScrollEffects } from '@/components/scroll-effects';
 import { PrivacyNotice } from '@/components/privacy-notice';
 import { ConsoleGreeting } from '@/components/console-greeting';
-import { ThemePeel } from '@/components/theme-peel';
 import '../globals.css';
 
 const satoshi = localFont({
@@ -20,6 +20,9 @@ const satoshi = localFont({
   style: 'normal',
   fallback: ['Arial', 'sans-serif'],
 });
+
+// Code only (the About terminal): served from this site, not preloaded since it sits below the fold.
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap', preload: false });
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -74,7 +77,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = getDictionary(lang);
-  return <html lang={localeInfo[lang].html} className={satoshi.variable} suppressHydrationWarning>
+  return <html lang={localeInfo[lang].html} className={`${satoshi.variable} ${mono.variable}`} suppressHydrationWarning>
     <head>
       <script dangerouslySetInnerHTML={{ __html: boot }} />
     </head>
@@ -85,7 +88,6 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       <Footer t={t} />
       <ScrollEffects />
       <AnchorJump />
-      <ThemePeel label={t.ui.theme.pull} />
       <PrivacyNotice t={t.privacy} />
       <ConsoleGreeting locale={lang} signature={t.console.signature} />
     </body>
