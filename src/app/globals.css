@@ -126,9 +126,8 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
 /* ───────────────────────── 01 Opening ─────────────────────────
-   One screen. Copy on the left, the brand object on the right (above the copy on phones),
-   playing on its own. Base styles are the static layout (no JavaScript): the finished
-   symbol stands in for the animation. */
+   One screen. Copy on the left, the 3D symbol on the right (above the copy on phones).
+   Base styles are the static layout (no JavaScript): the official symbol file. */
 .hero { position: relative; overflow: clip; }
 .hero-paper { position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: var(--grid-cell) var(--grid-cell); background-position: center center; mask-image: radial-gradient(ellipse 52% 62% at 70% 52%, #000 0%, transparent 76%); pointer-events: none; }
 .hero-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); align-items: center; min-height: min(100svh, 980px); padding-top: calc(var(--nav-height) + clamp(24px, 5vh, 64px)); padding-bottom: clamp(40px, 8vh, 96px); }
@@ -142,22 +141,30 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .hero-index a { display: inline-flex; align-items: baseline; min-height: 32px; padding-block: 4px; transition: color var(--duration-micro) var(--ease-standard); }
 .hero-index a:hover { color: var(--accent); }
 
-/* The stage: a square beside the copy. The canvas overhangs it so tilt and shadow never clip. */
-.hero-stage { grid-column: 8 / -1; grid-row: 1; position: relative; width: 100%; aspect-ratio: 1; max-height: min(64svh, 620px); justify-self: center; -webkit-tap-highlight-color: transparent; }
-.hero-symbol { position: absolute; left: 50%; top: 50%; width: 64%; aspect-ratio: 1; overflow: hidden; border-radius: 25.7%; transform: translate(-50%, -50%); }
-.hero-symbol img { width: calc(100% * 1407.79 / 282.78); max-width: none; height: auto; margin-top: calc(-100% * 28.05 / 282.78); }
-.hero-fallback, .hero-canvas { display: none; }
-.js .hero-symbol { opacity: 0; }
-.js .hero-stage[data-mode="still"] .hero-symbol { opacity: 1; }
-.js .hero-stage[data-mode="gl"], .js .hero-stage[data-mode="flat"] { cursor: pointer; }
-.js .hero-fallback { display: block; position: absolute; left: -14%; top: -14%; width: 400px; height: 400px; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); will-change: transform; pointer-events: none; }
-.js .hero-stage[data-ready] .hero-fallback { opacity: 1; }
-.js .hero-stage[data-mode="still"] .hero-fallback, .js .hero-stage[data-gl="on"] .hero-fallback { opacity: 0 !important; }
-.js .hero-fallback g { will-change: opacity; }
-.js .hero-canvas { display: block; position: absolute; inset: -14%; width: 128%; height: 128%; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); pointer-events: none; }
-.js .hero-stage[data-gl="on"] .hero-canvas { opacity: 1; }
+/*
+  The stage: the official symbol as a 3D object (hero-logo.tsx). The canvas overhangs the
+  square so the turning tile and its shadow never clip. Before the 3D arrives (or without
+  it) the official file stands in its place; with reduced motion it is all there is.
+*/
+.hero-logo { grid-column: 7 / -1; grid-row: 1; position: relative; width: 100%; aspect-ratio: 1; max-height: min(72svh, 640px); justify-self: center; touch-action: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+.hero-symbol { position: absolute; left: 50%; top: 50%; width: 72%; aspect-ratio: 1; transform: translate(-50%, -50%); }
+.hero-symbol img { display: block; width: 100%; height: auto; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+.hero-symbol .for-dark { position: absolute; inset: 0; overflow: hidden; border-radius: 25.7%; }
+.hero-symbol .for-dark img { width: calc(100% * 1407.79 / 282.78); max-width: none; margin-top: calc(-100% * 28.05 / 282.78); }
+.hero-symbol .for-dark { display: none; }
+:root[data-theme="dark"] .hero-symbol .for-light { display: none; }
+:root[data-theme="dark"] .hero-symbol .for-dark { display: block; }
+.hero-canvas { display: none; }
+.js .hero-logo .hero-symbol { opacity: 0; transition: opacity var(--duration-reveal) var(--ease-out); }
+.js .hero-logo[data-mode="still"] .hero-symbol { opacity: 1; }
+.js .hero-logo[data-mode="css"] .hero-symbol { opacity: 1; animation: hero-symbol-in 2200ms var(--ease-out) both; }
+.js .hero-canvas { display: block; position: absolute; inset: -18%; width: 136%; height: 136%; opacity: 0; transition: opacity 240ms var(--ease-out); pointer-events: none; }
+.js .hero-logo[data-mode="gl"] { cursor: grab; }
+.js .hero-logo[data-mode="gl"][data-dragging] { cursor: grabbing; }
+.js .hero-logo[data-mode="gl"] .hero-canvas { opacity: 1; }
+@keyframes hero-symbol-in { from { opacity: 0; transform: translate(-50%, -46%) perspective(900px) rotateY(-450deg) scale(0.7); } }
 
-/* The copy arrives once, with the object (transform and opacity only; the headline stays put). */
+/* The copy arrives once, with the symbol (transform and opacity only; the headline stays put). */
 @media (prefers-reduced-motion: no-preference) {
   .js .hero-rise { animation: hero-rise var(--duration-scene) var(--ease-out) both; animation-delay: calc(120ms + var(--i, 0) * 90ms); }
   .js .hero-title span { animation: hero-title 1100ms var(--ease-out) both; }
@@ -168,13 +175,13 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 
 @media (max-width: 1099px) {
   .hero-copy { grid-column: 1 / span 7; }
-  .hero-stage { grid-column: 8 / -1; }
+  .hero-logo { grid-column: 8 / -1; }
 }
 /* Phones and narrow tablets: object on top, copy below, the whole opening in one screen. */
 @media (max-width: 899px) {
   .hero-grid { align-content: center; row-gap: clamp(8px, 2svh, 24px); min-height: min(100svh, 900px); padding-top: calc(var(--nav-height) + 4px); padding-bottom: clamp(28px, 5svh, 56px); }
-  .hero-copy, .hero-stage { grid-column: 1 / -1; }
-  .hero-stage { grid-row: 1; width: auto; height: clamp(180px, 31svh, 340px); max-height: none; aspect-ratio: 1; }
+  .hero-copy, .hero-logo { grid-column: 1 / -1; }
+  .hero-logo { grid-row: 1; width: auto; height: clamp(200px, 32svh, 360px); max-height: none; }
   .hero-copy { grid-row: 2; gap: var(--space-5); }
   .hero-index { display: none; }
   .hero-paper { mask-image: radial-gradient(ellipse 90% 40% at 50% 26%, #000 0%, transparent 80%); }
@@ -185,9 +192,9 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
   .hero-copy .button { min-height: 48px; padding-inline: 18px; font-size: 14px; }
   .hero-copy .actions { flex-wrap: nowrap; }
 }
-/* Short phones: a smaller object so the copy and both buttons stay on the first screen. */
+/* Short phones: a smaller symbol and tighter type so the copy and both buttons stay on the first screen. */
 @media (max-width: 599px) and (max-height: 720px) {
-  .hero-stage { height: clamp(150px, 27svh, 220px); }
+  .hero-logo { height: clamp(160px, 27svh, 220px); }
   .hero-title { font-size: 32px; }
   .hero-lead { font-size: 15px; line-height: 1.45; }
   .hero-copy .label { font-size: 11px; letter-spacing: .12em; }
@@ -206,14 +213,109 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .spec-row:last-child::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: var(--rule-strong); transform-origin: left; }
 .spec dt { font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-muted); padding-top: 4px; }
 .spec dd { font-size: 18px; font-weight: 500; line-height: 1.4; color: var(--text-strong); }
-.about-figure { position: relative; grid-column: 1 / -1; margin-top: var(--space-8); }
-.about-figure picture { overflow: hidden; border-radius: var(--radius-m); aspect-ratio: 21 / 9; }
-.about-figure img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-/* The brand's cropped arc (initial posts): a terracotta segment of the ring meets the image. */
-.about-arc { position: absolute; right: clamp(24px, 6vw, 96px); bottom: 0; width: clamp(120px, 16vw, 240px); aspect-ratio: 1; border: clamp(16px, 2.2vw, 32px) solid var(--orange); border-radius: 50%; clip-path: inset(0 0 50% 0); transform: translateY(50%); }
+/*
+  The code terminal (components/code-terminal.tsx): a window in the brand's navy with tabs,
+  numbered lines and a terracotta caret; beside it, what the code solves. Syntax colours are
+  roles drawn from the palette only.
+*/
+.about-code { grid-column: 1 / -1; display: grid; gap: var(--space-8); margin-top: var(--space-8); }
+.about-code-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); row-gap: var(--space-4); align-items: end; }
+.about-code-head .label { grid-column: 1 / -1; }
+.about-code-head h3 { grid-column: 1 / span 6; font-size: var(--text-statement); font-weight: 500; letter-spacing: var(--tracking-heading); line-height: 1.08; color: var(--text-strong); }
+.about-code-head p:last-child { grid-column: 8 / -1; font-size: var(--text-lead); line-height: 1.5; color: var(--text-muted); }
+.code-term {
+  --ct-bg: var(--navy); --ct-bar: color-mix(in srgb, var(--navy) 82%, #000); --ct-aside: color-mix(in srgb, var(--navy) 88%, var(--mist));
+  --ct-line: color-mix(in srgb, var(--mist) 14%, transparent); --ct-text: color-mix(in srgb, var(--off-white) 92%, transparent);
+  --ct-dim: color-mix(in srgb, var(--mist) 46%, transparent);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) clamp(260px, 26vw, 360px); overflow: hidden; border-radius: var(--radius-l); background: var(--ct-bg); color: var(--ct-text);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--mist) 10%, transparent) inset, 0 40px 80px -40px rgb(12 26 48 / 55%);
+}
+:root[data-theme="dark"] .code-term { --ct-bg: #171B20; --ct-bar: #131619; --ct-aside: #1C2026; box-shadow: 0 0 0 1px var(--rule) inset, 0 40px 80px -40px rgb(0 0 0 / 60%); }
+.ct-window { display: grid; grid-template-rows: auto 1fr auto; min-width: 0; }
+.ct-bar { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 0 18px; background: var(--ct-bar); border-bottom: 1px solid var(--ct-line); }
+.ct-dots { display: flex; flex: none; gap: 7px; }
+.ct-dots i { width: 10px; height: 10px; border-radius: 50%; background: color-mix(in srgb, var(--mist) 22%, transparent); }
+.ct-tabs { display: flex; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.ct-tabs::-webkit-scrollbar { display: none; }
+.ct-tab { position: relative; display: inline-flex; align-items: center; gap: 8px; flex: none; min-height: 46px; padding: 0 12px; border: 0; background: none; color: var(--ct-dim); font: 500 13px/1 var(--font-mono); cursor: pointer; transition: color var(--duration-micro) var(--ease-standard); }
+.ct-tab:hover, .ct-tab:focus-visible { color: var(--ct-text); }
+.ct-tab:focus-visible { outline: 2px solid var(--orange); outline-offset: -4px; border-radius: 6px; }
+.ct-tab[aria-selected="true"] { color: var(--off-white); }
+.ct-tab[aria-selected="true"]::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--orange); }
+.ct-tab-lang { padding: 3px 6px; border-radius: 4px; background: color-mix(in srgb, var(--mist) 10%, transparent); font-size: 10.5px; letter-spacing: .04em; color: var(--sand); }
+.ct-body { position: relative; min-width: 0; height: calc(26 * 1.75em + 72px); overflow-y: auto; padding: 22px 0 26px; font: 13.5px/1.75 var(--font-mono); font-variant-ligatures: none; cursor: text; scrollbar-width: thin; scrollbar-color: var(--ct-line) transparent; }
+.ct-prompt { padding: 0 24px 12px; color: var(--ct-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ct-prompt span { color: var(--sand); }
+.ct-code { margin: 0; overflow-x: auto; font: inherit; scrollbar-width: thin; scrollbar-color: var(--ct-line) transparent; }
+.ct-code code { display: block; min-width: max-content; font: inherit; }
+.ct-line { display: grid; grid-template-columns: 52px auto; }
+.ct-num { padding-right: 18px; text-align: right; color: color-mix(in srgb, var(--mist) 28%, transparent); user-select: none; }
+.ct-text { white-space: pre; padding-right: 24px; }
+.ct-caret { display: inline-block; width: 0.6em; height: 1.2em; margin-left: 1px; vertical-align: -0.22em; background: var(--orange); }
+.ct-caret.is-idle { animation: ct-blink 1.1s steps(1, end) infinite; }
+@keyframes ct-blink { 50% { opacity: 0; } }
+.tk-plain, .tk-punct { color: var(--ct-text); }
+.tk-punct { color: color-mix(in srgb, var(--mist) 72%, transparent); }
+.tk-comment { color: var(--ct-dim); }
+.tk-string, .tk-number { color: var(--sand); }
+.tk-keyword { color: color-mix(in srgb, var(--orange) 72%, var(--off-white)); }
+.tk-type { color: var(--mist); }
+.tk-fn { color: var(--off-white); font-weight: 600; }
+.ct-aside { position: relative; display: flex; flex-direction: column; gap: 14px; padding: 26px 26px 30px; background: var(--ct-aside); border-left: 1px solid var(--ct-line); font-size: 15px; line-height: 1.55; }
+.ct-count { font: 500 12px/1 var(--font-mono); letter-spacing: .08em; color: var(--ct-dim); }
+.ct-count span { color: var(--orange); }
+.ct-meta { display: grid; gap: 10px; margin: 6px 0 4px; }
+.ct-meta div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--ct-line); }
+.ct-meta dt { font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ct-dim); padding-top: 3px; }
+.ct-meta dd { color: var(--off-white); font-weight: 500; }
+.ct-solves-label { margin-top: 8px; font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--sand); }
+.ct-solves { color: color-mix(in srgb, var(--off-white) 86%, transparent); }
+/* Playing it: the invisible keyboard field, the hint, the finished line, the meter and the hold button. */
+.ct-input { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; resize: none; pointer-events: none; }
+.code-term[data-focused] .ct-body { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--orange) 55%, transparent); }
+.ct-done { margin: 14px 24px 0; color: var(--sand); font-size: 13px; animation: hero-rise var(--duration-reveal) var(--ease-out) both; }
+.ct-done span { color: var(--orange); font-weight: 700; }
+.ct-done b { color: var(--off-white); font-weight: 500; }
+.ct-play { display: flex; align-items: center; gap: 18px; min-height: 52px; padding: 10px 18px; border-top: 1px solid var(--ct-line); background: var(--ct-bar); }
+.ct-key { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px 0 11px; border: 1px solid var(--ct-line); border-radius: 999px; background: none; color: var(--off-white); font: 500 13px/1 var(--font); cursor: pointer; transition: border-color var(--duration-micro) var(--ease-standard), background-color var(--duration-micro) var(--ease-standard); }
+.ct-key svg { width: 18px; height: 18px; color: var(--sand); }
+.ct-key:hover, .ct-key:focus-visible { border-color: color-mix(in srgb, var(--orange) 70%, transparent); }
+.ct-key:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.ct-key[data-on] { border-color: var(--orange); background: color-mix(in srgb, var(--orange) 16%, transparent); }
+.ct-key[data-on] svg { color: var(--orange); }
+.ct-meter { position: relative; flex: 1; height: 3px; border-radius: 3px; background: var(--ct-line); overflow: hidden; }
+.ct-meter i { position: absolute; inset: 0; background: var(--orange); transform-origin: left; transition: transform 120ms linear; }
+.ct-typed { flex: none; color: var(--ct-dim); font-size: 13px; white-space: nowrap; }
+.ct-typed b { color: var(--off-white); font: 600 14px var(--font-mono); font-variant-numeric: tabular-nums; }
+.ct-typed-aside { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--ct-line); white-space: normal; }
+.ct-hold { flex: none; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--orange); color: var(--off-white); font: 600 15px/1 var(--font); touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; transition: transform 120ms var(--ease-out), background-color 120ms linear; }
+.ct-hold[data-holding] { transform: scale(0.96); background: color-mix(in srgb, var(--orange) 80%, #000); }
+.ct-hold-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--off-white); }
+.ct-hold[data-holding] .ct-hold-dot { animation: ct-blink 0.5s steps(1, end) infinite; }
+/* The language shows in the side panel; on narrower screens the tabs keep only file names. */
+@media (max-width: 1499px) {
+  .ct-tab-lang { display: none; }
+}
+@media (max-width: 1099px) {
+  .code-term { grid-template-columns: 1fr; }
+  .ct-aside { border-left: 0; border-top: 1px solid var(--ct-line); }
+}
+@media (max-width: 899px) {
+  .about-code-head h3, .about-code-head p:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 599px) {
+  .code-term { border-radius: var(--radius-m); margin-inline: calc(var(--gutter) * -0.5); }
+  .ct-body { height: calc(18 * 1.75em + 56px); font-size: 11.5px; padding-top: 16px; }
+  .ct-line { grid-template-columns: 34px auto; }
+  .ct-num { padding-right: 10px; }
+  .ct-prompt { padding-inline: 14px; }
+  .ct-tab { padding: 0 12px; min-height: 42px; font-size: 12px; }
+  .ct-tab-lang { display: none; }
+  .ct-bar { padding-left: 14px; gap: 10px; }
+  .ct-aside { padding: 20px 18px 28px; }
+}
 @media (max-width: 899px) {
   .about-head, .about-copy, .spec { grid-column: 1 / -1; }
-  .about-figure picture { aspect-ratio: 4 / 3; }
   .spec-row { grid-template-columns: 7.5rem 1fr; gap: var(--space-4); }
 }
 
@@ -816,17 +918,13 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .ch-ctas span { padding: 8px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule-strong); color: var(--text-strong); }
 .ch-ctas span:first-child { background: var(--navy); box-shadow: none; color: #fff; }
 :root[data-theme="dark"] .ch-ctas span:first-child { background: var(--sand); color: var(--ink); }
-.ch-seed { position: relative; justify-self: center; width: 150px; aspect-ratio: 1; }
-.ch-seed b { position: absolute; inset: 22%; border-radius: 50%; background: var(--story-seed, var(--navy)); box-shadow: 0 24px 40px -18px color-mix(in srgb, var(--navy) 70%, transparent); }
-.ch-seed i { position: absolute; inset: 0; border: 1.5px solid var(--accent); border-color: var(--accent) transparent transparent transparent; border-radius: 50%; animation: ch-orbit 9s linear infinite; }
-.ch-seed i + i { inset: 9%; border-color: transparent var(--rule-strong) transparent transparent; animation-duration: 14s; animation-direction: reverse; }
-@keyframes ch-orbit { to { transform: rotate(1turn); } }
-@media (prefers-reduced-motion: reduce) { .ch-seed i { animation: none; } }
+.ch-symbol { justify-self: center; width: 150px; aspect-ratio: 1; filter: drop-shadow(0 18px 22px color-mix(in srgb, var(--navy) 35%, transparent)); transform: perspective(600px) rotateY(-14deg) rotateX(6deg); }
+.ch-symbol img { display: block; width: 100%; height: auto; }
 @container (max-width: 480px) {
   .mini-ch { padding: 14px 16px; }
   .ch-hero { grid-template-columns: 1fr; }
   .ch-hero h4 { font-size: 30px; }
-  .ch-seed { grid-row: 1; width: 110px; }
+  .ch-symbol { grid-row: 1; width: 110px; }
 }
 
 /* The studio's repositories, beside the theme switch and in the footer. */
@@ -908,28 +1006,19 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .closing-phone:hover { background-size: 100% 1px; color: var(--text-on-deep); }
 
 /* Sticker (manual p.10): the official icon on a die-cut paper margin, peelable. */
-.sticker { --sticker: 96px; --sticker-radius: calc(var(--sticker) * 0.2857); display: flex; align-items: center; gap: var(--space-6); min-height: var(--sticker); margin-top: var(--space-6); }
+.sticker { --sticker: 132px; --sticker-radius: calc(var(--sticker) * 0.2857); display: flex; align-items: center; gap: var(--space-8); min-height: var(--sticker); margin-top: var(--space-8); }
 .sticker-slot { position: relative; flex: none; width: var(--sticker); height: var(--sticker); }
-.sticker-mark { position: absolute; inset: 0; border-radius: var(--sticker-radius); background: color-mix(in srgb, var(--navy), #fff 5%); box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 7%, transparent); }
+.sticker-mark { position: absolute; inset: 0; border-radius: var(--sticker-radius); background: color-mix(in srgb, var(--navy), #000 12%); box-shadow: inset 0 1px 3px rgb(0 0 0 / 35%), inset 0 0 0 1px color-mix(in srgb, #fff 6%, transparent); }
 .sticker-body { position: absolute; inset: 0; display: block; padding: 0; border: 0; background: none; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
 .sticker-body:active { cursor: grabbing; }
 .sticker-body[hidden] { display: none; }
 .sticker-body:focus-visible { outline: 2px solid var(--sand); outline-offset: 6px; border-radius: var(--sticker-radius); }
-.sticker-shadow, .sticker-flap-shadow { position: absolute; inset: 0; pointer-events: none; }
-.sticker-shadow { filter: drop-shadow(0 1px 1.5px rgb(5 12 28 / .45)) drop-shadow(0 calc(var(--lift, 0) * 6px) calc(var(--lift, 0) * 10px) rgb(5 12 28 / .25)); }
-.sticker-flap-shadow { filter: drop-shadow(0 4px 7px rgb(5 12 28 / .4)); }
-.sticker-front, .sticker-flap { position: absolute; inset: 0; border-radius: var(--sticker-radius); }
-.sticker-front { padding: calc(var(--sticker) * 0.0625); background: var(--off-white); }
-.sticker-front img { display: block; width: 100%; height: auto; pointer-events: none; }
-.sticker-flap { visibility: hidden; transform-origin: 0 0; background: linear-gradient(var(--crease, 135deg), #d6cdbf var(--crease-at, 50%), #ebe5da calc(var(--crease-at, 50%) + 7%), #fbfaf6 calc(var(--crease-at, 50%) + 26%), #f3efe7 100%); }
-.sticker[data-falling] .sticker-body { pointer-events: none; animation: sticker-fall 620ms cubic-bezier(.5, 0, .75, .1) forwards; }
-.sticker[data-pressing] .sticker-body { animation: sticker-press 480ms var(--ease-out); }
-@keyframes sticker-fall {
-  0% { transform: none; }
-  24% { transform: translate3d(1px, -9px, 0); }
-  100% { transform: translate3d(8px, 150px, 0); opacity: 0; }
-}
-@keyframes sticker-press { from { transform: translate3d(0, -12px, 0) scale(1.06); } }
+/* The flat official sticker: shown until the 3D sheet takes over (and instead of it without WebGL). */
+.sticker-flat { position: absolute; inset: 0; padding: calc(var(--sticker) * 0.0625); border-radius: var(--sticker-radius); background: var(--off-white); box-shadow: 0 1px 2px rgb(5 12 28 / 45%), 0 6px 14px rgb(5 12 28 / 25%); transition: opacity 120ms linear; }
+.sticker-flat img { display: block; width: 100%; height: auto; pointer-events: none; -webkit-user-drag: none; }
+.sticker[data-gl] .sticker-flat { opacity: 0; }
+.sticker-canvas { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; pointer-events: none; }
+@media (max-width: 599px) { .sticker { --sticker: 112px; } }
 .sticker-credits { display: grid; justify-items: start; gap: var(--space-1); max-width: 34ch; font-size: var(--text-small); color: var(--text-on-deep-muted); }
 .sticker-credits:empty { display: none; }
 .sticker-found { display: inline-flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--sand); }
@@ -1001,11 +1090,6 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .motion [data-reveal="rules"] .spec-row:nth-child(3)::before { transition-delay: calc(var(--stagger) * 2); }
 .motion [data-reveal="rules"] .spec-row:nth-child(4)::before, .motion [data-reveal="rules"] .spec-row:nth-child(4)::after { transition-delay: calc(var(--stagger) * 3); }
 .motion [data-reveal="rules"].is-in .spec-row::before, .motion [data-reveal="rules"].is-in .spec-row::after, .motion [data-reveal="rules"].is-in::before { transform: none; }
-.motion [data-reveal="frame"] { opacity: 1; transform: none; }
-.motion [data-reveal="frame"] img { transform: scale(1.06); transition: transform 1400ms var(--ease-out); }
-.motion [data-reveal="frame"] .about-arc { transform: translateY(70%); opacity: 0; transition: transform var(--duration-scene) var(--ease-out) 240ms, opacity var(--duration-reveal) var(--ease-out) 240ms; }
-.motion [data-reveal="frame"].is-in img { transform: none; }
-.motion [data-reveal="frame"].is-in .about-arc { transform: translateY(50%); opacity: 1; }
 
 /* Manifesto: the navy fills each paragraph from the top as it is read. */
 
@@ -1023,30 +1107,3 @@ html:lang(ja) { line-break: strict; }
 html.js:lang(ja) .hero-copy .actions { flex-wrap: wrap; }
 /* Focus lands on the signature for screen readers when the sticker comes off; it is text, not a control. */
 .sticker-found:focus { outline: none; }
-
-/* ───────────────────────── Theme peel ─────────────────────────
-   The page's edge can be pulled like the sticker; the other theme is underneath
-   (components/theme-peel.tsx). The tab is the other surface peeking out, with the point. */
-.peel-tab { position: fixed; z-index: 39; right: 0; top: 50%; width: 14px; height: 84px; margin-top: -42px; display: grid; place-items: center; border-radius: 12px 0 0 12px; background: var(--peel-other); box-shadow: -1px 0 0 color-mix(in srgb, var(--text-strong) 12%, transparent), -4px 2px 10px rgb(5 12 28 / .14); cursor: grab; touch-action: none; transition: width var(--duration-ui) var(--ease-out), height var(--duration-ui) var(--ease-out), margin var(--duration-ui) var(--ease-out); }
-.peel-tab::before { content: ''; position: absolute; inset: -8px 0 -8px -26px; } /* a finger-sized target that reaches into the page */
-.peel-tab:hover, .peel-tab:focus-visible { width: 22px; height: 96px; margin-top: -48px; }
-.peel-tab:active { cursor: grabbing; }
-.peel-tab-point { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
-.peel-tab:focus-visible { outline-offset: 2px; }
-:root { --peel-other: var(--ink); }
-:root[data-theme="dark"] { --peel-other: var(--off-white); }
-:root[data-peel] .peel-tab, .menu-open .peel-tab { visibility: hidden; }
-@media print { .peel-tab { display: none; } }
-
-.peel-under, .peel-shade, .peel-flap { position: fixed; z-index: 95; inset: 0; display: none; pointer-events: none; }
-:root[data-peel-live] .peel-shade, :root[data-peel-live] .peel-flap, :root[data-peel-live="flat"] .peel-under { display: block; }
-.peel-shade { background: linear-gradient(var(--angle), rgb(5 12 28 / .3) var(--crease), rgb(5 12 28 / .1) calc((var(--crease) * 2 + var(--fade)) / 3), transparent var(--fade)); }
-/* The paper back of the lifted page: light at the folded tip, shaded into the crease. */
-.peel-flap[data-from="light"] { background: linear-gradient(var(--angle), #e6dfd3 var(--tip), #fbfaf6 calc(var(--tip) + 1.2%), #f2eee6 calc((var(--tip) + var(--crease)) / 2), #d4cabb var(--crease)); }
-.peel-flap[data-from="dark"] { background: linear-gradient(var(--angle), #3a414a var(--tip), #2c3239 calc(var(--tip) + 1.2%), #242930 calc((var(--tip) + var(--crease)) / 2), #121519 var(--crease)); }
-
-/* While peeling, the transition holds (the code ends it) and the new page shows only through
-   the revealed area and the flap; the old snapshot stays whole underneath. */
-:root[data-peel]::view-transition-group(root) { animation: peel-hold 3600s linear; }
-:root[data-peel]::view-transition-new(root) { clip-path: var(--peel-clip, path("M0 0Z")); }
-@keyframes peel-hold { from { opacity: 1; } to { opacity: 1; } }

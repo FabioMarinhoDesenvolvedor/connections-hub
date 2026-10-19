@@ -1,13 +1,12 @@
 import type { CSSProperties } from 'react';
 import { Arrow } from '@/components/arrow';
-import { HeroStage } from '@/components/hero/hero-stage';
+import { HeroLogo } from '@/components/hero/hero-logo';
 import { solutionIds } from '@/data/site';
 import type { Dictionary } from '@/i18n';
 
 /*
-  01 — Opening. One screen: the copy on the left (above, on phones) and the brand object on
-  the right, which plays on its own as soon as the page is up: the seed opens into rings,
-  the rings lock into the official C, the seed becomes the dot and the tile opens beneath.
+  01 — Opening. One screen: the copy on the left (above, on phones) and, beside it, the
+  official symbol as a 3D object that spins in and stays alive (hero-logo.tsx, DESIGN.md §12).
   No pinning, no scroll needed. All copy is server-rendered HTML.
 */
 export function Hero({ t }: { t: Dictionary }) {
@@ -28,7 +27,7 @@ export function Hero({ t }: { t: Dictionary }) {
           {solutionIds.map(id => <a key={id} href={`#solucao-${id}`}>{t.solutions.items[id].title}</a>)}
         </nav>
       </header>
-      <HeroStage />
+      <HeroLogo label={t.hero.symbol} />
     </div>
   </section>;
 }

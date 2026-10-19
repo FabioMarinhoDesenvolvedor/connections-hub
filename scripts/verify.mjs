@@ -18,10 +18,12 @@ for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos'
 for (const text of ['Código em uso.', 'Marketing Dashboard', 'WorkHub', 'WSN Loja', 'Tasks', '/api/cards/{id}/enviar-ao-cliente', 'card_approved_snapshots', 'Ver em ação', 'dados fictícios']) assert.ok(html.includes(text), `Projects rendered as HTML: ${text}`);
 for (const removed of ['Clozi', 'Cifra Pompeia', 'Tina Tur']) assert.ok(!html.includes(removed), `Project no longer shown: ${removed}`);
 assert.ok(html.includes('href="https://github.com/FabioMarinhoDesenvolvedor"'), 'GitHub profile linked');
+assert.ok(html.includes('class="code-term"') && html.includes('somarHorasUteis'), 'About shows the code terminal with real code');
+for (const photo of ['brand-office', 'brand-people', 'brand-technology']) assert.ok(!html.includes(photo), `No office or team mockup published: ${photo}`);
 for (const image of ['alcool-gel', 'detergente', 'luva-nitrilica', 'papel-toalha']) assert.equal((await fetch(`${origin}/projects/wsn/${image}.webp`)).status, 200, `WSN product image ${image}`);
 for (const id of ['inicio', 'sobre', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'projetos', 'projeto-marketing', 'processo', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
 for (const link of ['https://wa.me/5511974589226', 'mailto:contato@connectionshub.com.br', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
-for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/brand-office.avif', '/images/brand-office-small.avif', '/images/brand-office.webp', '/images/brand-people.avif', '/images/brand-people-small.avif', '/images/brand-technology.avif', '/images/brand-technology-small.avif', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
+for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/social.jpg', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
 const files = await fs.readdir(originals);
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
@@ -33,7 +35,7 @@ let transferred = 0;
 for (const src of mainJS) {
   const script = await (await fetch(origin + src)).text();
   transferred += Buffer.byteLength(script);
-  assert.ok(!script.includes('THREE.WebGLRenderer') && !script.includes('WebGLRenderer'), 'three.js and the 3D renderers must load on demand, never in an initial script');
+  assert.ok(!script.includes('THREE.WebGLRenderer') && !script.includes('WebGLRenderer'), 'No 3D renderer in an initial script');
 }
 
 // Languages: Portuguese at the root (/pt redirects there), English and Japanese under their prefixes,
@@ -52,8 +54,9 @@ for (const [path, expected] of Object.entries(translated)) {
   for (const id of ['inicio', 'sobre', 'solucoes', 'projetos', 'processo', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
 }
 
-// Theme: chosen before first paint, and the opening ends on the official file for each theme.
+// Theme: chosen before first paint. The opening stands on the official symbol files.
 assert.match(html, /localStorage\.getItem\('theme'\)/, 'Theme is applied by an inline script before paint');
-assert.ok(html.includes('class="for-dark" src="/brand/logo-light.svg"'), 'Dark theme ends on the official light logo');
+assert.ok(html.includes('class="for-light" src="/brand/symbol-navy.svg"'), 'Opening stands on the official symbol');
+assert.ok(html.includes('src="/brand/logo-light.svg"'), 'Dark theme uses the official light logo');
 
 console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, byte-for-byte SVG/font integrity, PT/EN/JA routes and copy, theme boot. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);

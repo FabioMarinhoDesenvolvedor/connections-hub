@@ -166,3 +166,71 @@ Números medidos em `VALIDATION.md`.
 - **Texto próprio:** "Sobre" reescrito sem frases do manual.
 - **Privacidade:** aviso fixo na primeira visita. O site não coleta dados pessoais, não usa cookies, rastreadores nem analytics; só o tema e o aviso visto ficam no navegador.
 
+
+## 12. O símbolo girando, em nível de produto; fotos fora do site (19/10/2026)
+
+**Pedido:** a mesma ideia de antes (a logo girando na abertura), só que feita direito. A abertura de 17/10 parecia uma placa de plástico chapada. Duas tentativas desta data foram reprovadas:
+- arcos em órbita que se montavam no logo ("amadora");
+- trocar a logo por uma interface de sistema sendo construída ("genérica", e fugia do pedido).
+
+**Regra:** melhorar o conceito pedido, não substituí-lo.
+
+**O que é agora:** o símbolo oficial como objeto físico, renderizado em tempo real (three.js, WebGL2).
+- **Geometria do arquivo oficial:** `symbol-navy.svg` é lido e extrudado (placa arredondada, C e ponto), então a silhueta é exatamente a da marca. A placa é espessa, com borda arredondada; o C e o ponto ficam em relevo, com borda suave, e repetidos no verso para o giro.
+- **Acabamento laqueado:** corpo acetinado sob um verniz fino e brilhante. As faces ficam na cor da marca e as bordas desenham as luzes do estúdio como linhas limpas. Normais vincadas: suaves na curva, nítidas só nas quinas.
+- **Luz de estúdio:** um softbox alto à esquerda, duas tiras verticais para os contornos, uma tira no topo, rebatida quente do papel e um preenchimento frontal. Uma luz-chave suave projeta a sombra da placa no papel atrás dela.
+- **Cores:** no tema claro, as do `symbol-navy.svg` (placa navy, C terracota); no escuro, as do `logo-light.svg` (placa terracota, C papel).
+- **Entrada (2,6 s):** a placa chega de perfil e gira uma volta e um quarto, rápida no começo e desacelerando, com um leve passo além do ponto antes de assentar em três-quartos. Cresce e sobe enquanto gira, a luz do estúdio corre sobre ela e o ponto encaixa por último.
+- **Depois:** a peça segue viva enquanto está na tela, com balanço e flutuação lentos e inclinação na direção do mouse. Pausa fora da tela e com a aba oculta.
+- **É uma rodinha:**
+  - um peteleco faz girar por muito tempo (atrito quase nulo, até cerca de 10 voltas por segundo);
+  - pegar enquanto gira freia na mão, e esse toque não conta como clique;
+  - arrastar gira junto, e soltar com velocidade relança;
+  - devagar, ela desliza e encaixa de frente.
+  - A imagem de reserva não é arrastável e o `pointerdown` cancela o comportamento padrão; antes, arrastar puxava a imagem e cortava o giro.
+- **Clique com a peça parada = gota de tinta na própria logo** (shader em `renderer.ts`). Ela cai no ponto clicado, e a próxima combinação oficial de cores se espalha pela peça: navy + C terracota → terracota + C papel → papel + C navy → navy + C papel.
+  - **A tinta tem corpo:** um menisco na borda que pega as luzes do estúdio e uma ondulação à frente, ambos por relevo calculado na tela; o brilho molhado seca de volta para o acetinado.
+  - **Gravidade:** a tinta corre mais para baixo, com escorridos.
+  - **Respingos:** esticados na direção do impacto e absorvidos sem deixar marca.
+  - **A peça reage:** afunda e inclina para longe do ponto atingido.
+  - O tema do site não muda.
+- **Removido:** a aba de puxar o tema na lateral da página (theme-peel). O tema troca só pelo botão do menu.
+- **Alternativas:**
+  - antes do 3D carregar, o arquivo oficial ocupa o lugar;
+  - sem WebGL2, com economia de dados ou em aparelho fraco, o arquivo oficial entra girando em CSS;
+  - com movimento reduzido, fica parado.
+- **Código:** `src/lib/logo/renderer.ts` e `src/components/hero/hero-logo.tsx`. Em desenvolvimento, `?logo=1200` congela a entrada nesse instante.
+- **Medido:** 60 fps em desktop e no celular emulado; o three.js continua fora dos scripts iniciais.
+
+**Sobre: um terminal com código de verdade no lugar da foto.** Um primeiro painel da marca (assinatura e slogan sobre navy) foi reprovado como sem criatividade.
+
+O terminal (`components/code-terminal.tsx`), no navy da marca:
+- abas por arquivo, linhas numeradas e cursor terracota;
+- realce de sintaxe próprio (`lib/highlight.ts`) com cores só da paleta;
+- fonte JetBrains Mono (só para código), sem ligaduras, para mostrar os caracteres exatos.
+
+Digita trechos reais dos projetos (`data/code.ts`, copiados dos repositórios, apenas cortados), em cinco linguagens:
+- TypeScript: prazo em horas úteis (WorkHub);
+- Rust: restauração de backup sem confiar no arquivo (Tasks);
+- SQL: migration de revogação de tokens (WorkHub);
+- Ruby: regra única do frete grátis (WSN Loja);
+- GLSL: o shader da gota desta página.
+
+O comportamento: **o visitante escreve o código.** A versão de digitação automática foi reprovada como pouco interativa.
+- **Com teclado:** clicando no terminal, qualquer tecla escreve os próximos caracteres do arquivo real, já com cores. Backspace volta, Enter completa a linha. Ao terminar, o arquivo é anunciado como completo e o próximo abre.
+- **No celular:** um botão "Segure para programar". Segurando, o código sai cada vez mais rápido, com uma vibração leve a cada linha nova.
+- Ao lado do código ficam o projeto, a linguagem, o que o trecho resolve e quantos caracteres o visitante já escreveu.
+- Com movimento reduzido, ou sem JavaScript, o código aparece completo.
+- **Atenção:** Tasks, WorkHub e WSN Loja têm repositório privado; os trechos publicados precisam do aval do dono.
+
+**Adesivo (rodapé), refeito como papel de verdade** (`components/sticker.tsx`, `lib/sticker/peel.ts`). A versão anterior era uma dobra plana com vinco reto, que um clique arrancava com uma animação pronta; foi reprovada.
+- Pega-se por qualquer borda e puxa-se de volta por cima dele: o papel enrola numa curva (não vinco), dobra e mostra o verso.
+- A cola resiste: a frente de descolamento avança devagar e cede aos saltos, e a linha não é reta.
+- Soltar antes da hora cola de novo. Puxar para fora só estica a borda.
+- Arrancado, ele fica pendurado no ponto onde foi pego e balança com a gravidade e a aceleração da mão. Solto, cai com a velocidade do arremesso, girando e dando cambalhota, e os créditos aparecem.
+- Um clique simples só levanta a pontinha. O teclado tira num gesto.
+- Sem WebGL, ou com movimento reduzido, fica o adesivo plano oficial, e o clique o tira.
+
+**Compartilhamento:** `public/images/social.jpg` é desenhada a partir do `logo-light.svg` sobre navy com o grid (`npm run social`), sem foto.
+
+**Removido:** `brand-office`, `brand-people` e `brand-technology` (todas as variantes) e o componente `BrandImage`. O `verify` falha se alguma delas voltar ao HTML e confere que a abertura se apoia no arquivo oficial do símbolo.

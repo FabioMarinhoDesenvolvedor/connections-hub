@@ -47,7 +47,8 @@ export function ConnectionsMini({ act, hero, locale }: MiniProps & { hero: Recor
         <p className="ch-lead">{copy.lead}</p>
         <p className="ch-ctas"><span>{copy.primary}</span><span>{copy.secondary}</span></p>
       </div>
-      <span className="ch-seed" aria-hidden="true"><i /><i /><b /></span>
+      {/* The opening's 3D symbol, in miniature (the official file). */}
+      <span className="ch-symbol" aria-hidden="true"><img src="/brand/symbol-navy.svg" width="632" height="632" alt="" /></span>
     </div>
   </div>;
 }
