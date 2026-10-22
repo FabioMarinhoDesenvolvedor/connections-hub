@@ -5,22 +5,7 @@ import type { SolutionId } from '@/data/site';
   Every visible or announced string on the site, per language. The Portuguese is the
   source; the tagline is translated faithfully, never rewritten.
 */
-export type VaultCopy = {
-  file: string; policy: string; plain: string; cipher: string; encrypt: string; decrypt: string; again: string;
-  area: string; hintDrag: string; hintTamper: string;
-  status: { plain: string; encrypting: string; cipher: string; tampered: string; decrypting: string; rejected: string; restored: string; unavailable: string };
-  key: string; iv: string;
-  /** {a} → {b} */
-  bytes: string;
-  shape: string;
-};
-export type LiveCheckId = 'hsts' | 'csp' | 'frame' | 'nosniff' | 'permissions' | 'data';
-export type LiveCopy = {
-  label: string; note: string; ok: string; missing: string; configured: string;
-  items: Record<LiveCheckId, { title: string; text: string }>;
-  /** {cookies}, {third} */
-  dataValue: string;
-};
+export type VaultCopy = { protect: string; again: string; code: string; sealed: string; area: string };
 
 export type Dictionary = {
   meta: { title: string; description: string; tagline: string; socialAlt: string };
@@ -39,28 +24,42 @@ export type Dictionary = {
     theme: { label: string; toDark: string; toLight: string };
   };
   nav: { label: string; href: string }[];
-  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; symbol: string };
+  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string; symbol: string };
   about: {
     label: string;
     title: string[];
     paragraphs: string[];
     facts: { term: string; detail: string }[];
-    code: {
-      label: string; title: string; intro: string; solves: string; project: string; language: string; tabs: string;
-      files: { sla: string; backup: string; tokens: string; frete: string; ink: string };
-      play: { keys: string; hold: string; holding: string; typed: string; chars: string; done: string; next: string; area: string };
-    };
   };
   security: {
     label: string;
     title: string[];
-    intro: string;
+    lead: string;
     vault: VaultCopy;
-    live: LiveCopy;
-    systemsLabel: string;
-    systems: { title: string; text: string }[];
+    pillars: { title: string; text: string }[];
   };
-  services: Record<SolutionId, { title: string; summary: string }>;
+  solutions: {
+    label: string;
+    title: string[];
+    intro: string;
+    figure: string;
+    solvesLabel: string;
+    includesLabel: string;
+    items: Record<SolutionId, {
+      title: string;
+      summary: string;
+      solves: string;
+      cta: string;
+      figure: { title: string; caption: string };
+      includes: string[];
+    }>;
+    schematic: {
+      sites: { nav: string; hero: string; sections: string; contact: string };
+      sistemas: { modules: [string, string, string, string]; profiles: string; database: string; sheets: string; reports: string; integration: string };
+      dashboards: { sources: [string, string, string]; processing: string; period: string; unit: string; target: string; decision: string };
+      ecommerce: { flow: [string, string, string, string, string, string]; add: string; checkout: string; payment: string; shipping: string; total: string; finish: string };
+    };
+  };
   process: {
     label: string;
     title: string[];

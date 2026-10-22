@@ -273,7 +273,7 @@ if (vFront > 0.75 && vGlyph >= 0.0) {
     const width = cols * PITCH_X + (tall ? 1 : 3), height = plainRows * PITCH_Y + (tall ? 2 : 4);
     const vfov = (FOV * Math.PI) / 180;
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-    const distance = Math.max(height / 2 / Math.tan(vfov / 2), width / 2 / Math.tan(hfov / 2)) * (tall ? 1.06 : 1.08);
+    const distance = Math.max(height / 2 / Math.tan(vfov / 2), width / 2 / Math.tan(hfov / 2)) * (tall ? 1.04 : 1.0);
     camera.position.set(0, -distance * 0.08, distance);
     camera.lookAt(0, 0, 0);
     key.position.set(-distance * 0.35, distance * 0.55, distance * 0.7);

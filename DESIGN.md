@@ -235,19 +235,24 @@ O comportamento: **o visitante escreve o código.** A versão de digitação aut
 
 **Removido:** `brand-office`, `brand-people` e `brand-technology` (todas as variantes) e o componente `BrandImage`. O `verify` falha se alguma delas voltar ao HTML e confere que a abertura se apoia no arquivo oficial do símbolo.
 
-## 13. Segurança no lugar de Soluções (22/10/2026)
+## 13. Segurança no lugar do terminal de código (22/10/2026)
 
-**Pedido:** uma seção sobre como a Connections Hub cuida da segurança, com interação 3D de código sendo criptografado, no lugar da seção que fixava na rolagem (Soluções). A primeira versão (um cartão de código inclinado em CSS, com painel de leitura e duas listas longas) foi reprovada como fraca: pouco objeto, muito texto.
+**Pedido:** uma seção que mostre que o site que a Connections Hub entrega é seguro, e nada além disso, no lugar do terminal de código do Sobre (o "segure para programar").
 
-- **Promessas só verdadeiras:** o site envia os cabeçalhos que a seção descreve (`src/lib/security-headers.ts`, aplicados em `next.config.ts`): HSTS, CSP só com o próprio domínio, `frame-ancestors 'none'` e `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, Permissions-Policy e COOP. A CSP mantém `'unsafe-inline'` para scripts e estilos (página estática, sem nonce; o Next embute dados de inicialização); outras origens são recusadas.
-- **Verificação da CSP (obrigação nossa, não do cliente):** varredura automática do site inteiro em PT, EN e JA, desktop e celular, usando cada interação (logo 3D com tinta e giro, terminal digitando e segurando, todas as abas de Projetos e "Ver em ação", tema ida e volta, adesivo, idioma, cofre). Zero violações de CSP, zero erros. O `verify` confere os cabeçalhos.
-- **O cofre** (`components/security/vault.tsx`, `lib/cipher/renderer.ts`): a CSP real deste site como objeto físico, uma peça laqueada por caractere, na mesma luz de estúdio e acabamento da logo da abertura (three.js, peças instanciadas, caracteres de um atlas desenhado com a fonte mono da página).
-  - **Texto claro:** peças no padrão de cores `symbol-light` (papel com marca navy, palavras-chave em terracota), dispostas como o código se lê, com o contorno irregular dele.
-  - **Criptografar:** AES-256-GCM de verdade (WebCrypto), chave e IV novos a cada vez, criados no navegador. A varredura desce o código: cada peça levanta, gira uma volta, troca de caractere e de cor no meio do giro e voa para outro lugar (difusão). O bloco fecha num retângulo uniforme no padrão `logo-light` (terracota com marca papel).
-  - **A homotetia quebrada:** o contorno tracejado da forma original fica no chão. O texto cifrado não é cópia em escala do código: não sobra forma nenhuma.
-  - **Adulterar:** clicar numa peça cifrada troca aquele caractere do texto cifrado, um byte real, e a peça fica navy com o caractere em terracota (padrão `symbol-navy`). Decifrar é recusado: as peças começam a levantar e batem de volta com um tremor.
-  - Arrastar gira o bloco; o mouse inclina. Em tela em pé, o código quebra as linhas como um editor (no espaço, continuação recuada), para as peças ficarem grandes. O 3D carrega quando a seção se aproxima e só desenha enquanto algo se move. Sem WebGL2, o mesmo texto aparece plano e os botões funcionam; sem JavaScript, o código aparece e os botões somem; com movimento reduzido, as trocas são imediatas.
-- **Conferido agora, no seu navegador** (`components/security/live-checks.tsx`): a página pede à própria origem os cabeçalhos com que foi servida (HEAD, mesma origem) e mostra o que chegou, item a item. "Nada coletado" conta os cookies da página e os recursos de outras origens. Antes da checagem (e sem JavaScript), cada cartão mostra o valor configurado. Obs.: o Chrome registra esse HEAD como "abortado" nas ferramentas de rede ao fechar a resposta sem corpo; a resposta chega normalmente.
-- **Nos sistemas que entregamos:** seis linhas curtas, só com fatos dos repositórios.
-- **Removido:** a seção Soluções, a placa fixa e os desenhos técnicos. Os serviços seguem no texto da abertura, no Sobre e nos dados estruturados (`services`). No menu, "Soluções" virou "Segurança"; o botão secundário da abertura leva a Projetos.
+**Histórico:** duas versões reprovadas no mesmo dia, e ambas trocaram Soluções por engano.
+- Um cartão de código inclinado em CSS, com painel de leitura e listas longas: "lixo".
+- Um cofre 3D com chave, IV, adulteração, checagem ao vivo dos cabeçalhos e listas: informação demais para vender a marca.
+
+Soluções voltou como era.
+
+**O que é agora:**
+- **Uma mensagem:** "Seguro desde a primeira linha." Uma frase ("Todo site da Connections Hub já nasce protegido. Este aqui é a prova") e três selos curtos: conexão cifrada, só código próprio, seus dados em paz.
+- **A peça:** numa janela navy com o grid da marca, o código de segurança deste site (a CSP que `next.config.ts` envia) em peças laqueadas 3D, uma por caractere, no acabamento e na luz da logo da abertura (`components/security/vault.tsx`, `lib/cipher/renderer.ts`).
+  - **Ao entrar na tela,** o código é criptografado de verdade no navegador (AES-256-GCM, chave nova que nunca sai da página).
+  - Cada peça levanta, gira, troca de caractere e de cor e o bloco fecha retangular em terracota; o contorno do código original fica tracejado.
+  - Um botão repete. Arrastar gira.
+  - No celular, o código quebra as linhas como num editor e o botão fica abaixo da janela.
+- **Promessas verdadeiras:** os selos correspondem aos cabeçalhos que o site envia (`src/lib/security-headers.ts`): HSTS, CSP só com o próprio domínio, `frame-ancestors 'none'`, `nosniff`, Referrer-Policy, Permissions-Policy e COOP. O `verify` confere cada um.
+- **Verificação (nossa obrigação):** varredura automática em PT, EN e JA, desktop e celular, usando todas as interações do site. Zero violações de CSP, erros, falhas de rede ou estouro de largura.
+- **Removido:** o terminal de código (`code-terminal.tsx`, `data/code.ts`), que também publicava trechos de repositórios privados.
 

@@ -16,16 +16,15 @@ for (const label of ['Aplicação da identidade', 'Conhecimento como pilar centr
 for (const text of ['Conectando ideias.', 'Construindo soluções.', 'Tem um projeto, uma ideia ou um problema para resolver?']) assert.ok(html.includes(text), `Copy rendered as HTML: ${text}`);
 // Security: the section's claims are headers the site really sends.
 for (const [name, expected] of [['strict-transport-security', 'max-age='], ['content-security-policy', "frame-ancestors 'none'"], ['content-security-policy', "default-src 'self'"], ['x-content-type-options', 'nosniff'], ['x-frame-options', 'DENY'], ['referrer-policy', 'strict-origin-when-cross-origin'], ['permissions-policy', 'camera=()']]) assert.ok((page.headers.get(name) || '').includes(expected), `Security header ${name}: ${expected}`);
-assert.ok(html.includes('Segurança não é promessa.') && html.includes('frame-ancestors'), 'Security section rendered as HTML');
-assert.ok(!html.includes('id="solucoes"'), 'The pinned services section is gone');
+assert.ok(html.includes('primeira linha.') && html.includes('frame-ancestors'), 'Security section rendered as HTML');
+assert.ok(!html.includes('class="code-term"'), 'The code terminal is gone (replaced by Security)');
 for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos']) assert.ok(html.includes(step), `Preserved process: ${step}`);
 for (const text of ['Código em uso.', 'Marketing Dashboard', 'WorkHub', 'WSN Loja', 'Tasks', '/api/cards/{id}/enviar-ao-cliente', 'card_approved_snapshots', 'Ver em ação', 'dados fictícios']) assert.ok(html.includes(text), `Projects rendered as HTML: ${text}`);
 for (const removed of ['Clozi', 'Cifra Pompeia', 'Tina Tur']) assert.ok(!html.includes(removed), `Project no longer shown: ${removed}`);
 assert.ok(html.includes('href="https://github.com/FabioMarinhoDesenvolvedor"'), 'GitHub profile linked');
-assert.ok(html.includes('class="code-term"') && html.includes('somarHorasUteis'), 'About shows the code terminal with real code');
 for (const photo of ['brand-office', 'brand-people', 'brand-technology']) assert.ok(!html.includes(photo), `No office or team mockup published: ${photo}`);
 for (const image of ['alcool-gel', 'detergente', 'luva-nitrilica', 'papel-toalha']) assert.equal((await fetch(`${origin}/projects/wsn/${image}.webp`)).status, 200, `WSN product image ${image}`);
-for (const id of ['inicio', 'sobre', 'seguranca', 'projetos', 'projeto-marketing', 'processo', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
+for (const id of ['inicio', 'sobre', 'seguranca', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'projetos', 'projeto-marketing', 'processo', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
 for (const link of ['https://wa.me/5511974589226', 'mailto:contato@connectionshub.com.br', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
 for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/social.jpg', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
@@ -54,8 +53,8 @@ for (const [path, expected] of Object.entries(translated)) {
   const page = await response.text();
   for (const text of expected) assert.ok(page.includes(text), `/${path} renders ${text}`);
   const copy = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
-  for (const portuguese of ['Fale conosco', 'Segurança não é promessa.', 'Você recebe', 'Construindo soluções.']) assert.ok(!copy.includes(portuguese), `/${path} has no Portuguese copy: ${portuguese}`);
-  for (const id of ['inicio', 'sobre', 'seguranca', 'projetos', 'processo', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
+  for (const portuguese of ['Fale conosco', 'Soluções', 'primeira linha.', 'Você recebe', 'Construindo soluções.']) assert.ok(!copy.includes(portuguese), `/${path} has no Portuguese copy: ${portuguese}`);
+  for (const id of ['inicio', 'sobre', 'seguranca', 'solucoes', 'projetos', 'processo', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
 }
 
 // Theme: chosen before first paint. The opening stands on the official symbol files.

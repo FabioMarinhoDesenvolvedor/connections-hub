@@ -32,9 +32,9 @@ npm run assets          # regenera imagens e cópias oficiais a partir de Refer�
   - `geometry.ts`: medidas do símbolo oficial.
   - `renderer.ts`: three.js em WebGL2, sombras, resolução adaptativa e ciclo de vida.
 - `src/components/privacy-notice.tsx`: aviso de privacidade na primeira visita.
-- `src/components/sections/`: Sobre, Segurança, Projetos, Processo e Contato.
-- `src/components/security/`: `vault.tsx` (o cofre: a CSP deste site cifrada de verdade no navegador, AES-256-GCM via WebCrypto) e `live-checks.tsx` (cada regra conferida ao vivo nos cabeçalhos da própria página).
-- `src/lib/cipher/renderer.ts`: o cofre em 3D (three.js): uma peça laqueada por caractere, que voa, gira e se reagrupa no texto cifrado.
+- `src/components/sections/`: Sobre, Segurança, Soluções, Projetos, Processo e Contato. `schematic.tsx` contém os desenhos técnicos de cada serviço.
+- `src/components/security/vault.tsx`: a peça da seção Segurança: o código de segurança deste site, criptografado de verdade no navegador (AES-256-GCM, WebCrypto) quando aparece na tela.
+- `src/lib/cipher/renderer.ts`: essa peça em 3D (three.js): uma peça laqueada por caractere, que levanta, gira e se fecha num bloco cifrado.
 - `src/lib/security-headers.ts`: cabeçalhos de segurança (CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy), enviados pelo `next.config.ts` e mostrados na seção.
 - `src/data/projects.ts`: cada projeto por camada (stack, módulos, tabelas, sistemas externos) e os fluxos de cada ação da interface.
 - `src/components/projects/`: `explorer.tsx` (abas e ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).

@@ -1,8 +1,8 @@
-import type { CodeLanguage } from '@/data/code';
+export type CodeLanguage = 'ts' | 'rust' | 'sql' | 'ruby' | 'glsl';
 
 /*
-  A small syntax highlighter for the About terminal: enough to read TypeScript, Rust, SQL,
-  Ruby and GLSL the way an editor shows them. Colours are roles mapped to the brand palette
+  A small syntax highlighter (used by the Security vault): enough to read TypeScript, Rust,
+  SQL, Ruby and GLSL the way an editor shows them. Colours are roles mapped to the brand palette
   in globals.css (.tk-*), never a third-party theme.
 */
 export type TokenKind = 'plain' | 'comment' | 'string' | 'number' | 'keyword' | 'type' | 'fn' | 'punct';
