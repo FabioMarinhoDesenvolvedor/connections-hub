@@ -5,13 +5,21 @@ import type { SolutionId } from '@/data/site';
   Every visible or announced string on the site, per language. The Portuguese is the
   source; the tagline is translated faithfully, never rewritten.
 */
-export type SecurityBenchCopy = {
-  label: string; lead: string; file: string; fileEncrypted: string; area: string;
-  encrypt: string; decrypt: string; tamper: string; reset: string; drag: string; plain: string; cipher: string;
-  status: { plain: string; working: string; decrypting: string; cipher: string; tampered: string; rejected: string; restored: string; unavailable: string };
-  /** bytes: {n} */
-  readout: { algorithm: string; key: string; keyValue: string; iv: string; tag: string; tagValue: string; size: string; bytes: string; shape: string };
-  shape: { kept: string; lost: string; note: string };
+export type VaultCopy = {
+  file: string; policy: string; plain: string; cipher: string; encrypt: string; decrypt: string; again: string;
+  area: string; hintDrag: string; hintTamper: string;
+  status: { plain: string; encrypting: string; cipher: string; tampered: string; decrypting: string; rejected: string; restored: string; unavailable: string };
+  key: string; iv: string;
+  /** {a} → {b} */
+  bytes: string;
+  shape: string;
+};
+export type LiveCheckId = 'hsts' | 'csp' | 'frame' | 'nosniff' | 'permissions' | 'data';
+export type LiveCopy = {
+  label: string; note: string; ok: string; missing: string; configured: string;
+  items: Record<LiveCheckId, { title: string; text: string }>;
+  /** {cookies}, {third} */
+  dataValue: string;
 };
 
 export type Dictionary = {
@@ -47,9 +55,8 @@ export type Dictionary = {
     label: string;
     title: string[];
     intro: string;
-    bench: SecurityBenchCopy;
-    siteLabel: string;
-    site: { title: string; text: string }[];
+    vault: VaultCopy;
+    live: LiveCopy;
     systemsLabel: string;
     systems: { title: string; text: string }[];
   };

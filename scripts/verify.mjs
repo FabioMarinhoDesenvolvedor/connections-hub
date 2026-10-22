@@ -16,7 +16,7 @@ for (const label of ['Aplicação da identidade', 'Conhecimento como pilar centr
 for (const text of ['Conectando ideias.', 'Construindo soluções.', 'Tem um projeto, uma ideia ou um problema para resolver?']) assert.ok(html.includes(text), `Copy rendered as HTML: ${text}`);
 // Security: the section's claims are headers the site really sends.
 for (const [name, expected] of [['strict-transport-security', 'max-age='], ['content-security-policy', "frame-ancestors 'none'"], ['content-security-policy', "default-src 'self'"], ['x-content-type-options', 'nosniff'], ['x-frame-options', 'DENY'], ['referrer-policy', 'strict-origin-when-cross-origin'], ['permissions-policy', 'camera=()']]) assert.ok((page.headers.get(name) || '').includes(expected), `Security header ${name}: ${expected}`);
-assert.ok(html.includes('Segurança desde') && html.includes('AES-256-GCM'), 'Security section rendered as HTML');
+assert.ok(html.includes('Segurança não é promessa.') && html.includes('frame-ancestors'), 'Security section rendered as HTML');
 assert.ok(!html.includes('id="solucoes"'), 'The pinned services section is gone');
 for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos']) assert.ok(html.includes(step), `Preserved process: ${step}`);
 for (const text of ['Código em uso.', 'Marketing Dashboard', 'WorkHub', 'WSN Loja', 'Tasks', '/api/cards/{id}/enviar-ao-cliente', 'card_approved_snapshots', 'Ver em ação', 'dados fictícios']) assert.ok(html.includes(text), `Projects rendered as HTML: ${text}`);
@@ -54,7 +54,7 @@ for (const [path, expected] of Object.entries(translated)) {
   const page = await response.text();
   for (const text of expected) assert.ok(page.includes(text), `/${path} renders ${text}`);
   const copy = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
-  for (const portuguese of ['Fale conosco', 'Segurança desde', 'Você recebe', 'Construindo soluções.']) assert.ok(!copy.includes(portuguese), `/${path} has no Portuguese copy: ${portuguese}`);
+  for (const portuguese of ['Fale conosco', 'Segurança não é promessa.', 'Você recebe', 'Construindo soluções.']) assert.ok(!copy.includes(portuguese), `/${path} has no Portuguese copy: ${portuguese}`);
   for (const id of ['inicio', 'sobre', 'seguranca', 'projetos', 'processo', 'contato']) assert.ok(page.includes(`id="${id}"`), `/${path} anchor ${id}`);
 }
 

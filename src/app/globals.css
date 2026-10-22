@@ -316,115 +316,105 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 }
 
 /* ───────────────────────── 03 Security ─────────────────────────
-   On the brand navy with its grid. The bench (components/cipher-bench.tsx): a code plate in
-   CSS 3D with real text, a small plate with the code's shape, and the readout of a real
-   AES-256-GCM run. Then the rules, as hairline lists: this site, and the systems we deliver. */
+   On the brand navy with its grid. The vault (components/security/vault.tsx): this site's own
+   content policy as lacquered 3D pieces, encrypted for real in the browser; a bar with the one
+   action, what is happening and the run's key, IV and sizes. Then every rule checked live, and
+   the systems we deliver in one short list. */
 .security { padding-block: var(--section-space); --ct-text: color-mix(in srgb, var(--off-white) 92%, transparent); --ct-dim: color-mix(in srgb, var(--mist) 46%, transparent); }
 .security .section-head { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); }
 .security .section-head .label { grid-column: 1 / -1; }
 .security .section-title { grid-column: 1 / span 7; }
 .security .section-intro { grid-column: 9 / span 4; align-self: end; }
-.security-bench { margin-top: var(--space-16); }
+.security-vault { margin-top: var(--space-16); }
 
-.cipher { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr); overflow: hidden; border: 1px solid var(--rule-on-deep); border-radius: var(--radius-l); background: color-mix(in srgb, var(--ink) 22%, transparent); }
-.cipher-stage { position: relative; display: grid; place-items: center; min-height: clamp(480px, 42vw, 620px); padding: var(--space-10) var(--space-8); border-right: 1px solid var(--rule-on-deep); perspective: 1600px; perspective-origin: 50% 40%; cursor: grab; touch-action: pan-y; -webkit-user-select: none; user-select: none; overflow: hidden; }
-.cipher-stage::before, .cipher-stage::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--rule-on-deep-strong); border-style: solid; pointer-events: none; }
-.cipher-stage::before { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
-.cipher-stage::after { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
-.cipher-stage.is-dragging { cursor: grabbing; }
-.cipher-plate { position: relative; transform-style: preserve-3d; transform: translateX(-56px) rotateX(var(--rx, 14deg)) rotateY(var(--ry, -18deg)); transition: transform 1100ms var(--ease-out); }
-.cipher-stage.is-dragging .cipher-plate { transition: none; }
-.cipher-drag { position: absolute; left: 30px; bottom: 22px; font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); opacity: .7; pointer-events: none; }
+.vault { overflow: hidden; border: 1px solid var(--rule-on-deep); border-radius: var(--radius-l); background: radial-gradient(120% 90% at 50% 38%, color-mix(in srgb, var(--navy) 82%, var(--mist) 10%) 0%, color-mix(in srgb, var(--navy) 70%, #050b16) 78%); box-shadow: 0 60px 120px -60px rgb(0 0 0 / .65); }
+.vault-stage { position: relative; aspect-ratio: 16 / 8.2; min-height: 440px; cursor: grab; touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+.vault-stage:active { cursor: grabbing; }
+.vault-stage[data-pointing] { cursor: pointer; }
+.vault-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity var(--duration-scene) var(--ease-out); }
+.vault[data-gl="on"] .vault-canvas { opacity: 1; }
+/* The same text, flat: before the 3D arrives and without WebGL. */
+.vault-flat { position: absolute; left: 50%; top: 50%; margin: 0; transform: translate(-50%, -46%); font: 13px/1.75 var(--font-mono); font-variant-ligatures: none; color: var(--ct-text); transition: opacity var(--duration-scene) var(--ease-out); pointer-events: none; }
+.vault-flat code { font: inherit; }
+.vault-flat-line { display: block; white-space: pre; }
+.vault-flat-cipher { color: color-mix(in srgb, var(--orange) 60%, var(--sand)); letter-spacing: .02em; }
+.vault[data-gl="on"] .vault-flat { opacity: 0; }
 
-/* The code plate: real text, so it stays sharp at any angle. Lines lift off it while they change. */
-.cipher-sheet { position: relative; transform-style: preserve-3d; border: 1px solid color-mix(in srgb, var(--mist) 16%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--navy) 62%, #050b16); box-shadow: 0 1px 0 color-mix(in srgb, var(--mist) 12%, transparent) inset, 0 50px 90px -40px rgb(0 0 0 / .7); font: 12.5px/1.75 var(--font-mono); font-variant-ligatures: none; color: var(--ct-text); transition: border-color var(--duration-ui) var(--ease-standard), box-shadow var(--duration-ui) var(--ease-standard); }
-.cipher-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding: 12px 18px; border-bottom: 1px solid color-mix(in srgb, var(--mist) 14%, transparent); font: 500 11.5px/1 var(--font-mono); color: var(--ct-dim); }
-.cipher-tag { padding: 4px 8px; border-radius: 4px; background: color-mix(in srgb, var(--mist) 10%, transparent); letter-spacing: .04em; color: var(--sand); transition: color var(--duration-ui), background-color var(--duration-ui); }
-.cipher[data-encrypted] .cipher-tag { color: var(--off-white); background: color-mix(in srgb, var(--orange) 70%, transparent); }
-.cipher-code { margin: 0; padding: 14px 0 18px; font: inherit; transform-style: preserve-3d; }
-.cipher-code code { display: block; font: inherit; transform-style: preserve-3d; }
-.cipher-line { display: grid; grid-template-columns: 40px 40ch; white-space: pre; transform: translate3d(var(--drift, 0), 0, var(--lift, 0)) rotateX(var(--tilt, 0)); will-change: transform; }
-.cipher-line[data-empty] { visibility: hidden; }
-.cipher-num { padding-right: 14px; text-align: right; color: color-mix(in srgb, var(--mist) 28%, transparent); user-select: none; }
-.cipher-text { padding-right: 18px; overflow: hidden; }
-.cb-cipher { color: color-mix(in srgb, var(--mist) 82%, transparent); }
-.cb-noise { color: var(--orange); }
-.cb-changed { border-radius: 2px; background: var(--orange); color: var(--off-white); }
-.cipher[data-phase="rejected"] .cipher-sheet { border-color: var(--orange); box-shadow: 0 0 0 1px var(--orange), 0 50px 90px -40px rgb(0 0 0 / .7); }
+.vault-top { position: absolute; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding: 20px 24px; pointer-events: none; }
+.vault-file { display: flex; align-items: center; gap: 10px; font: 500 12px/1 var(--font-mono); color: var(--off-white); }
+.vault-file-policy { padding: 5px 8px; border-radius: 5px; background: color-mix(in srgb, var(--mist) 10%, transparent); color: var(--ct-dim); }
+.vault-state { display: inline-flex; align-items: center; gap: 10px; font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep); }
+.vault-state .point { background: var(--sand); transition: background-color var(--duration-ui); }
+.vault[data-encrypted] .vault-state .point { background: var(--orange); }
+.vault-hint { position: absolute; right: 24px; bottom: 18px; display: flex; align-items: center; gap: var(--space-6); font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ct-dim); pointer-events: none; }
+.vault-shape { display: inline-flex; align-items: center; gap: 8px; color: var(--sand); }
+.vault-shape i { width: 22px; height: 0; border-top: 1px dashed var(--sand); }
 
-/* The shape plate: the text's current silhouette, scaled down, under the dashed outline of the
-   original. A homothety of the code would fit the outline; the cipher does not. */
-.cipher-shape { position: absolute; left: calc(100% + 32px); top: 34px; width: 132px; padding: 12px 12px 14px; border: 1px solid color-mix(in srgb, var(--mist) 16%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--navy) 70%, #050b16); transform: translateZ(-40px); box-shadow: 0 30px 60px -30px rgb(0 0 0 / .6); }
-.cipher-shape-label { display: block; margin-bottom: 10px; font-size: 10px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); }
-.cipher-shape-bars { position: relative; display: grid; grid-template-rows: repeat(var(--rows), 7px); }
-.cipher-shape-bars i { display: block; align-self: center; width: calc(var(--w) * 100%); height: 3px; border-radius: 2px; background: color-mix(in srgb, var(--sand) 70%, transparent); }
-.cipher[data-encrypted] .cipher-shape-bars i { background: color-mix(in srgb, var(--mist) 70%, transparent); }
-.cipher-homothety { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.cipher-homothety polyline { fill: none; stroke: var(--orange); stroke-width: 1; stroke-dasharray: 3 3; }
+.vault-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-4) var(--space-8); padding: 18px 24px; border-top: 1px solid var(--rule-on-deep); background: color-mix(in srgb, #050b16 30%, transparent); }
+.vault-action { gap: 10px; min-height: 48px; padding: 0 22px 0 18px; background: var(--orange); color: var(--off-white); }
+.vault-action:hover { background: color-mix(in srgb, var(--orange) 84%, #000); }
+.vault-action:disabled { opacity: .55; cursor: default; }
+.vault-action:focus-visible { outline: 2px solid var(--off-white); outline-offset: 3px; }
+.vault-action-icon { display: inline-grid; place-items: center; }
+.vault-status { padding-left: var(--space-4); border-left: 2px solid var(--rule-on-deep-strong); font-size: 15px; line-height: 1.45; color: var(--text-on-deep); transition: border-color var(--duration-ui); }
+.vault-status[data-tone] { border-left-color: var(--orange); }
+.vault-status[data-tone="alert"] { color: var(--sand); }
+.vault-readout { display: flex; gap: var(--space-6); }
+.vault-readout div { display: grid; gap: 4px; }
+.vault-readout dt { font-size: 10.5px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ct-dim); }
+.vault-readout dd { font: 500 12.5px/1.2 var(--font-mono); color: var(--sand); white-space: nowrap; }
+.vault[data-phase="rejected"] { border-color: color-mix(in srgb, var(--orange) 70%, transparent); }
+html:not(.js) .vault-bar, html:not(.js) .vault-hint { display: none; }
 
-/* The panel: what is happening, the two actions and the readout of the run. */
-.cipher-panel { display: flex; flex-direction: column; gap: var(--space-5); padding: clamp(24px, 2.6vw, 36px); }
-.cipher-lead { font-size: 16px; line-height: 1.55; color: var(--text-on-deep); }
-.cipher-controls { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-.cipher-controls .button-primary { background: var(--orange); color: var(--off-white); }
-.cipher-controls .button-primary:hover { background: color-mix(in srgb, var(--orange) 84%, #000); }
-.cipher-controls .button-secondary { border-color: var(--rule-on-deep-strong); color: var(--text-on-deep); }
-.cipher-controls .button:disabled { opacity: .45; cursor: default; }
-.cipher-status { min-height: 3em; padding-left: var(--space-4); border-left: 2px solid var(--rule-on-deep-strong); font-size: 15px; line-height: 1.5; color: var(--text-on-deep); }
-.cipher-status[data-tone] { border-left-color: var(--orange); }
-.cipher-status[data-tone="alert"] { color: var(--sand); }
-.cipher-readout { display: grid; border-top: 1px solid var(--rule-on-deep); }
-.cipher-readout div { display: grid; grid-template-columns: 7.5rem 1fr; gap: var(--space-4); padding-block: 10px; border-bottom: 1px solid var(--rule-on-deep); }
-.cipher-readout dt { padding-top: 2px; font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); }
-.cipher-readout dd { font-size: 14px; line-height: 1.45; color: var(--text-on-deep); overflow-wrap: anywhere; }
-.cipher-readout code { font: 500 12.5px var(--font-mono); color: var(--sand); }
-.cipher-readout dd[data-lost] { color: var(--sand); }
-.cipher-note { margin-top: auto; font-size: 13.5px; line-height: 1.55; color: var(--text-on-deep-muted); }
-/* Without JavaScript the plate is shown as plain code; nothing to press. */
-html:not(.js) .cipher-controls, html:not(.js) .cipher-drag { display: none; }
+/* Every rule, checked live against the headers this page arrived with. */
+.live { margin-top: var(--space-20); }
+.live-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); row-gap: var(--space-3); align-items: end; margin-bottom: var(--space-8); }
+.live-label { grid-column: 1 / span 6; display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); line-height: 1.2; text-transform: uppercase; }
+.live-head p { grid-column: 7 / -1; font-size: 15px; line-height: 1.5; color: var(--text-on-deep-muted); }
+.live-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-10) var(--column-gap); }
+.live-card { position: relative; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding-top: var(--space-5); border-top: 1px solid var(--rule-on-deep-strong); }
+.live-header { font: 500 11px/1.3 var(--font-mono); color: var(--ct-dim); }
+.live-card h4 { margin-top: 4px; font-size: 20px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; color: var(--text-on-deep); }
+.live-text { font-size: 14.5px; line-height: 1.5; color: var(--text-on-deep-muted); }
+.live-value { margin-top: auto; padding: 8px 10px; border-radius: 6px; background: color-mix(in srgb, #050b16 32%, transparent); overflow: hidden; }
+.live-value code { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 12px/1.4 var(--font-mono); color: var(--sand); }
+.live-state { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); }
+.live-state span { width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--mist); }
+.live-card[data-state="ok"] .live-state { color: var(--text-on-deep); }
+.live-card[data-state="ok"] .live-state span { background: var(--orange); box-shadow: none; }
+.live-card[data-state="missing"] .live-state { color: var(--sand); }
 
-/* The rules. */
-.security-lists { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); row-gap: var(--space-16); margin-top: var(--space-20); }
-.security-group { display: grid; align-content: start; gap: var(--space-6); }
-.security-group:first-child { grid-column: 1 / span 6; }
-.security-group:last-child { grid-column: 7 / span 6; }
-.security-group-label { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); line-height: 1.2; text-transform: uppercase; }
-.security-list { display: grid; }
-.security-item { position: relative; display: grid; grid-template-columns: minmax(9rem, 13rem) 1fr; gap: var(--space-6); padding-block: var(--space-5); }
-.security-item::before { content: ''; position: absolute; inset: 0 0 auto; height: 1px; background: var(--rule-on-deep-strong); transform-origin: left; }
-.security-item:last-child::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: var(--rule-on-deep-strong); transform-origin: left; }
-.security-item dt { font-size: 17px; font-weight: 500; line-height: 1.35; color: var(--text-on-deep); }
-.security-item dd { font-size: 15px; line-height: 1.55; color: var(--text-on-deep-muted); }
-.motion [data-reveal="rules"] .security-item::before, .motion [data-reveal="rules"] .security-item::after { transform: scaleX(0); transition: transform var(--duration-scene) var(--ease-out) calc(var(--n, 0) * var(--stagger)); }
-.motion [data-reveal="rules"].is-in .security-item::before, .motion [data-reveal="rules"].is-in .security-item::after { transform: none; }
+/* The systems we deliver: one short line each. */
+.systems { margin-top: var(--space-20); padding-top: var(--space-8); border-top: 1px solid var(--rule-on-deep); }
+.systems-label { margin-bottom: var(--space-6); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+.systems-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6) var(--column-gap); }
+.systems-list li { display: grid; gap: 4px; }
+.systems-list b { font-size: 16px; font-weight: 500; color: var(--text-on-deep); }
+.systems-list span { font-size: 14.5px; line-height: 1.5; color: var(--text-on-deep-muted); }
 
-@media (max-width: 1239px) {
-  .cipher { grid-template-columns: 1fr; }
-  .cipher-stage { border-right: 0; border-bottom: 1px solid var(--rule-on-deep); }
-  .cipher-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-10); align-items: start; }
-  .cipher-panel > .label, .cipher-panel > .cipher-lead, .cipher-panel > .cipher-controls, .cipher-panel > .cipher-status { grid-column: 1; }
-  .cipher-readout { grid-column: 2; grid-row: 1 / span 4; }
-  .cipher-note { grid-column: 1 / -1; }
+@media (max-width: 1099px) {
+  .vault-bar { grid-template-columns: auto minmax(0, 1fr); }
+  .vault-readout { grid-column: 1 / -1; }
 }
 @media (max-width: 899px) {
   .security .section-title, .security .section-intro { grid-column: 1 / -1; }
-  .security-bench { margin-top: var(--space-10); }
-  .security-group:first-child, .security-group:last-child { grid-column: 1 / -1; }
-  .security-lists { margin-top: var(--space-16); }
-  .cipher-panel { display: flex; }
+  .security-vault { margin-top: var(--space-10); }
+  .live-label, .live-head p { grid-column: 1 / -1; }
+  .live-grid, .systems-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .live { margin-top: var(--space-16); }
 }
-/* Phones: smaller code, the shape plate tucked under the corner of the code plate. */
-@media (max-width: 639px) {
-  .cipher-stage { min-height: 0; padding: 28px 10px 190px; touch-action: pan-y; }
-  .cipher-plate { transform: rotateX(var(--rx, 14deg)) rotateY(var(--ry, -18deg)) scale(.98); }
-  .cipher-sheet { font-size: 9.6px; border-radius: 12px; }
-  .cipher-head { padding: 10px 12px; font-size: 10px; }
-  .cipher-line { grid-template-columns: 26px 40ch; }
-  .cipher-num { padding-right: 8px; }
-  .cipher-text { padding-right: 10px; }
-  .cipher-shape { left: auto; right: 6px; top: calc(100% + 18px); width: 112px; transform: translateZ(-30px); }
-  .cipher-drag { left: 16px; bottom: 18px; font-size: 10px; }
-  .security-item { grid-template-columns: 1fr; gap: var(--space-2); }
+@media (max-width: 599px) {
+  .vault-stage { aspect-ratio: auto; height: min(132vw, 560px); min-height: 0; }
+  .vault-state-alg { display: none; }
+  .vault-top { padding: 14px 16px; }
+  .vault-file-policy { display: none; }
+  .vault-hint { left: 16px; right: 16px; bottom: 12px; justify-content: space-between; gap: var(--space-3); font-size: 10px; }
+  .vault-flat { font-size: 8.4px; }
+  .vault-bar { grid-template-columns: 1fr; padding: 16px; gap: var(--space-4); }
+  .vault-action { justify-self: start; }
+  .vault-readout { gap: var(--space-5); flex-wrap: wrap; }
+  .live-grid, .systems-list { grid-template-columns: 1fr; }
+  .live-grid { gap: var(--space-8); }
 }
 
 /* ───────────────────────── Projects: opened up ───────────────────────── */
@@ -1130,7 +1120,7 @@ html:not(.js) .cipher-controls, html:not(.js) .cipher-drag { display: none; }
 html:lang(ja) { --font: var(--font-satoshi), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; --tracking-display: -0.01em; --tracking-heading: -0.005em; --leading-display: 1.16; --leading-heading: 1.2; --leading-body: 1.85; --text-display: clamp(34px, 4.1vw, 70px); --text-h2: clamp(32px, 4.4vw, 72px); }
 /* Phrase segmentation is costly layout work: headings and short lines only; body text keeps strict kinsoku. */
 html:lang(ja) { line-break: strict; }
-:lang(ja) h1 > span, :lang(ja) .section-title .line > span, :lang(ja) .closing-title, :lang(ja) .security-item dt { word-break: auto-phrase; }
+:lang(ja) h1 > span, :lang(ja) .section-title .line > span, :lang(ja) .closing-title, :lang(ja) .live-card h4 { word-break: auto-phrase; }
 :lang(ja) .closing-title, :lang(ja) .step h3 { line-height: 1.32; letter-spacing: 0; }
 :lang(ja) h1, :lang(ja) h2, :lang(ja) h3 { font-weight: 600; }
 /* Japanese CTAs are longer: on narrow screens they wrap instead of widening the hero. */

@@ -35,4 +35,4 @@ export function securityHeaders(dev = false) {
 }
 
 /** The excerpt the Security section encrypts: the policy above, as it reads in code. */
-export const CSP_SOURCE = ['// next.config.ts · CSP', 'const csp = [', ...CSP.map(rule => `  "${rule}",`), "].join('; ');"].join('\n');
+export const CSP_SOURCE = ['// next.config.ts - CSP', 'const csp = [', ...CSP.map(rule => `  "${rule}",`), "].join('; ');"].join('\n');

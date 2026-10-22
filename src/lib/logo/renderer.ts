@@ -159,7 +159,7 @@ export function supportsWebGL2() {
 }
 
 /** A photographic studio as an environment map: shape of light, not colour, is what shows. */
-function studio(renderer: THREE.WebGLRenderer) {
+export function studio(renderer: THREE.WebGLRenderer) {
   const room = new THREE.Scene();
   room.background = new THREE.Color(0.02, 0.022, 0.026);
   const panel = (w: number, h: number, at: [number, number, number], colour: string, power: number) => {
