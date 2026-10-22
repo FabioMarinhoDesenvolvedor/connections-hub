@@ -5,6 +5,15 @@ import type { SolutionId } from '@/data/site';
   Every visible or announced string on the site, per language. The Portuguese is the
   source; the tagline is translated faithfully, never rewritten.
 */
+export type SecurityBenchCopy = {
+  label: string; lead: string; file: string; fileEncrypted: string; area: string;
+  encrypt: string; decrypt: string; tamper: string; reset: string; drag: string; plain: string; cipher: string;
+  status: { plain: string; working: string; decrypting: string; cipher: string; tampered: string; rejected: string; restored: string; unavailable: string };
+  /** bytes: {n} */
+  readout: { algorithm: string; key: string; keyValue: string; iv: string; tag: string; tagValue: string; size: string; bytes: string; shape: string };
+  shape: { kept: string; lost: string; note: string };
+};
+
 export type Dictionary = {
   meta: { title: string; description: string; tagline: string; socialAlt: string };
   ui: {
@@ -22,7 +31,7 @@ export type Dictionary = {
     theme: { label: string; toDark: string; toLight: string };
   };
   nav: { label: string; href: string }[];
-  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string; symbol: string };
+  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; symbol: string };
   about: {
     label: string;
     title: string[];
@@ -34,28 +43,17 @@ export type Dictionary = {
       play: { keys: string; hold: string; holding: string; typed: string; chars: string; done: string; next: string; area: string };
     };
   };
-  solutions: {
+  security: {
     label: string;
     title: string[];
     intro: string;
-    figure: string;
-    solvesLabel: string;
-    includesLabel: string;
-    items: Record<SolutionId, {
-      title: string;
-      summary: string;
-      solves: string;
-      cta: string;
-      figure: { title: string; caption: string };
-      includes: string[];
-    }>;
-    schematic: {
-      sites: { nav: string; hero: string; sections: string; contact: string };
-      sistemas: { modules: [string, string, string, string]; profiles: string; database: string; sheets: string; reports: string; integration: string };
-      dashboards: { sources: [string, string, string]; processing: string; period: string; unit: string; target: string; decision: string };
-      ecommerce: { flow: [string, string, string, string, string, string]; add: string; checkout: string; payment: string; shipping: string; total: string; finish: string };
-    };
+    bench: SecurityBenchCopy;
+    siteLabel: string;
+    site: { title: string; text: string }[];
+    systemsLabel: string;
+    systems: { title: string; text: string }[];
   };
+  services: Record<SolutionId, { title: string; summary: string }>;
   process: {
     label: string;
     title: string[];

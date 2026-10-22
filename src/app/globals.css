@@ -52,7 +52,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 
 /* Surfaces. Navy carries the brand grid (initial posts, closing frame of the brand film). */
 .surface-deep { position: relative; isolation: isolate; background: var(--surface-deep); color: var(--text-on-deep-muted); }
-.solutions::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--grid-line-on-deep) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line-on-deep) 1px, transparent 1px); background-size: var(--grid-cell) var(--grid-cell); background-position: center top; mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent); pointer-events: none; }
+.security::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--grid-line-on-deep) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line-on-deep) 1px, transparent 1px); background-size: var(--grid-cell) var(--grid-cell); background-position: center top; mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent); pointer-events: none; }
 .surface-deep h2, .surface-deep h3, .surface-deep .label { color: var(--text-on-deep); }
 .surface-deep .section-title .line + .line { color: var(--text-on-deep-muted); }
 .surface-deep .section-intro { color: var(--text-on-deep-muted); }
@@ -137,9 +137,6 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .hero-title span + span { color: var(--text-display-soft); }
 .hero-lead { max-width: 40ch; font-size: var(--text-lead); line-height: 1.5; color: var(--text-muted); }
 .hero-copy .actions { margin-top: var(--space-2); }
-.hero-index { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--rule); font-size: var(--text-small); font-weight: 500; color: var(--text-strong); }
-.hero-index a { display: inline-flex; align-items: baseline; min-height: 32px; padding-block: 4px; transition: color var(--duration-micro) var(--ease-standard); }
-.hero-index a:hover { color: var(--accent); }
 
 /*
   The stage: the official symbol as a 3D object (hero-logo.tsx). The canvas overhangs the
@@ -183,8 +180,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
   .hero-copy, .hero-logo { grid-column: 1 / -1; }
   .hero-logo { grid-row: 1; width: auto; height: clamp(200px, 32svh, 360px); max-height: none; }
   .hero-copy { grid-row: 2; gap: var(--space-5); }
-  .hero-index { display: none; }
-  .hero-paper { mask-image: radial-gradient(ellipse 90% 40% at 50% 26%, #000 0%, transparent 80%); }
+    .hero-paper { mask-image: radial-gradient(ellipse 90% 40% at 50% 26%, #000 0%, transparent 80%); }
 }
 @media (max-width: 599px) {
   .hero-title { font-size: clamp(34px, 9.4vw, 42px); }
@@ -319,81 +315,116 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
   .spec-row { grid-template-columns: 7.5rem 1fr; gap: var(--space-4); }
 }
 
-/* ───────────────────────── 03 Solutions ───────────────────────── */
-.solutions { padding-block: var(--section-space); --sch-line: color-mix(in srgb, var(--mist) 70%, transparent); --sch-soft: color-mix(in srgb, var(--mist) 34%, transparent); --sch-fill: color-mix(in srgb, var(--mist) 14%, transparent); }
-.solutions .section-head { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); }
-.solutions .section-head .label { grid-column: 1 / -1; }
-.solutions .section-title { grid-column: 1 / span 7; }
-.solutions .section-intro { grid-column: 9 / span 4; align-self: end; }
-.solutions-body { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); margin-top: var(--space-24); }
-.solutions-visual { grid-column: 1 / span 7; }
-/* The plate: a drawing sheet with its figure code, the drawing and a caption. */
-.solutions-plate { position: sticky; top: calc(var(--nav-height) + 5vh); aspect-ratio: 16 / 12; border: 1px solid var(--rule-on-deep); border-radius: var(--radius-m); background: color-mix(in srgb, var(--ink) 22%, transparent); }
-.solutions-plate::before, .solutions-plate::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--rule-on-deep-strong); border-style: solid; }
-.solutions-plate::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
-.solutions-plate::after { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
-.solutions-sheet { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto; gap: var(--space-4); margin: 0; padding: clamp(22px, 2.6vw, 36px); opacity: 0; visibility: hidden; transition: opacity var(--duration-ui) var(--ease-standard), visibility 0s linear var(--duration-ui); }
-.plate-head { display: flex; justify-content: space-between; gap: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--rule-on-deep); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep); }
-.plate-head span:first-child { color: var(--accent); }
-.plate-caption { max-width: 52ch; padding-top: var(--space-3); border-top: 1px solid var(--rule-on-deep); font-size: var(--text-small); line-height: 1.5; color: var(--text-on-deep-muted); }
-.solutions:not(:has(.solution[data-active])) .solutions-sheet:first-child,
-.solutions:has(.solution[data-id="sites"][data-active]) .solutions-sheet[data-id="sites"],
-.solutions:has(.solution[data-id="sistemas"][data-active]) .solutions-sheet[data-id="sistemas"],
-.solutions:has(.solution[data-id="dashboards"][data-active]) .solutions-sheet[data-id="dashboards"],
-.solutions:has(.solution[data-id="ecommerce"][data-active]) .solutions-sheet[data-id="ecommerce"] { opacity: 1; visibility: visible; transition: opacity var(--duration-ui) var(--ease-standard); --drawn: 1; }
+/* ───────────────────────── 03 Security ─────────────────────────
+   On the brand navy with its grid. The bench (components/cipher-bench.tsx): a code plate in
+   CSS 3D with real text, a small plate with the code's shape, and the readout of a real
+   AES-256-GCM run. Then the rules, as hairline lists: this site, and the systems we deliver. */
+.security { padding-block: var(--section-space); --ct-text: color-mix(in srgb, var(--off-white) 92%, transparent); --ct-dim: color-mix(in srgb, var(--mist) 46%, transparent); }
+.security .section-head { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); }
+.security .section-head .label { grid-column: 1 / -1; }
+.security .section-title { grid-column: 1 / span 7; }
+.security .section-intro { grid-column: 9 / span 4; align-self: end; }
+.security-bench { margin-top: var(--space-16); }
 
-.schematic { width: 100%; height: 100%; overflow: visible; font-family: var(--font); }
-.sch-line { fill: none; stroke: var(--sch-line); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.sch-soft { fill: none; stroke: var(--sch-soft); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
-.sch-fill { fill: var(--sch-fill); }
-.sch-label { font-size: 8.5px; font-weight: 500; letter-spacing: .12em; fill: color-mix(in srgb, var(--mist) 78%, transparent); }
-.sch-value { font-size: 10px; font-weight: 700; letter-spacing: .1em; font-variant-numeric: tabular-nums; fill: var(--off-white); }
-.sch-point { fill: var(--orange); }
-.sch-halo { fill: none; stroke: var(--orange); stroke-width: 1.2; opacity: .6; vector-effect: non-scaling-stroke; }
-/* Drawing on: solid lines trace, construction lines and fills follow, labels last, point lands. */
-.motion :is(.solutions-sheet, .schematic-inline) .sch-line { stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--drawn, 0)); transition: stroke-dashoffset var(--duration-scene) var(--ease-out) calc(var(--i) * var(--stagger)); }
-.motion :is(.solutions-sheet, .schematic-inline) :is(.sch-soft, .sch-fill) { opacity: var(--drawn, 0); transition: opacity var(--duration-reveal) var(--ease-out) calc(var(--i) * var(--stagger) + 160ms); }
-.motion :is(.solutions-sheet, .schematic-inline) :is(.sch-label, .sch-value) { opacity: var(--drawn, 0); transition: opacity var(--duration-reveal) var(--ease-out) calc(var(--i) * var(--stagger) + 300ms); }
-.motion :is(.solutions-sheet, .schematic-inline) :is(.sch-point, .sch-halo) { transform-box: fill-box; transform-origin: center; transform: scale(var(--drawn, 0)); transition: transform var(--duration-reveal) var(--ease-out) 820ms; }
+.cipher { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr); overflow: hidden; border: 1px solid var(--rule-on-deep); border-radius: var(--radius-l); background: color-mix(in srgb, var(--ink) 22%, transparent); }
+.cipher-stage { position: relative; display: grid; place-items: center; min-height: clamp(480px, 42vw, 620px); padding: var(--space-10) var(--space-8); border-right: 1px solid var(--rule-on-deep); perspective: 1600px; perspective-origin: 50% 40%; cursor: grab; touch-action: pan-y; -webkit-user-select: none; user-select: none; overflow: hidden; }
+.cipher-stage::before, .cipher-stage::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--rule-on-deep-strong); border-style: solid; pointer-events: none; }
+.cipher-stage::before { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
+.cipher-stage::after { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
+.cipher-stage.is-dragging { cursor: grabbing; }
+.cipher-plate { position: relative; transform-style: preserve-3d; transform: translateX(-56px) rotateX(var(--rx, 14deg)) rotateY(var(--ry, -18deg)); transition: transform 1100ms var(--ease-out); }
+.cipher-stage.is-dragging .cipher-plate { transition: none; }
+.cipher-drag { position: absolute; left: 30px; bottom: 22px; font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); opacity: .7; pointer-events: none; }
 
-.solutions-list { grid-column: 9 / span 4; }
-.solution { padding-block: var(--space-16) var(--space-20); border-top: 1px solid var(--rule-on-deep); }
-.solution:first-child { padding-top: 0; border-top: 0; }
-.solution article { display: grid; gap: var(--space-5); }
-.solution-head { display: grid; gap: var(--space-2); }
-.solution-number { font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); color: var(--accent); }
-.solution h3 { font-size: clamp(34px, 3.4vw, 54px); line-height: 1.02; letter-spacing: var(--tracking-heading); }
-.solution-summary { font-size: var(--text-lead); line-height: 1.5; color: var(--text-on-deep); }
-.solution-figure { display: none; margin: 0; }
-.solution-spec { display: grid; gap: var(--space-6); margin-top: var(--space-2); }
-.solution-spec > div { display: grid; gap: var(--space-2); }
-.solution-spec dt { font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); }
-.solution-spec dd { color: var(--text-on-deep); }
-.solution-spec ol { display: grid; border-top: 1px solid var(--rule-on-deep); }
-.solution-spec li { display: grid; grid-template-columns: 2.25rem 1fr; padding: 11px 0; border-bottom: 1px solid var(--rule-on-deep); font-size: 15px; }
-.solution-spec li span { font-size: 11px; letter-spacing: .1em; font-variant-numeric: tabular-nums; color: var(--text-on-deep-muted); padding-top: 3px; }
-.solution .text-link { justify-self: start; color: var(--text-on-deep); }
-@media (min-width: 900px) {
-  .motion .solution { transition: opacity var(--duration-ui) var(--ease-standard); }
-  .motion .solutions-list:has(.solution[data-active]) .solution:not([data-active]) { opacity: .5; }
-}
-@media (max-width: 1100px) and (min-width: 900px) {
-  .solutions-visual { grid-column: 1 / span 6; }
-  .solutions-list { grid-column: 8 / span 5; }
+/* The code plate: real text, so it stays sharp at any angle. Lines lift off it while they change. */
+.cipher-sheet { position: relative; transform-style: preserve-3d; border: 1px solid color-mix(in srgb, var(--mist) 16%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--navy) 62%, #050b16); box-shadow: 0 1px 0 color-mix(in srgb, var(--mist) 12%, transparent) inset, 0 50px 90px -40px rgb(0 0 0 / .7); font: 12.5px/1.75 var(--font-mono); font-variant-ligatures: none; color: var(--ct-text); transition: border-color var(--duration-ui) var(--ease-standard), box-shadow var(--duration-ui) var(--ease-standard); }
+.cipher-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding: 12px 18px; border-bottom: 1px solid color-mix(in srgb, var(--mist) 14%, transparent); font: 500 11.5px/1 var(--font-mono); color: var(--ct-dim); }
+.cipher-tag { padding: 4px 8px; border-radius: 4px; background: color-mix(in srgb, var(--mist) 10%, transparent); letter-spacing: .04em; color: var(--sand); transition: color var(--duration-ui), background-color var(--duration-ui); }
+.cipher[data-encrypted] .cipher-tag { color: var(--off-white); background: color-mix(in srgb, var(--orange) 70%, transparent); }
+.cipher-code { margin: 0; padding: 14px 0 18px; font: inherit; transform-style: preserve-3d; }
+.cipher-code code { display: block; font: inherit; transform-style: preserve-3d; }
+.cipher-line { display: grid; grid-template-columns: 40px 40ch; white-space: pre; transform: translate3d(var(--drift, 0), 0, var(--lift, 0)) rotateX(var(--tilt, 0)); will-change: transform; }
+.cipher-line[data-empty] { visibility: hidden; }
+.cipher-num { padding-right: 14px; text-align: right; color: color-mix(in srgb, var(--mist) 28%, transparent); user-select: none; }
+.cipher-text { padding-right: 18px; overflow: hidden; }
+.cb-cipher { color: color-mix(in srgb, var(--mist) 82%, transparent); }
+.cb-noise { color: var(--orange); }
+.cb-changed { border-radius: 2px; background: var(--orange); color: var(--off-white); }
+.cipher[data-phase="rejected"] .cipher-sheet { border-color: var(--orange); box-shadow: 0 0 0 1px var(--orange), 0 50px 90px -40px rgb(0 0 0 / .7); }
+
+/* The shape plate: the text's current silhouette, scaled down, under the dashed outline of the
+   original. A homothety of the code would fit the outline; the cipher does not. */
+.cipher-shape { position: absolute; left: calc(100% + 32px); top: 34px; width: 132px; padding: 12px 12px 14px; border: 1px solid color-mix(in srgb, var(--mist) 16%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--navy) 70%, #050b16); transform: translateZ(-40px); box-shadow: 0 30px 60px -30px rgb(0 0 0 / .6); }
+.cipher-shape-label { display: block; margin-bottom: 10px; font-size: 10px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); }
+.cipher-shape-bars { position: relative; display: grid; grid-template-rows: repeat(var(--rows), 7px); }
+.cipher-shape-bars i { display: block; align-self: center; width: calc(var(--w) * 100%); height: 3px; border-radius: 2px; background: color-mix(in srgb, var(--sand) 70%, transparent); }
+.cipher[data-encrypted] .cipher-shape-bars i { background: color-mix(in srgb, var(--mist) 70%, transparent); }
+.cipher-homothety { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.cipher-homothety polyline { fill: none; stroke: var(--orange); stroke-width: 1; stroke-dasharray: 3 3; }
+
+/* The panel: what is happening, the two actions and the readout of the run. */
+.cipher-panel { display: flex; flex-direction: column; gap: var(--space-5); padding: clamp(24px, 2.6vw, 36px); }
+.cipher-lead { font-size: 16px; line-height: 1.55; color: var(--text-on-deep); }
+.cipher-controls { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.cipher-controls .button-primary { background: var(--orange); color: var(--off-white); }
+.cipher-controls .button-primary:hover { background: color-mix(in srgb, var(--orange) 84%, #000); }
+.cipher-controls .button-secondary { border-color: var(--rule-on-deep-strong); color: var(--text-on-deep); }
+.cipher-controls .button:disabled { opacity: .45; cursor: default; }
+.cipher-status { min-height: 3em; padding-left: var(--space-4); border-left: 2px solid var(--rule-on-deep-strong); font-size: 15px; line-height: 1.5; color: var(--text-on-deep); }
+.cipher-status[data-tone] { border-left-color: var(--orange); }
+.cipher-status[data-tone="alert"] { color: var(--sand); }
+.cipher-readout { display: grid; border-top: 1px solid var(--rule-on-deep); }
+.cipher-readout div { display: grid; grid-template-columns: 7.5rem 1fr; gap: var(--space-4); padding-block: 10px; border-bottom: 1px solid var(--rule-on-deep); }
+.cipher-readout dt { padding-top: 2px; font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-on-deep-muted); }
+.cipher-readout dd { font-size: 14px; line-height: 1.45; color: var(--text-on-deep); overflow-wrap: anywhere; }
+.cipher-readout code { font: 500 12.5px var(--font-mono); color: var(--sand); }
+.cipher-readout dd[data-lost] { color: var(--sand); }
+.cipher-note { margin-top: auto; font-size: 13.5px; line-height: 1.55; color: var(--text-on-deep-muted); }
+/* Without JavaScript the plate is shown as plain code; nothing to press. */
+html:not(.js) .cipher-controls, html:not(.js) .cipher-drag { display: none; }
+
+/* The rules. */
+.security-lists { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--column-gap); row-gap: var(--space-16); margin-top: var(--space-20); }
+.security-group { display: grid; align-content: start; gap: var(--space-6); }
+.security-group:first-child { grid-column: 1 / span 6; }
+.security-group:last-child { grid-column: 7 / span 6; }
+.security-group-label { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); line-height: 1.2; text-transform: uppercase; }
+.security-list { display: grid; }
+.security-item { position: relative; display: grid; grid-template-columns: minmax(9rem, 13rem) 1fr; gap: var(--space-6); padding-block: var(--space-5); }
+.security-item::before { content: ''; position: absolute; inset: 0 0 auto; height: 1px; background: var(--rule-on-deep-strong); transform-origin: left; }
+.security-item:last-child::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: var(--rule-on-deep-strong); transform-origin: left; }
+.security-item dt { font-size: 17px; font-weight: 500; line-height: 1.35; color: var(--text-on-deep); }
+.security-item dd { font-size: 15px; line-height: 1.55; color: var(--text-on-deep-muted); }
+.motion [data-reveal="rules"] .security-item::before, .motion [data-reveal="rules"] .security-item::after { transform: scaleX(0); transition: transform var(--duration-scene) var(--ease-out) calc(var(--n, 0) * var(--stagger)); }
+.motion [data-reveal="rules"].is-in .security-item::before, .motion [data-reveal="rules"].is-in .security-item::after { transform: none; }
+
+@media (max-width: 1239px) {
+  .cipher { grid-template-columns: 1fr; }
+  .cipher-stage { border-right: 0; border-bottom: 1px solid var(--rule-on-deep); }
+  .cipher-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-10); align-items: start; }
+  .cipher-panel > .label, .cipher-panel > .cipher-lead, .cipher-panel > .cipher-controls, .cipher-panel > .cipher-status { grid-column: 1; }
+  .cipher-readout { grid-column: 2; grid-row: 1 / span 4; }
+  .cipher-note { grid-column: 1 / -1; }
 }
 @media (max-width: 899px) {
-  .solutions .section-title, .solutions .section-intro { grid-column: 1 / -1; }
-  .solutions-body { margin-top: var(--space-16); }
-  .solutions-visual { display: none; }
-  .solutions-list { grid-column: 1 / -1; }
-  .solution-figure { display: grid; gap: var(--space-3); margin-block: var(--space-2); }
-  .schematic-inline { height: auto; padding: var(--space-4); border: 1px solid var(--rule-on-deep); border-radius: var(--radius-m); background: color-mix(in srgb, var(--ink) 22%, transparent); }
-  .schematic-inline .sch-label { font-size: 11px; letter-spacing: .06em; }
-  .schematic-inline .sch-value { font-size: 12px; }
-  /* Phones: each service carries its own figure, drawn on when it comes into view. */
-  .schematic-inline.is-drawn { --drawn: 1; }
-  .solution-figure figcaption { display: grid; gap: var(--space-1); font-size: var(--text-small); line-height: 1.5; color: var(--text-on-deep-muted); }
-  .solution-figure figcaption span { font-size: var(--text-label); font-weight: 500; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--accent); }
+  .security .section-title, .security .section-intro { grid-column: 1 / -1; }
+  .security-bench { margin-top: var(--space-10); }
+  .security-group:first-child, .security-group:last-child { grid-column: 1 / -1; }
+  .security-lists { margin-top: var(--space-16); }
+  .cipher-panel { display: flex; }
+}
+/* Phones: smaller code, the shape plate tucked under the corner of the code plate. */
+@media (max-width: 639px) {
+  .cipher-stage { min-height: 0; padding: 28px 10px 190px; touch-action: pan-y; }
+  .cipher-plate { transform: rotateX(var(--rx, 14deg)) rotateY(var(--ry, -18deg)) scale(.98); }
+  .cipher-sheet { font-size: 9.6px; border-radius: 12px; }
+  .cipher-head { padding: 10px 12px; font-size: 10px; }
+  .cipher-line { grid-template-columns: 26px 40ch; }
+  .cipher-num { padding-right: 8px; }
+  .cipher-text { padding-right: 10px; }
+  .cipher-shape { left: auto; right: 6px; top: calc(100% + 18px); width: 112px; transform: translateZ(-30px); }
+  .cipher-drag { left: 16px; bottom: 18px; font-size: 10px; }
+  .security-item { grid-template-columns: 1fr; gap: var(--space-2); }
 }
 
 /* ───────────────────────── Projects: opened up ───────────────────────── */
@@ -1099,8 +1130,8 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 html:lang(ja) { --font: var(--font-satoshi), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; --tracking-display: -0.01em; --tracking-heading: -0.005em; --leading-display: 1.16; --leading-heading: 1.2; --leading-body: 1.85; --text-display: clamp(34px, 4.1vw, 70px); --text-h2: clamp(32px, 4.4vw, 72px); }
 /* Phrase segmentation is costly layout work: headings and short lines only; body text keeps strict kinsoku. */
 html:lang(ja) { line-break: strict; }
-:lang(ja) h1 > span, :lang(ja) .section-title .line > span, :lang(ja) .closing-title, :lang(ja) .solution h3 { word-break: auto-phrase; }
-:lang(ja) .closing-title, :lang(ja) .solution h3, :lang(ja) .step h3 { line-height: 1.32; letter-spacing: 0; }
+:lang(ja) h1 > span, :lang(ja) .section-title .line > span, :lang(ja) .closing-title, :lang(ja) .security-item dt { word-break: auto-phrase; }
+:lang(ja) .closing-title, :lang(ja) .step h3 { line-height: 1.32; letter-spacing: 0; }
 :lang(ja) h1, :lang(ja) h2, :lang(ja) h3 { font-weight: 600; }
 /* Japanese CTAs are longer: on narrow screens they wrap instead of widening the hero. */
 .hero-copy > * { min-width: 0; }

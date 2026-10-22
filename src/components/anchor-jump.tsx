@@ -7,7 +7,7 @@ const FADE = 150;   // ms, matches .is-jumping in globals.css
 
 /*
   In-page links. A short hop scrolls smoothly (html { scroll-behavior: smooth }); a long one
-  would scroll through every pinned scene on the way (the story, the services) and play
+  would scroll through every pinned scene on the way (the projects stack, the process dial) and play
   them all, so it cuts instead: the page fades out, jumps, and fades back in at the section.
 */
 export function AnchorJump() {

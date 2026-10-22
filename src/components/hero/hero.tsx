@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Arrow } from '@/components/arrow';
 import { HeroLogo } from '@/components/hero/hero-logo';
-import { solutionIds } from '@/data/site';
 import type { Dictionary } from '@/i18n';
 
 /*
@@ -21,11 +20,8 @@ export function Hero({ t }: { t: Dictionary }) {
         <p className="hero-lead hero-rise" style={{ '--i': 1 } as CSSProperties}>{t.hero.lead}</p>
         <div className="actions hero-rise" style={{ '--i': 2 } as CSSProperties}>
           <a className="button button-primary" href="#contato">{t.hero.primary}<Arrow /></a>
-          <a className="button button-secondary" href="#solucoes">{t.hero.secondary}</a>
+          <a className="button button-secondary" href="#projetos">{t.hero.secondary}</a>
         </div>
-        <nav className="hero-index hero-rise" style={{ '--i': 3 } as CSSProperties} aria-label={t.hero.index}>
-          {solutionIds.map(id => <a key={id} href={`#solucao-${id}`}>{t.solutions.items[id].title}</a>)}
-        </nav>
       </header>
       <HeroLogo label={t.hero.symbol} />
     </div>

@@ -234,3 +234,18 @@ O comportamento: **o visitante escreve o código.** A versão de digitação aut
 **Compartilhamento:** `public/images/social.jpg` é desenhada a partir do `logo-light.svg` sobre navy com o grid (`npm run social`), sem foto.
 
 **Removido:** `brand-office`, `brand-people` e `brand-technology` (todas as variantes) e o componente `BrandImage`. O `verify` falha se alguma delas voltar ao HTML e confere que a abertura se apoia no arquivo oficial do símbolo.
+
+## 13. Segurança no lugar de Soluções (22/10/2026)
+
+**Pedido:** uma seção explicando como a Connections Hub cuida da segurança, com interação 3D de código sendo criptografado, substituindo a seção que fixava na rolagem (Soluções, com a placa fixa).
+
+- **Promessas só verdadeiras:** antes da seção, o site passou a enviar os cabeçalhos que ela descreve (`src/lib/security-headers.ts`, aplicados em `next.config.ts`): HSTS, CSP que só aceita o próprio domínio, `frame-ancestors 'none'` e `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, Permissions-Policy (câmera, microfone, localização, pagamentos, USB) e COOP. O `verify` confere cada um. A CSP mantém `'unsafe-inline'` para scripts e estilos: a página é estática (sem nonce por requisição) e o Next embute dados de inicialização; outras origens continuam recusadas.
+- **A bancada** (`components/cipher-bench.tsx`): o trecho real da CSP deste site, em placa CSS 3D com texto de verdade (como a pilha de Projetos), no navy da marca e com o realce de sintaxe do terminal.
+  - **Criptografar:** cifra de verdade com AES-256-GCM (WebCrypto). Chave e IV novos a cada vez, criados no navegador; a impressão digital da chave e o IV aparecem no painel.
+  - **A animação:** uma varredura desce a placa; cada linha se solta, embaralha e assenta como texto cifrado.
+  - **A homotetia quebrada:** ao lado, uma placa pequena é a cópia em escala da forma do código, sob o contorno tracejado do original. Em texto claro, a cópia encaixa no contorno. Cifrado, toda linha tem o mesmo tamanho e nada encaixa: a cifra não guarda a forma.
+  - **Alterar 1 byte:** troca um bit do texto cifrado, marcado em terracota. Decifrar é recusado, porque o GCM autentica. "Recomeçar" volta ao texto claro.
+  - Arrastar gira a placa. Com movimento reduzido, as trocas são imediatas. Sem JavaScript, a placa mostra o código e os botões somem.
+- **Listas:** "Neste site" (o que os cabeçalhos garantem) e "Nos sistemas que entregamos" (validação com Zod, acesso por papel, sessões revogáveis, rate limit e helmet, auditoria, backup que não confia no arquivo), só com fatos dos repositórios.
+- **Removido:** a seção Soluções, a placa fixa e os desenhos técnicos (`solutions.tsx`, `schematic.tsx`). Os quatro serviços seguem no texto da abertura, no Sobre e nos dados estruturados (`services` no dicionário). No menu, "Soluções" virou "Segurança"; o botão secundário da abertura agora leva a Projetos.
+

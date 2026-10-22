@@ -4,7 +4,7 @@ import { About } from '@/components/sections/about';
 import { Contact } from '@/components/sections/contact';
 import { Process } from '@/components/sections/process';
 import { Projects } from '@/components/sections/projects';
-import { Solutions } from '@/components/sections/solutions';
+import { Security } from '@/components/sections/security';
 import { site, solutionIds } from '@/data/site';
 import { getDictionary, isLocale, localeInfo } from '@/i18n';
 
@@ -24,13 +24,13 @@ export default async function Home({ params }: PageProps<'/[lang]'>) {
     email: site.contact.email,
     telephone: site.contact.telephone,
     inLanguage: localeInfo[lang].html,
-    makesOffer: solutionIds.map(id => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t.solutions.items[id].title, description: t.solutions.items[id].summary } })),
+    makesOffer: solutionIds.map(id => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t.services[id].title, description: t.services[id].summary } })),
   };
   return <main id="conteudo">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
     <Hero t={t} />
     <About t={t.about} />
-    <Solutions t={t.solutions} />
+    <Security t={t.security} />
     <Projects t={t.projects} ui={t.ui} locale={localeInfo[lang].html} lang={lang} />
     <Process t={t.process} />
     <Contact t={t} />
