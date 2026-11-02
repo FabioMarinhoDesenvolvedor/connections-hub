@@ -18,7 +18,7 @@ Revisão feita no navegador (1440 × 900 e 390 × 844), no código e contra o fi
 
 - **Fica:** Next.js App Router e Server Components; scroll nativo; todos os vetores e a Satoshi intactos; paleta; contatos; nomes do processo; galeria de projetos condicionada a cases reais; gate de reduced-motion, sem JavaScript e sem WebGL.
 - **Refeito:** a peça 3D inteira (técnica, forma, material, luz, coreografia), a transição para o logo, o sistema visual, o layout de todas as seções, o motion e a arquitetura de conteúdo.
-- **Removido:** Three.js (ver §5) e o tubo paramétrico.
+- **Removido:** Three.js (ver §5; voltou depois, §11 e §12) e o tubo paramétrico.
 
 ## 3. Direção: "desenho técnico sobre papel de marca"
 
@@ -41,6 +41,8 @@ Tokens em `src/app/tokens.css`. Resumo:
 - **Motion:** quatro durações (160 / 280 / 560 / 900 ms), *expo-out* para chegadas e *in-out* para trocas de estado. Os gestos são linhas de chamada que se desenham, títulos revelados por máscara de linha e hairlines que crescem, nunca o fade-up genérico. Tudo em `transform`/`opacity`. Com reduced motion, os estados finais aparecem sem pin.
 
 ## 5. 3D: campos de distância (SDF) com raymarching
+
+> **Histórico.** Esta cena e o `scripts/bake-symbol-sdf.mjs` não existem mais. Em 17/10 a abertura voltou ao three.js (§11) e em 19/10 virou o símbolo laqueado (§12); o adesivo também usa three.js. Os dois carregam sob demanda.
 
 A sequência do filme muda de topologia: esfera → casca oca → C aberto → placa com relevo. Malhas (Blender/GLB) exigiriam várias peças trocadas no meio do movimento ou morph targets com topologia idêntica, o que não existe aqui. Um campo de distância descreve cada estado como uma função e interpola entre elas com continuidade real. Por isso a peça é um único *fragment shader* em WebGL2:
 
