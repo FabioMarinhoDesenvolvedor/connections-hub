@@ -24,5 +24,5 @@ export default async function Blog({ params }: PageProps<'/[lang]/blog'>) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = getDictionary(lang).blog;
-  return <BlogIndex locale={lang} t={t} posts={getPosts(lang)} label={t.label} title={t.title} intro={t.intro} current="all" />;
+  return <BlogIndex locale={lang} t={t} posts={getPosts(lang)} label={t.label} title={t.title} current="all" />;
 }

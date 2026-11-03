@@ -129,7 +129,6 @@ export type Dictionary = {
     meta: { title: string; description: string; announcements: string; tag: string };
     label: string;
     title: string[];
-    intro: string;
     announcements: { label: string; title: string[]; intro: string };
     /** {tag} */
     tagTitle: string;

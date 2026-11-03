@@ -352,7 +352,6 @@ export const pt: Dictionary = {
     meta: { title: 'Blog — Connections Hub', description: 'Artigos, opiniões e análises sobre tecnologia, e os bastidores dos projetos da Connections Hub.', announcements: 'Anúncios — Connections Hub', tag: 'Posts sobre {tag} — Connections Hub' },
     label: 'Blog',
     title: ['Artigos'],
-    intro: 'Artigos, opiniões e análises sobre tecnologia, e os bastidores de cada projeto: o que funcionou, o que deu errado e por quê.',
     announcements: { label: 'Anúncios', title: ['Novidades', 'dos projetos.'], intro: 'Versões novas, lançamentos e mudanças no site e nos produtos.' },
     tagTitle: 'Posts sobre {tag}',
     kinds: { artigo: 'Artigo', opiniao: 'Opinião', analise: 'Análise', projeto: 'Projeto', anuncio: 'Anúncio' },
