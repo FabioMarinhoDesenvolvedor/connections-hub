@@ -31,14 +31,14 @@ for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signatu
 // so on a machine without Referências/ this check is skipped (and said so), not failed.
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
 let integrity = 'byte-for-byte SVG/font integrity';
-try {
+const hasReferences = await fs.access(originals).then(() => true, () => false);
+if (hasReferences) {
   const files = await fs.readdir(originals);
   const hash = data => crypto.createHash('sha256').update(data).digest('hex');
   const originalHashes = new Set(await Promise.all(files.map(async file => hash(await fs.readFile(path.join(originals, file))))));
   for (const file of await fs.readdir('public/brand')) assert.ok(originalHashes.has(hash(await fs.readFile(path.join('public/brand', file)))), `${file} must be an unchanged official SVG`);
   assert.equal(hash(await fs.readFile('public/fonts/Satoshi-Variable.woff2')), hash(await fs.readFile('Referências/FONTE_ Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2')), 'Official Satoshi must be intact');
-} catch (error) {
-  if (error.code !== 'ENOENT') throw error;
+} else {
   integrity = 'SVG/font integrity SKIPPED (no Referências/ on this machine)';
   console.warn('Warning: Referências/ not found; the byte-for-byte check of the brand files was skipped.');
 }

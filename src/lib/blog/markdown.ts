@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import type { Element, ElementContent, Root } from 'hast';
 import { toString } from 'hast-util-to-string';
@@ -9,6 +10,7 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
+import { localePath } from '@/i18n/config';
 import { FENCE_LANGUAGES, highlight } from '@/lib/highlight';
 import { IMAGE_TYPES, type Post } from './posts';
 
@@ -20,6 +22,8 @@ import { IMAGE_TYPES, type Post } from './posts';
   - "# " inside a post becomes "## ": the page already has the title as its only h1;
   - code fences use the site's own highlighter (lib/highlight.ts), in brand colours;
   - images by file name resolve to the post's folder and get their real size (no layout shift);
+    a missing one stops the build;
+  - a heading that would take one of the page's own ids gets a suffix;
   - links that leave the site open in a new tab;
   - h2/h3 become the "On this page" list.
 */
@@ -34,6 +38,9 @@ const FOOTNOTES: Record<Post['locale'], { label: string; back: string }> = {
   ja: { label: '注', back: '本文に戻る' },
 };
 const JA_CHARS_PER_MINUTE = 500;
+
+// Ids the post page uses for itself; a heading with the same text gets a suffix instead.
+const RESERVED_IDS = new Set(['conteudo', 'post-topo', 'post-conversa', 'post-nesta-pagina']);
 
 const el = (tagName: string, className: string, children: ElementContent[]): Element =>
   ({ type: 'element', tagName, properties: { className: [className] }, children });
@@ -52,6 +59,7 @@ function postSteps(post: Post, toc: TocItem[], images: Map<string, { width: numb
   return () => (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
       if (node.tagName === 'h1') node.tagName = 'h2';
+      if (/^h[2-6]$/.test(node.tagName) && typeof node.properties.id === 'string' && RESERVED_IDS.has(node.properties.id)) node.properties.id += '-1';
       if ((node.tagName === 'h2' || node.tagName === 'h3') && typeof node.properties.id === 'string' && node.properties.id !== 'footnote-label') {
         toc.push({ id: node.properties.id, text: toString(node), depth: node.tagName === 'h2' ? 2 : 3 });
       }
@@ -74,7 +82,8 @@ function postSteps(post: Post, toc: TocItem[], images: Map<string, { width: numb
         const src = node.properties.src;
         if (!/^[a-z]+:|^\//i.test(src)) {
           const name = path.basename(src);
-          node.properties.src = `${post.path}/${name}`;
+          // Served next to this language's page, so a translation never depends on another one.
+          node.properties.src = `${localePath(post.locale, post.path)}/${name}`;
           const dims = images.get(name);
           if (dims) Object.assign(node.properties, dims);
         }
@@ -95,7 +104,9 @@ export async function renderPost(post: Post): Promise<Rendered> {
   for (const [, src] of post.body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) {
     const name = path.basename(src);
     if (/^[a-z]+:|^\//i.test(src) || !(path.extname(name).toLowerCase() in IMAGE_TYPES)) continue;
-    images.set(name, await size(path.join(post.dir, name)));
+    const file = path.join(post.dir, name);
+    if (!fs.existsSync(file)) throw new Error(`Blog: ${path.relative(process.cwd(), post.dir)}: the image "${name}" is not in the post's folder`);
+    images.set(name, await size(file));
   }
   const toc: TocItem[] = [];
   const file = await unified()

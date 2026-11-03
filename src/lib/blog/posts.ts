@@ -57,8 +57,17 @@ function fail(file: string, problem: string): never {
   throw new Error(`Blog: ${path.relative(process.cwd(), file)}: ${problem}`);
 }
 
+/*
+  A day without a time ("2026-11-03", quoted or not) means that day in Brasília. JavaScript
+  and YAML read it as midnight UTC, which is still the previous evening in Brasília, so it is
+  pinned to noon there instead.
+*/
+const DAY_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 function toDate(value: unknown, file: string, field: string): Date {
-  const date = value instanceof Date ? value : typeof value === 'string' ? new Date(value) : null;
+  const dayOnly = value instanceof Date && value.getUTCHours() === 0 && value.getUTCMinutes() === 0 && value.getUTCSeconds() === 0 && value.getUTCMilliseconds() === 0
+    ? value.toISOString().slice(0, 10)
+    : typeof value === 'string' && DAY_ONLY.test(value.trim()) ? value.trim() : null;
+  const date = dayOnly ? new Date(`${dayOnly}T12:00:00-03:00`) : value instanceof Date ? value : typeof value === 'string' ? new Date(value) : null;
   if (!date || Number.isNaN(date.getTime())) fail(file, `"${field}" must be a date such as 2026-11-03 or "2026-11-03T10:00:00-03:00"`);
   return date;
 }
@@ -90,6 +99,12 @@ function folders(): string[] {
   return found.sort();
 }
 
+/** A translation counts only if it exists and would be shown (a draft is not, in production). */
+function published(file: string): boolean {
+  if (!fs.existsSync(file)) return false;
+  return showDrafts() || matter(fs.readFileSync(file, 'utf8')).data.draft !== true;
+}
+
 function read(id: string, locale: Locale): Post | null {
   const dir = path.join(ROOT, id);
   const file = path.join(dir, FILES[locale]);
@@ -119,22 +134,29 @@ function read(id: string, locale: Locale): Post | null {
     tags: data.tags as string[],
     tldr: text(data.tldr, file, 'tldr', false),
     draft: data.draft === true,
-    languages: (Object.keys(FILES) as Locale[]).filter(l => fs.existsSync(path.join(dir, FILES[l]))),
+    languages: (Object.keys(FILES) as Locale[]).filter(l => published(path.join(dir, FILES[l]))),
     body: content,
     dir,
   };
 }
 
+// A build reads each file once; `npm run dev` rereads so edits show on the next refresh.
+const cache = new Map<Locale, Post[]>();
+
 /** Published posts in one language, newest first. */
 export function getPosts(locale: Locale): Post[] {
+  const cached = process.env.NODE_ENV === 'production' ? cache.get(locale) : undefined;
+  if (cached) return cached;
   const drafts = showDrafts();
-  return folders()
+  const posts = folders()
     .map(id => {
       if (!fs.existsSync(path.join(ROOT, id, FILES.pt))) fail(path.join(ROOT, id), 'every post needs index.md, the Portuguese original');
       return read(id, locale);
     })
     .filter((post): post is Post => post !== null && (drafts || !post.draft))
     .sort((a, b) => b.date.getTime() - a.date.getTime() || a.title.localeCompare(b.title));
+  cache.set(locale, posts);
+  return posts;
 }
 
 export function getPost(locale: Locale, year: string, month: string, day: string, slug: string): Post | undefined {

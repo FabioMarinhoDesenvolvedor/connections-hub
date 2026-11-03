@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Arrow } from '@/components/arrow';
 import { fill, isoDay, longDate } from '@/components/blog/format';
 import { TagList } from '@/components/blog/post-list';
-import { credits, site } from '@/data/site';
+import { credits, site, siteOrigin } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, localePath, locales, type Locale } from '@/i18n';
 import { renderPost } from '@/lib/blog/markdown';
 import { getPost, getPosts } from '@/lib/blog/posts';
@@ -63,7 +63,7 @@ export default async function PostPage({ params }: Params) {
   const newer = posts[index - 1];
   const older = posts[index + 1];
   const others = post.languages.filter(l => l !== lang);
-  const origin = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, '');
+  const origin = siteOrigin();
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -82,7 +82,7 @@ export default async function PostPage({ params }: Params) {
   return <main id="conteudo" className="blog post">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
     <article className="shell post-grid" lang={localeInfo[lang].html}>
-      <header className="post-head" id="topo">
+      <header className="post-head" id="post-topo">
         <a className="post-back" href={localePath(lang, '/blog')}><Arrow />{t.back}</a>
         <p className="label post-meta">
           <span className="point" aria-hidden="true" />
@@ -103,12 +103,12 @@ export default async function PostPage({ params }: Params) {
         <TagList tags={post.tags} locale={lang} />
       </header>
 
-      {toc.length > 1 && <aside className="post-toc" aria-labelledby="nesta-pagina">
+      {toc.length > 1 && <aside className="post-toc" aria-labelledby="post-nesta-pagina">
         <details open>
-          <summary id="nesta-pagina" className="label">{t.toc}</summary>
+          <summary id="post-nesta-pagina" className="label">{t.toc}</summary>
           <ol>{toc.map(item => <li key={item.id} data-depth={item.depth}><a href={`#${item.id}`}>{item.text}</a></li>)}</ol>
         </details>
-        <a className="post-top" href="#topo">{t.top}</a>
+        <a className="post-top" href="#post-topo">{t.top}</a>
       </aside>}
 
       <div className="post-text">
@@ -120,8 +120,8 @@ export default async function PostPage({ params }: Params) {
       </div>
 
       <footer className="post-foot">
-        <section className="post-reply" aria-labelledby="conversa">
-          <p id="conversa" className="label"><span className="point" aria-hidden="true" />{t.reply.label}</p>
+        <section className="post-reply" aria-labelledby="post-conversa">
+          <p id="post-conversa" className="label"><span className="point" aria-hidden="true" />{t.reply.label}</p>
           <p>{t.reply.text}</p>
           <a className="button button-primary" href={mail}>{t.reply.email}<Arrow /></a>
         </section>

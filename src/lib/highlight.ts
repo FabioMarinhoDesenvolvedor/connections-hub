@@ -23,7 +23,7 @@ const LINE_COMMENT: Record<CodeLanguage, string> = { ts: '//', rust: '//', sql: 
 export const FENCE_LANGUAGES: Record<string, CodeLanguage> = {
   ts: 'ts', tsx: 'ts', typescript: 'ts', js: 'ts', jsx: 'ts', javascript: 'ts',
   rust: 'rust', rs: 'rust', sql: 'sql', ruby: 'ruby', rb: 'ruby', glsl: 'glsl',
-  bash: 'bash', sh: 'bash', shell: 'bash', powershell: 'bash', ps1: 'bash', json: 'json',
+  bash: 'bash', sh: 'bash', shell: 'bash', zsh: 'bash', json: 'json',
 };
 
 /** Splits one line into tokens. */
@@ -38,9 +38,12 @@ function line(text: string, language: CodeLanguage): Token[] {
   };
   while (i < text.length) {
     const rest = text.slice(i);
-    if (rest.startsWith(comment)) { push('comment', rest); break; }
+    // In shell, # and ' only mean something at the start of a word: ${#arr} and don't are not a
+    // comment or a string.
+    const wordStart = language !== 'bash' || i === 0 || /[\s=(|;&]/.test(text[i - 1]);
+    if (rest.startsWith(comment) && wordStart) { push('comment', rest); break; }
     const quote = rest[0];
-    if (quote === '"' || quote === "'" || (quote === '`' && language === 'ts')) {
+    if ((quote === '"' || quote === "'" || (quote === '`' && language === 'ts')) && (quote !== "'" || wordStart)) {
       let j = 1;
       while (j < rest.length && rest[j] !== quote) j += rest[j] === '\\' ? 2 : 1;
       push('string', rest.slice(0, j + 1));

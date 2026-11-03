@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 /*
-  Starts a post: npm run post:new "Título do post" [-- --kind analise --tags rust,seguranca]
+  Starts a post: npm run post:new "Título do post" [-- --kind analise --tags rust,seguranca --slug endereco]
 
   Creates content/blog/AAAA/MM/DD-slug/index.md for today (Brasília time) with the front
   matter filled in and draft: true, so it only shows in `npm run dev` until it is ready.
@@ -10,8 +10,10 @@ import path from 'node:path';
 const args = process.argv.slice(2);
 const option = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? args.splice(i, 2)[1] : undefined; };
 const kind = option('kind') ?? 'artigo';
+const givenSlug = option('slug');
 const tags = (option('tags') ?? 'rascunho').split(',').map(tag => tag.trim()).filter(Boolean);
 const title = args.join(' ').trim();
+// Same list as postKinds in src/lib/blog/posts.ts (this script runs without TypeScript).
 const kinds = ['artigo', 'opiniao', 'analise', 'projeto', 'anuncio'];
 
 if (!title) {
@@ -23,8 +25,13 @@ if (!kinds.includes(kind)) {
   process.exit(1);
 }
 
-const slug = title.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+const slug = givenSlug ?? title.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
   .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').split('-').slice(0, 8).join('-');
+if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) {
+  // A title in Japanese, for example, has no letters to build an address from.
+  console.error(`Could not make an address from this title. Pass one: --slug lowercase-letters-and-digits`);
+  process.exit(1);
+}
 const now = new Date();
 const part = type => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', [type]: type === 'year' ? 'numeric' : '2-digit', hourCycle: 'h23' })
   .formatToParts(now).find(p => p.type === type).value;

@@ -1,10 +1,10 @@
 import type { MetadataRoute } from 'next';
-import { site } from '@/data/site';
+import { siteOrigin } from '@/data/site';
 import { localeInfo, localePath, locales } from '@/i18n/config';
 import { getPosts } from '@/lib/blog/posts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const origin = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, '');
+  const origin = siteOrigin();
   const url = (path: string) => origin + (path === '/' ? '' : path);
   const languages = Object.fromEntries(locales.map(l => [localeInfo[l].html, url(localeInfo[l].path)]));
   const home: MetadataRoute.Sitemap = locales.map(l => ({ url: url(localeInfo[l].path), changeFrequency: 'monthly', priority: l === 'pt' ? 1 : 0.8, alternates: { languages } }));

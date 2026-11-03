@@ -1,4 +1,4 @@
-import { site } from '@/data/site';
+import { siteOrigin } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, localePath, locales } from '@/i18n';
 import { getPosts } from '@/lib/blog/posts';
 
@@ -16,7 +16,7 @@ export async function GET(_request: Request, { params }: RouteContext<'/[lang]/b
   const { lang } = await params;
   if (!isLocale(lang)) return new Response('Not found', { status: 404 });
   const t = getDictionary(lang).blog;
-  const origin = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, '');
+  const origin = siteOrigin();
   const posts = getPosts(lang).filter(post => !post.draft);
   const items = posts.map(post => {
     const url = origin + localePath(lang, post.path);

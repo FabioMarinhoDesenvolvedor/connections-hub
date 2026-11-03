@@ -7,14 +7,14 @@ import { Process } from '@/components/sections/process';
 import { Projects } from '@/components/sections/projects';
 import { Security } from '@/components/sections/security';
 import { Solutions } from '@/components/sections/solutions';
-import { site, solutionIds } from '@/data/site';
+import { site, siteOrigin, solutionIds } from '@/data/site';
 import { getDictionary, isLocale, localeInfo } from '@/i18n';
 
 export default async function Home({ params }: PageProps<'/[lang]'>) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = getDictionary(lang);
-  const origin = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, '');
+  const origin = siteOrigin();
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
