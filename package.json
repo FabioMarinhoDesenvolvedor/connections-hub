@@ -27,7 +27,8 @@
     "remark-rehype": "^11.1.2",
     "three": "^0.180.0",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.2.0"
+    "unist-util-visit": "^5.2.0",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.15",
@@ -35,7 +36,6 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@types/three": "^0.180.0",
-    "sharp": "^0.35.5",
     "typescript": "^5.9.0"
   }
 }

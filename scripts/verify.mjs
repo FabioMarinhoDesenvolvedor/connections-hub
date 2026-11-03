@@ -111,6 +111,12 @@ assert.ok(panelHtml.includes('href="/api/auth/github"') && !panelHtml.includes('
 assert.match(panelHtml, /name="robots" content="noindex/, 'Moderation panel is not indexed');
 assert.equal((await fetch(origin + '/api/admin/comments/00000000-0000-0000-0000-000000000000', { method: 'POST', headers: { Origin: origin }, body: new URLSearchParams({ action: 'delete' }) })).status, 403, 'Moderation needs the owner');
 assert.equal((await fetch(origin + '/api/comments?post=..%2Fetc')).status, 400, 'Comment API rejects a malformed post id');
+// The post editor: closed without the owner's session, page and API alike.
+const editorPanel = await (await fetch(origin + '/admin/posts')).text();
+assert.ok(editorPanel.includes('href="/api/auth/github"') && !editorPanel.includes('Novo post'), 'Without a session the editor only offers sign-in');
+assert.equal((await fetch(origin + '/api/admin/posts', { method: 'POST', headers: { Origin: origin } })).status, 401, 'Creating a draft needs the owner');
+assert.equal((await fetch(origin + '/api/admin/posts/00000000-0000-0000-0000-000000000000/review', { method: 'POST', headers: { Origin: origin } })).status, 401, 'Asking for a review needs the owner');
+assert.equal((await fetch(origin + '/api/admin/posts', { method: 'POST', headers: { Origin: 'https://example.com' } })).status, 403, 'The editor refuses requests from another site');
 assert.ok([200, 503].includes((await fetch(origin + '/api/comments?post=2026/11/03-exemplo-de-post')).status), 'Comment API answers (or says the database is not configured)');
 // Bodies: a huge one is refused before it is read (no memory is filled), a compressed one is
 // never inflated (decompression bombs), and a forged Host never becomes a redirect elsewhere.
@@ -130,4 +136,4 @@ if (process.env.BLOG_DRAFTS === '1') {
 const huge = await fetch(origin + '/api/comments', { method: 'POST', headers: form, body: 'a'.repeat(2 * 1024 * 1024) }).then(r => r.status, error => error.cause?.code ?? 'error');
 assert.ok(huge === 413 || huge === 'ECONNRESET' || huge === 'EPIPE', `A huge comment body is refused (got ${huge})`);
 
-console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, ${integrity}, PT/EN/JA routes and copy, theme boot, blog routes, feed and sitemap, comments and moderation guard. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
+console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, ${integrity}, PT/EN/JA routes and copy, theme boot, blog routes, feed and sitemap, comments and moderation guard, post editor guard. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);

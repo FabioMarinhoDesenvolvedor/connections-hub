@@ -19,11 +19,12 @@ const config: NextConfig = {
   },
   // PGlite (local comments database) loads its WebAssembly from its own folder: keep it unbundled.
   serverExternalPackages: ['@electric-sql/pglite'],
-  // Routes that read the posts at request time (to check a comment's post, to name posts in
-  // the moderation panel) need the Markdown files in their deployment.
+  // Routes that read the posts at request time (to check a comment's post, to list and name
+  // posts in the panel) need the Markdown files in their deployment.
   outputFileTracingIncludes: {
     '/api/comments': ['./content/blog/**/*.md'],
     '/admin/comentarios': ['./content/blog/**/*.md'],
+    '/admin/posts': ['./content/blog/**/*.md'],
   },
   // Security headers on every response (see src/lib/security-headers.ts).
   async headers() {

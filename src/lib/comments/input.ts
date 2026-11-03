@@ -13,14 +13,12 @@ export const MAX_BODY = 64 * 1024; // a 3,000-character comment, URL-encoded, fi
 
 export class BadBody extends Error {}
 
-export async function readForm(request: Request): Promise<URLSearchParams> {
-  const type = request.headers.get('content-type') ?? '';
+/** The raw body, refused when compressed or above `max` bytes (checked before and while reading). */
+export async function readBytes(request: Request, max: number): Promise<Uint8Array> {
   const encoding = (request.headers.get('content-encoding') ?? 'identity').toLowerCase();
-  if (!type.toLowerCase().startsWith('application/x-www-form-urlencoded')) throw new BadBody('type');
   if (encoding !== 'identity') throw new BadBody('encoding');
-  const declared = Number(request.headers.get('content-length') ?? '0');
-  if (declared > MAX_BODY) throw new BadBody('size');
-  if (!request.body) return new URLSearchParams();
+  if (Number(request.headers.get('content-length') ?? '0') > max) throw new BadBody('size');
+  if (!request.body) return new Uint8Array();
   const reader = request.body.getReader();
   const chunks: Uint8Array[] = [];
   let size = 0;
@@ -28,13 +26,25 @@ export async function readForm(request: Request): Promise<URLSearchParams> {
     const { done, value } = await reader.read();
     if (done) break;
     size += value.byteLength;
-    if (size > MAX_BODY) { await reader.cancel(); throw new BadBody('size'); }
+    if (size > max) { await reader.cancel(); throw new BadBody('size'); }
     chunks.push(value);
   }
   const bytes = new Uint8Array(size);
   let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
-  return new URLSearchParams(new TextDecoder('utf-8', { fatal: false }).decode(bytes));
+  return bytes;
+}
+
+export async function readForm(request: Request): Promise<URLSearchParams> {
+  const type = request.headers.get('content-type') ?? '';
+  if (!type.toLowerCase().startsWith('application/x-www-form-urlencoded')) throw new BadBody('type');
+  return new URLSearchParams(new TextDecoder().decode(await readBytes(request, MAX_BODY)));
+}
+
+export async function readJson(request: Request, max: number): Promise<unknown> {
+  const type = request.headers.get('content-type') ?? '';
+  if (!type.toLowerCase().startsWith('application/json')) throw new BadBody('type');
+  try { return JSON.parse(new TextDecoder().decode(await readBytes(request, max))); } catch (error) { if (error instanceof BadBody) throw error; throw new BadBody('json'); }
 }
 
 // C0/C1 controls (except tab and newline), zero-width characters, bidi embeddings, overrides

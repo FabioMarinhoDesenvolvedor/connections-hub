@@ -4,7 +4,7 @@ import { neon } from '@neondatabase/serverless';
   The comments database. In production, Neon Postgres over HTTP (DATABASE_URL, set by the
   Vercel integration). For local work, DATABASE_URL=pglite:./.pglite runs a real Postgres
   inside Node (PGlite, a dev dependency), so the same SQL is tested without a server.
-  The table is created on first use.
+  The tables (comments, and the post editor's drafts and images) are created on first use.
 */
 type Row = Record<string, unknown>;
 type Query = (text: string, params?: unknown[]) => Promise<Row[]>;
@@ -27,6 +27,30 @@ CREATE TABLE IF NOT EXISTS comment_attempts (
   at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS comment_attempts_by_ip ON comment_attempts (ip_hash, at);
+CREATE TABLE IF NOT EXISTS post_drafts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL DEFAULT '',
+  slug text NOT NULL DEFAULT '',
+  description text NOT NULL DEFAULT '',
+  kind text NOT NULL DEFAULT 'artigo',
+  tags text NOT NULL DEFAULT '',
+  tldr text NOT NULL DEFAULT '',
+  body text NOT NULL DEFAULT '',
+  status text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'review', 'published')),
+  folder text,
+  branch text,
+  pr_number integer,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS post_images (
+  draft_id uuid NOT NULL REFERENCES post_drafts (id) ON DELETE CASCADE,
+  name text NOT NULL,
+  data text NOT NULL,
+  width integer NOT NULL,
+  height integer NOT NULL,
+  PRIMARY KEY (draft_id, name)
+);
 `;
 
 /** The comments cannot be reached: not configured, or the database is down. */
