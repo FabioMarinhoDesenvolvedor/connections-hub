@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getDraft, imageData, listImages, markReview } from '@/lib/editor/drafts';
-import { pushReview, reviewState, type ReviewFile } from '@/lib/editor/github';
+import { getPosts } from '@/lib/blog/posts';
+import { getDraft, imagesData, listImages, markReview, slugTaken } from '@/lib/editor/drafts';
+import { branchExists, pushReview, reviewState, type ReviewFile } from '@/lib/editor/github';
 import { editorRoute, UUID } from '@/lib/editor/guard';
-import { brasiliaNow, indexMd, problems, referencedImages } from '@/lib/editor/post-file';
+import { brasiliaNow, fingerprint, indexMd, problems, referencedImages } from '@/lib/editor/post-file';
 
 /*
   POST: writes the draft to the repository as a pull request (or updates the open one), so
@@ -19,6 +20,12 @@ export async function POST(request: Request, { params }: RouteContext<'/api/admi
     if (draft.status === 'published') return NextResponse.json({ error: 'Este post já foi publicado.' }, { status: 409 });
     const images = await listImages(id);
     const found = problems(draft, images);
+    if (!draft.branch) {
+      // A new review: the address must not belong to another post, draft or branch.
+      if (getPosts('pt').some(p => p.slug === draft.slug) || await slugTaken(id, draft.slug) || await branchExists(`post/${draft.slug}`)) {
+        found.push('Já existe um post com esse endereço. Mude o campo Endereço.');
+      }
+    }
     if (found.length) return NextResponse.json({ problems: found }, { status: 422 });
 
     const now = brasiliaNow();
@@ -26,12 +33,10 @@ export async function POST(request: Request, { params }: RouteContext<'/api/admi
     // Noon in Brasília on the folder's day: the same date on every update of the review.
     const [year, month, day] = folder.split(/[/-]/);
     const date = `${year}-${month}-${day}T12:00:00-03:00`;
-    const used = new Set(referencedImages(draft.body));
-    const files: ReviewFile[] = [{ path: `content/blog/${folder}/index.md`, text: indexMd(draft, date) }];
-    for (const image of images.filter(i => used.has(i.name))) {
-      const data = await imageData(id, image.name);
-      if (data) files.push({ path: `content/blog/${folder}/${image.name}`, base64: data.toString('base64') });
-    }
+    const used = images.filter(i => referencedImages(draft.body).includes(i.name)).map(i => i.name);
+    const markdown = indexMd(draft, date);
+    const files: ReviewFile[] = [{ path: `content/blog/${folder}/index.md`, text: markdown }];
+    for (const [name, data] of await imagesData(id, used)) files.push({ path: `content/blog/${folder}/${name}`, base64: data.toString('base64') });
     const branch = draft.branch ?? `post/${draft.slug}`;
     const { prNumber } = await pushReview({
       branch, files, prNumber: draft.prNumber,
@@ -39,7 +44,7 @@ export async function POST(request: Request, { params }: RouteContext<'/api/admi
       title: `post: ${draft.title}`,
       body: `Post escrito no editor do painel (/admin/posts).\n\n- **Tipo:** ${draft.kind}\n- **Temas:** ${draft.tags}\n- **Arquivo:** \`content/blog/${folder}/index.md\`\n\nPara revisar, peça ao Claude: "revise o PR deste post" (regras em \`content/blog/GUIA.md\`). Para publicar, use o botão **Publicar** no editor.`,
     });
-    await markReview(id, { folder, branch, prNumber });
+    await markReview(id, { folder, branch, prNumber, reviewed: fingerprint(markdown, used) });
     return NextResponse.json({ ok: true, prNumber });
   });
 }

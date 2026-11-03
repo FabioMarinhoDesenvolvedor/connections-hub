@@ -1,16 +1,14 @@
-import { postKinds } from '@/lib/blog/posts';
+import { createHash } from 'node:crypto';
 import type { Draft, DraftImage } from './drafts';
+import { postKinds, SLUG, slugify } from './shared';
 
 /*
   From a draft to the Markdown file the blog reads (content/blog/AAAA/MM/DD-slug/index.md).
   The checks repeat the build's (lib/blog/posts.ts) so a draft that passes here also builds;
   the messages are in Portuguese, for the owner.
 */
-export const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const TAG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-export const slugify = (text: string) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
-  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').split('-').filter(Boolean).slice(0, 8).join('-');
+export { SLUG, slugify };
+const TAG = SLUG;
 
 export const tagList = (tags: string) => tags.split(',').map(t => slugify(t)).filter(Boolean);
 
@@ -47,7 +45,8 @@ export function indexMd(draft: Draft, dateIso: string): string {
     `description: ${yaml(draft.description)}`,
     `date: "${dateIso}"`,
     `kind: ${draft.kind}`,
-    `tags: [${tagList(draft.tags).join(', ')}]`,
+    // Quoted: a tag such as 2025 or null would otherwise be read as a number or nothing.
+    `tags: [${tagList(draft.tags).map(t => JSON.stringify(t)).join(', ')}]`,
     ...(draft.tldr.trim() ? [`tldr: ${yaml(draft.tldr)}`] : []),
     'draft: false',
     '---',
@@ -55,3 +54,7 @@ export function indexMd(draft: Draft, dateIso: string): string {
   ];
   return `${lines.join('\n')}${draft.body.replace(/\r\n?/g, '\n').trim()}\n`;
 }
+
+/** A fingerprint of what a review sends (the file and the images it uses), to spot later edits. */
+export const fingerprint = (markdown: string, imageNames: string[]) =>
+  createHash('sha256').update(markdown).update('\0').update([...imageNames].sort().join('\n')).digest('base64url');

@@ -1,5 +1,7 @@
 import sharp from 'sharp';
-import { slugify } from './post-file';
+import { MAX_UPLOAD, slugify } from './shared';
+
+export { MAX_UPLOAD };
 
 /*
   An image dropped into the editor, made safe and light before it is stored:
@@ -8,7 +10,6 @@ import { slugify } from './post-file';
   - re-encoded as WebP, which also drops every metadata block (camera, GPS location).
   Anything that is not a real image fails to decode and is refused.
 */
-export const MAX_UPLOAD = 4 * 1024 * 1024; // Vercel functions accept bodies up to 4.5 MB
 const MAX_INPUT_PIXELS = 40_000_000;
 const MAX_WIDTH = 2000;
 

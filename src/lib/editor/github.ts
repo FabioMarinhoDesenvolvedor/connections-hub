@@ -34,7 +34,7 @@ async function gh<T>(method: string, path: string, body?: unknown): Promise<T> {
 }
 
 const headOf = async (branch: string) => (await gh<{ object: { sha: string } }>('GET', `/git/ref/heads/${branch}`)).object.sha;
-const branchExists = (branch: string) => headOf(branch).then(() => true, (e: unknown) => { if (e instanceof GithubError && e.status === 404) return false; throw e; });
+export const branchExists = (branch: string) => headOf(branch).then(() => true, (e: unknown) => { if (e instanceof GithubError && e.status === 404) return false; throw e; });
 
 export type ReviewFile = { path: string } & ({ text: string } | { base64: string });
 
@@ -63,7 +63,7 @@ export async function pushReview(input: { branch: string; message: string; files
   return { prNumber: pr.number };
 }
 
-export type ReviewState = { prUrl: string; state: 'open' | 'closed' | 'merged'; checks: 'pending' | 'success' | 'failure'; previewUrl: string | null };
+export type ReviewState = { prUrl: string; state: 'open' | 'closed' | 'merged'; checks: 'pending' | 'success' | 'failure'; previewUrl: string | null; headSha: string };
 
 /** The pull request, Vercel's check on it and the preview address, for the editor to show. */
 export async function reviewState(prNumber: number, branch: string): Promise<ReviewState> {
@@ -76,11 +76,12 @@ export async function reviewState(prNumber: number, branch: string): Promise<Rev
     previewUrl = statuses.find(s => s.state === 'success' && s.environment_url)?.environment_url ?? null;
   }
   const checks = status.statuses.length === 0 || status.state === 'pending' ? 'pending' : status.state === 'success' ? 'success' : 'failure';
-  return { prUrl: pr.html_url, state: pr.merged ? 'merged' : pr.state === 'open' ? 'open' : 'closed', checks, previewUrl };
+  return { prUrl: pr.html_url, state: pr.merged ? 'merged' : pr.state === 'open' ? 'open' : 'closed', checks, previewUrl, headSha: pr.head.sha };
 }
 
-export async function mergeReview(prNumber: number, branch: string, title: string): Promise<void> {
-  await gh('PUT', `/pulls/${prNumber}/merge`, { merge_method: 'merge', commit_title: `post: ${title}` });
+/** Merges exactly the commit whose check passed: GitHub refuses (409) if the branch moved since. */
+export async function mergeReview(prNumber: number, branch: string, title: string, sha: string): Promise<void> {
+  await gh('PUT', `/pulls/${prNumber}/merge`, { merge_method: 'merge', commit_title: `post: ${title}`, sha });
   await gh('DELETE', `/git/refs/heads/${branch}`).catch(() => undefined); // tidy; the merge is what matters
 }
 

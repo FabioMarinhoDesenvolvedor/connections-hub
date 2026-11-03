@@ -369,4 +369,14 @@ Soluções voltou como era.
 - **Prévia:** sai sanitizada pelo mesmo pipeline do site.
 - **Imagens do rascunho:** só o dono as vê, e elas não ficam em cache compartilhado.
 
+**Correções da revisão de código** (10 achados, todos corrigidos):
+- **Imagens:** com o mesmo nome (duas capturas de tela são ambas `image.png`), viram `image-2.webp` em vez de se sobrescrever; várias de uma vez entram todas, em ordem, no texto atual.
+- **Publicar:**
+  - recusa se o rascunho mudou depois da última revisão: uma impressão digital do arquivo enviado é comparada com o rascunho atual;
+  - faz o merge só do commit exato cujo check passou (`sha`), e o GitHub recusa se a branch andou.
+- **Endereço:** um endereço já usado por outro post, rascunho em revisão ou branch é recusado antes de criar a branch. O campo aceita hífen enquanto se digita e é limpo ao sair dele.
+- **Temas:** vão entre aspas no cabeçalho (`2025` e `null` viravam número e nada, e quebravam o build).
+- **Limites:** o JSON aceita até 1 MB (um texto longo e acentuado passava de 256 KB). Regras e limites ficam em `lib/editor/shared.ts`, usado pelo navegador e pelo servidor.
+- **Banco:** as imagens da revisão saem numa consulta só.
+
 **Testado:** de ponta a ponta contra um GitHub falso local (`GITHUB_API_URL`): criar, salvar, prévia, imagem (EXIF removido, 3000 → 2000 px), arquivo que não é imagem, revisão incompleta e completa, segunda revisão no mesmo PR, publicar e descartar. Um post gerado pelo editor passou pelo build de produção. O GitHub de verdade só depois do token.

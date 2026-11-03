@@ -3,6 +3,7 @@ import { readJson } from '@/lib/comments/input';
 import { deleteDraft, FIELD_LIMITS, getDraft, saveDraft, type DraftFields } from '@/lib/editor/drafts';
 import { closeReview } from '@/lib/editor/github';
 import { editorRoute, UUID } from '@/lib/editor/guard';
+import { MAX_JSON } from '@/lib/editor/shared';
 
 // PUT saves the editor's fields (called as the owner types); DELETE discards the draft.
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export async function PUT(request: Request, { params }: RouteContext<'/api/admin
   return editorRoute(request, async () => {
     const { id } = await params;
     if (!UUID.test(id)) return NextResponse.json({ error: 'Rascunho não encontrado.' }, { status: 404 });
-    const input = await readJson(request, 256 * 1024) as Record<string, unknown>;
+    const input = await readJson(request, MAX_JSON) as Record<string, unknown>;
     const fields = {} as DraftFields;
     for (const key of FIELDS) {
       const value = typeof input?.[key] === 'string' ? (input[key] as string) : '';

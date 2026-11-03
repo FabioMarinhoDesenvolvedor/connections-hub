@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
+import { FIELD_LIMITS, MAX_UPLOAD, slugify } from '@/lib/editor/shared';
 
 /*
   The post editor in the owner's panel. The text is Markdown, with buttons for what is easy
@@ -26,8 +27,6 @@ const SAVE_DELAY = 1200;
 const PREVIEW_DELAY = 600;
 const REVIEW_POLL = 15_000;
 
-const slugify = (text: string) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
-  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').split('-').filter(Boolean).slice(0, 8).join('-');
 
 async function call<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, init);
@@ -144,6 +143,18 @@ export function Editor({ draft, images: initialImages, kinds, canReview }: { dra
     if (event.key === 'k') { event.preventDefault(); link(); }
   };
 
+  // Inserts into the text as it is now (an upload finishes after other edits), at the cursor.
+  const insertNow = (snippet: string) => {
+    const at = text.current?.selectionStart ?? null;
+    setFields(f => {
+      const pos = at === null || at > f.body.length ? f.body.length : at;
+      const before = pos > 0 && f.body[pos - 1] !== '\n' ? '\n\n' : '';
+      const end = pos + before.length + snippet.length + 1;
+      pendingSelection.current = [end, end]; // the next image goes after this one, in order
+      return { ...f, body: f.body.slice(0, pos) + before + snippet + '\n' + f.body.slice(pos) };
+    });
+  };
+
   const upload = async (files: FileList | File[]) => {
     const list = [...files].filter(f => f.type.startsWith('image/'));
     if (!list.length) return;
@@ -151,10 +162,10 @@ export function Editor({ draft, images: initialImages, kinds, canReview }: { dra
     setMessage(null);
     for (const f of list) {
       try {
-        if (f.size > 4 * 1024 * 1024) throw new Error(`"${f.name}" passa de 4 MB; diminua a imagem antes.`);
+        if (f.size > MAX_UPLOAD) throw new Error(`"${f.name}" passa de 4 MB; diminua a imagem antes.`);
         const image = await call<Image>(`/api/admin/posts/${draft.id}/images`, { method: 'POST', headers: { 'Content-Type': f.type, 'X-File-Name': encodeURIComponent(f.name) }, body: f });
         setImages(current => [...current.filter(i => i.name !== image.name), image]);
-        insert(`![Descreva a imagem](${image.name})`);
+        insertNow(`![Descreva a imagem](${image.name})`);
       } catch (error) {
         setMessage({ tone: 'error', text: (error as Error).message });
       }
@@ -224,11 +235,11 @@ export function Editor({ draft, images: initialImages, kinds, canReview }: { dra
     <div className="editor-meta">
       <label className="field editor-title">
         <span>Título</span>
-        <input value={fields.title} maxLength={140} onChange={e => set('title', e.target.value)} placeholder="O título do post" />
+        <input value={fields.title} maxLength={FIELD_LIMITS.title} onChange={e => set('title', e.target.value)} placeholder="O título do post" />
       </label>
       <label className="field">
         <span>Resumo <small>uma ou duas frases: aparece na lista, no Google e no RSS</small></span>
-        <textarea rows={2} value={fields.description} maxLength={300} onChange={e => set('description', e.target.value)} />
+        <textarea rows={2} value={fields.description} maxLength={FIELD_LIMITS.description} onChange={e => set('description', e.target.value)} />
       </label>
       <div className="editor-row">
         <label className="field">
@@ -239,16 +250,18 @@ export function Editor({ draft, images: initialImages, kinds, canReview }: { dra
         </label>
         <label className="field">
           <span>Temas <small>separados por vírgula</small></span>
-          <input value={fields.tags} maxLength={200} onChange={e => set('tags', e.target.value)} placeholder="ia, carreira" />
+          <input value={fields.tags} maxLength={FIELD_LIMITS.tags} onChange={e => set('tags', e.target.value)} placeholder="ia, carreira" />
         </label>
         <label className="field">
           <span>Endereço {locked && <small>fixo depois da revisão</small>}</span>
-          <input value={fields.slug} maxLength={80} disabled={locked} onChange={e => { setSlugTouched(true); set('slug', slugify(e.target.value) || e.target.value.toLowerCase()); }} />
+          <input value={fields.slug} maxLength={FIELD_LIMITS.slug} disabled={locked}
+            onChange={e => { setSlugTouched(true); set('slug', e.target.value.toLowerCase().replace(/\s/g, '-')); }}
+            onBlur={e => set('slug', slugify(e.target.value))} />
         </label>
       </div>
       <label className="field">
         <span>Resumo em destaque <small>opcional, aparece no topo do post</small></span>
-        <textarea rows={2} value={fields.tldr} maxLength={600} onChange={e => set('tldr', e.target.value)} />
+        <textarea rows={2} value={fields.tldr} maxLength={FIELD_LIMITS.tldr} onChange={e => set('tldr', e.target.value)} />
       </label>
     </div>
 

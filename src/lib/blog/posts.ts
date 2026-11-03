@@ -18,8 +18,9 @@ import type { Locale } from '@/i18n/config';
   `npm run dev`, or in a build with BLOG_DRAFTS=1 (for reviewing them in a preview).
 */
 
-export const postKinds = ['artigo', 'opiniao', 'analise', 'projeto', 'anuncio'] as const;
-export type PostKind = (typeof postKinds)[number];
+import { postKinds, type PostKind } from '@/lib/editor/shared';
+
+export { postKinds, type PostKind };
 
 export type Post = {
   locale: Locale;

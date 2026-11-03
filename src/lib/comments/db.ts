@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS post_drafts (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE post_drafts ADD COLUMN IF NOT EXISTS reviewed text;
 CREATE TABLE IF NOT EXISTS post_images (
   draft_id uuid NOT NULL REFERENCES post_drafts (id) ON DELETE CASCADE,
   name text NOT NULL,
