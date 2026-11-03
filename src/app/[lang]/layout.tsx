@@ -88,7 +88,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       <Footer t={t} locale={lang} />
       <ScrollEffects />
       <AnchorJump />
-      <PrivacyNotice t={t.privacy} />
+      <PrivacyNotice t={{ ...t.privacy, text: t.privacy.text.replace('{email}', site.contact.email) }} />
       <ConsoleGreeting locale={lang} signature={t.console.signature} />
     </body>
   </html>;

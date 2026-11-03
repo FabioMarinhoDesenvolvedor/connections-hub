@@ -345,7 +345,7 @@ export const pt: Dictionary = {
       },
     },
   },
-  privacy: { label: 'Privacidade', text: 'Não usamos cookies, rastreadores nem ferramentas de análise. No seu navegador ficam só a escolha de tema e este aviso. Se você comentar num post, guardamos o nome, o comentário e o e-mail (se informar, nunca publicado) para moderar e responder; para apagar, escreva para contato@connectionshub.com.br.', dismiss: 'Entendi' },
+  privacy: { label: 'Privacidade', text: 'Não usamos cookies, rastreadores nem ferramentas de análise. No seu navegador ficam só a escolha de tema e este aviso. Se você comentar num post, guardamos o nome, o comentário e o e-mail (se informar, nunca publicado) para moderar e responder; para apagar, escreva para {email}.', dismiss: 'Entendi' },
   console: { signature: 'Design e código' },
   blog: {
     nav: 'Blog',

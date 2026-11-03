@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { DatabaseUnavailable } from '@/lib/comments/db';
 import { approve, remove } from '@/lib/comments/store';
 import { currentAdmin, here, sameOrigin } from '@/lib/comments/session';
 
@@ -12,8 +13,12 @@ export async function POST(request: Request, { params }: RouteContext<'/api/admi
   if (!sameOrigin(request) || !(await currentAdmin())) return new NextResponse('Forbidden', { status: 403 });
   if (!UUID.test(id)) return new NextResponse('Not found', { status: 404 });
   const action = String((await request.formData()).get('action') ?? '');
-  if (action === 'approve') await approve(id);
-  else if (action === 'delete') await remove(id);
-  else return new NextResponse('Bad request', { status: 400 });
+  if (action !== 'approve' && action !== 'delete') return new NextResponse('Bad request', { status: 400 });
+  try {
+    await (action === 'approve' ? approve(id) : remove(id));
+  } catch (error) {
+    if (!(error instanceof DatabaseUnavailable)) throw error;
+    return NextResponse.redirect(here(request, '/admin/comentarios#indisponivel'), 303);
+  }
   return NextResponse.redirect(here(request, `/admin/comentarios#${action === 'approve' ? 'aprovado' : 'apagado'}`), 303);
 }

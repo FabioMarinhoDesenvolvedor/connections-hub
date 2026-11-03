@@ -120,6 +120,7 @@ export type Dictionary = {
     note: string;
     items: Record<ProjectId, { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] }>;
   };
+  /** {email} in text: the contact address, filled from data/site.ts. */
   privacy: { label: string; text: string; dismiss: string };
   console: { signature: string };
   /** Interface of the blog; the posts themselves are Markdown in content/blog. */

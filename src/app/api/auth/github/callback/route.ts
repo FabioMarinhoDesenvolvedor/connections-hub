@@ -6,7 +6,10 @@ import { adminLogin, cookieOptions, here, SESSION_COOKIE, sessionValue, STATE_CO
 // GitHub sends the owner back here: check the state, ask GitHub who it is, let only the owner in.
 export const dynamic = 'force-dynamic';
 
-const same = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
+const same = (a: string, b: string) => {
+  const x = Buffer.from(a), y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+};
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

@@ -337,7 +337,7 @@ export const en: Dictionary = {
       },
     },
   },
-  privacy: { label: 'Privacy', text: 'We use no cookies, trackers or analytics. Your browser keeps only your theme choice and this notice. If you comment on a post, we keep your name, the comment and your email (if given, never published) to moderate and reply; to delete it, write to contato@connectionshub.com.br.', dismiss: 'Got it' },
+  privacy: { label: 'Privacy', text: 'We use no cookies, trackers or analytics. Your browser keeps only your theme choice and this notice. If you comment on a post, we keep your name, the comment and your email (if given, never published) to moderate and reply; to delete it, write to {email}.', dismiss: 'Got it' },
   console: { signature: 'Design and code' },
   blog: {
     nav: 'Blog',

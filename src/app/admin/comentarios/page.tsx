@@ -48,8 +48,9 @@ export default async function Moderation({ searchParams }: PageProps<'/admin/com
     </header>
     <p id="aprovado" className="comment-status" data-tone="ok" role="status">Comentário aprovado: já aparece no post.</p>
     <p id="apagado" className="comment-status" data-tone="ok" role="status">Comentário apagado.</p>
+    <p id="indisponivel" className="comment-status" data-tone="error" role="alert">O banco não respondeu; nada mudou. Tente de novo.</p>
     {comments === null
-      ? <p className="admin-lead">O banco de dados não está configurado (DATABASE_URL).</p>
+      ? <p className="admin-lead">O banco de dados não respondeu ou não está configurado (DATABASE_URL). Veja o log do servidor.</p>
       : <>
         <Group title="Esperando aprovação" empty="Nada esperando aprovação." items={pending} titles={titles} />
         <Group title="Publicados" empty="Nenhum comentário publicado ainda." items={approved} titles={titles} />

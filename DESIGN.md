@@ -314,7 +314,7 @@ Soluções voltou como era.
   - um campo escondido que só robôs preenchem: o comentário é descartado e o robô recebe "enviado";
   - 3 envios por pessoa a cada 10 minutos;
   - um teto de 300 pendentes.
-- **Privacidade:** o IP nunca é guardado, só um hash com chave (para o limite), e ele é apagado quando o comentário é aprovado. O aviso de privacidade e o selo "Seus dados em paz" foram reescritos para dizer o que é guardado quando alguém comenta. O aviso subiu de versão e aparece de novo uma vez.
+- **Privacidade:** o IP nunca é guardado. Para o limite de envios, um hash do IP com chave fica numa tabela à parte (`comment_attempts`), separado dos comentários, e é apagado depois de 10 minutos. A checagem dos limites e a gravação acontecem numa única instrução SQL, para envios paralelos não furarem o limite, e moderar um comentário não zera a contagem. O aviso de privacidade e o selo "Seus dados em paz" foram reescritos para dizer o que é guardado quando alguém comenta. O aviso subiu de versão e aparece de novo uma vez.
 
 **Desenvolvimento local:**
 - `DATABASE_URL=pglite:./.pglite` roda um Postgres dentro do Node (PGlite, dependência de desenvolvimento), sem instalar nada.
@@ -324,4 +324,5 @@ Soluções voltou como era.
 - O PGlite precisa ficar fora do bundle (`serverExternalPackages`) e ter uma instância só por processo (em `globalThis`). O dev carrega páginas e rotas como grafos de módulos separados, e duas instâncias na mesma pasta viam dados diferentes.
 - No dev, `request.url` diz `localhost` mesmo quando o navegador usa `127.0.0.1`. Por isso os redirecionamentos e a checagem de origem usam o cabeçalho `Host` (ou `X-Forwarded-Host`).
 - As rotas que leem posts em tempo de execução precisam dos arquivos Markdown no deploy (`outputFileTracingIncludes`).
+- Qualquer falha do banco (rede, timeout, Neon suspenso) ou um `SESSION_SECRET` ausente vira "indisponível" para o visitante, nunca um erro 500; a causa fica no log.
 - A CSP continua igual: tudo é da própria origem, o formulário posta para o próprio site (`form-action 'self'`) e o login é uma navegação até o GitHub, não um formulário.

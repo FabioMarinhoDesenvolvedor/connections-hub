@@ -48,10 +48,12 @@ export async function POST(request: Request) {
   if (!name || name.length > LIMITS.name || body.length < 3 || body.length > LIMITS.body || (email && (email.length > LIMITS.email || !EMAIL.test(email)))) {
     return back('comentario-erro-invalido');
   }
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || request.headers.get('x-real-ip') || 'unknown';
+  // On Vercel these headers are set by the platform from the connection and cannot be forged
+  // by the visitor. Self-hosted behind another proxy, make sure it overwrites them.
+  const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
   try {
     const result = await submit({ postId: post.id, locale: lang, name, email, body, ipHash: hashIp(ip) });
-    return back(result === 'ok' ? 'comentario-enviado' : 'comentario-erro-limite');
+    return back(result === 'ok' ? 'comentario-enviado' : result === 'limit' ? 'comentario-erro-limite' : 'comentario-erro-indisponivel');
   } catch (error) {
     if (error instanceof DatabaseUnavailable) return back('comentario-erro-indisponivel');
     throw error;

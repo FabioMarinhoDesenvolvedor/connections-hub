@@ -1,13 +1,14 @@
 import { createHmac } from 'node:crypto';
-import { db } from './db';
+import { db, DatabaseUnavailable } from './db';
 import { LIMITS } from './limits';
 import { secret } from './session';
 
 /*
   Comments and their moderation. A comment is stored as pending and is shown only after the
   owner approves it; rejecting deletes it, and an approved one can be deleted at any time
-  (a real DELETE: nothing is kept). The visitor's IP is never stored, only a keyed hash used
-  to limit how often one person can send, and it is erased when the comment is approved.
+  (a real DELETE: nothing is kept). The visitor's IP is never stored. A keyed hash of it goes
+  in comment_attempts, apart from the comments, only to limit how often one person can send;
+  each one is deleted after 10 minutes, and moderating a comment does not reset the count.
 */
 export type Comment = { id: string; postId: string; locale: string; name: string; email: string | null; body: string; status: 'pending' | 'approved'; createdAt: Date };
 export { LIMITS };
@@ -15,7 +16,9 @@ export type PublicComment = { id: string; name: string; body: string; createdAt:
 
 
 export function hashIp(ip: string): string {
-  return createHmac('sha256', secret()).update(`ip:${ip}`).digest('base64url');
+  let key: string;
+  try { key = secret(); } catch { throw new DatabaseUnavailable('SESSION_SECRET is not set'); }
+  return createHmac('sha256', key).update(`ip:${ip}`).digest('base64url');
 }
 
 const toComment = (r: Record<string, unknown>): Comment => ({
@@ -31,14 +34,28 @@ export async function approvedFor(postId: string): Promise<PublicComment[]> {
 
 export type SubmitResult = 'ok' | 'limit' | 'full';
 
+/*
+  One statement does it all, so parallel requests cannot slip past the checks one by one:
+  forget attempts older than 10 minutes, count this person's recent attempts and the pending
+  comments, record the attempt and store the comment only when both are under their limits.
+*/
 export async function submit(input: { postId: string; locale: string; name: string; email: string | null; body: string; ipHash: string }): Promise<SubmitResult> {
-  const [recent] = await db(`SELECT count(*)::int AS n FROM comments WHERE ip_hash = $1 AND created_at > now() - interval '10 minutes'`, [input.ipHash]);
-  if (Number(recent.n) >= LIMITS.perIpPer10Min) return 'limit';
-  const [pending] = await db(`SELECT count(*)::int AS n FROM comments WHERE status = 'pending'`);
-  if (Number(pending.n) >= LIMITS.pendingMax) return 'full';
-  await db(`INSERT INTO comments (post_id, locale, name, email, body, ip_hash) VALUES ($1, $2, $3, $4, $5, $6)`,
-    [input.postId, input.locale, input.name, input.email, input.body, input.ipHash]);
-  return 'ok';
+  const [row] = await db(`
+    WITH purge AS (DELETE FROM comment_attempts WHERE at < now() - interval '10 minutes'),
+    counts AS (
+      SELECT (SELECT count(*) FROM comment_attempts WHERE ip_hash = $6 AND at > now() - interval '10 minutes')::int AS recent,
+             (SELECT count(*) FROM comments WHERE status = 'pending')::int AS pending
+    ),
+    attempt AS (INSERT INTO comment_attempts (ip_hash) SELECT $6 FROM counts WHERE recent < $7),
+    saved AS (
+      INSERT INTO comments (post_id, locale, name, email, body)
+      SELECT $1, $2, $3, $4, $5 FROM counts WHERE recent < $7 AND pending < $8
+      RETURNING id
+    )
+    SELECT recent, pending, (SELECT count(*) FROM saved)::int AS saved FROM counts`,
+    [input.postId, input.locale, input.name, input.email, input.body, input.ipHash, LIMITS.perIpPer10Min, LIMITS.pendingMax]);
+  if (Number(row.saved) === 1) return 'ok';
+  return Number(row.recent) >= LIMITS.perIpPer10Min ? 'limit' : 'full';
 }
 
 export async function listAll(): Promise<Comment[]> {
@@ -47,7 +64,7 @@ export async function listAll(): Promise<Comment[]> {
 }
 
 export async function approve(id: string): Promise<void> {
-  await db(`UPDATE comments SET status = 'approved', approved_at = now(), ip_hash = NULL WHERE id = $1`, [id]);
+  await db(`UPDATE comments SET status = 'approved', approved_at = now() WHERE id = $1`, [id]);
 }
 
 export async function remove(id: string): Promise<void> {
