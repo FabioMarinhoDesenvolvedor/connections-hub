@@ -258,3 +258,39 @@ Soluções voltou como era.
 - **Verificação (nossa obrigação):** varredura automática em PT, EN e JA, desktop e celular, usando todas as interações do site. Zero violações de CSP, erros, falhas de rede ou estouro de largura.
 - **Removido:** o terminal de código (`code-terminal.tsx`, `data/code.ts`), que também publicava trechos de repositórios privados.
 
+## 14. Blog (03/11/2026)
+
+**Pedido:** um lugar para artigos, opiniões, análises e bastidores de projetos, no espírito do blog do Akita (akitaonrails.com), com anúncios como na página de notícias da Anthropic. O dono escreve; o Claude revisa sem reescrever.
+
+**Referência e o que foi adaptado:**
+- O Akita usa Hugo, um `index.md` por post e endereços por data. Aqui o blog fica no próprio Next.js, para manter o design system, os três idiomas e o deploy pela Vercel.
+- Dele vêm os endereços por data, a listagem agrupada por mês, o índice "Nesta página", o resumo no topo, os temas, o RSS e o link para o post vizinho.
+- Não veio o Disqus: quebraria o aviso de privacidade (sem cookies e sem terceiros). No lugar, "Responder por e-mail".
+
+**Conteúdo:**
+- `content/blog/AAAA/MM/DD-slug/index.md` (traduções em `index.en.md` e `index.ja.md`), com as imagens na mesma pasta.
+- O cabeçalho é validado no build (`src/lib/blog/posts.ts`): um campo errado para o build com o nome do arquivo e do campo.
+- Rascunhos aparecem só no `npm run dev` ou num build com `BLOG_DRAFTS=1`, sempre com `noindex` e fora do sitemap e do RSS.
+
+**Renderização:**
+- Markdown → HTML no servidor, com remark e rehype (`src/lib/blog/markdown.ts`): tabelas, notas, listas de tarefas, âncoras nos títulos e HTML sanitizado.
+- O código usa o realce próprio do site (`lib/highlight.ts`, o mesmo da peça da Segurança, agora com shell e JSON), nas cores da marca, em vez de um tema pronto.
+- As imagens recebem a largura e a altura reais no build, para não deslocar o layout.
+- A página do post não manda JavaScript próprio; o `verify` confere que nenhuma lib de Markdown chega ao navegador.
+- O `@next/mdx` foi descartado: é feito para páginas com JSX e não lê o cabeçalho sem plugins extras. Posts em Markdown puro são mais simples de escrever e de revisar.
+
+**Rotas:**
+- `/blog`, `/blog/AAAA/MM/DD/slug`, `/blog/anuncios`, `/blog/tags/[tag]` e `/blog/rss.xml`, mais as imagens ao lado de cada post. Tudo estático.
+- O português fica na raiz, como a home (`next.config.ts` reescreve `/blog` para `/pt/blog`). Inglês e japonês ficam em `/en/blog` e `/ja/blog`, com o mesmo slug.
+- **Pegadinha:** nas rotas internas, o `generateStaticParams` precisa devolver todas as combinações, com o idioma junto. Uma lista montada só a partir do idioma recebido do layout `[lang]` foi ignorada pelo build e as páginas não foram geradas.
+
+**Desenho:** o caderno de trabalho sobre o papel da marca.
+- **Listagem:** linhas finas separam os meses, cada um com a contagem de posts; cada post mostra o dia, o tipo, o título, o resumo e os temas.
+- **Ponto terracota:** marca os anúncios e o lugar atual.
+- **Post:** coluna de leitura de cerca de 68 caracteres e índice fixo ao lado. No celular, o índice fica dobrável acima do texto.
+- **Código:** no navy do terminal.
+- **Fim do post:** a caixa de conversa no navy e os posts vizinhos.
+
+**Menu:** ganha "Blog". Fora da home, os links das seções levam de volta a ela (`/#sobre`). O `AnchorJump` trata `/#sobre` como link interno quando já se está na home. O seletor de idioma, dentro do blog, leva ao blog do outro idioma.
+
+**Escrita e revisão:** `npm run post:new` cria o rascunho. `content/blog/GUIA.md` define o fluxo, o cabeçalho e as regras da revisão: o revisor aponta, com a menor correção em diff, e não reescreve nem muda a opinião. A regra também está no `CLAUDE.md`.

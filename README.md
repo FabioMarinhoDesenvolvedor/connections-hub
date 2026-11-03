@@ -15,9 +15,10 @@ npm run start -- --port 3001
 npm run verify          # VERIFY_URL define a origem testada
 npm run assets          # regenera as cópias oficiais e o favicon a partir de Referências/
 npm run social          # redesenha public/images/social.jpg a partir do logo oficial
+npm run post:new "Título"   # cria um rascunho de post em content/blog/ (veja content/blog/GUIA.md)
 ```
 
-`NEXT_PUBLIC_SITE_URL` sobrescreve o domínio de canonical, sitemap e JSON-LD.
+`NEXT_PUBLIC_SITE_URL` sobrescreve o domínio de canonical, sitemap, RSS e JSON-LD. `BLOG_DRAFTS=1` mostra os rascunhos do blog num build de produção (para revisar num preview).
 
 ## Arquitetura
 
@@ -35,6 +36,8 @@ npm run social          # redesenha public/images/social.jpg a partir do logo of
 - `src/lib/highlight.ts`: realce de código nas cores da marca, usado pela peça da Segurança.
 - `src/data/projects.ts`: cada projeto por camada (stack, módulos, tabelas, sistemas externos) e os fluxos de cada ação da interface.
 - `src/components/projects/`: `explorer.tsx` (abas e ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).
+- `content/blog/`: os posts em Markdown, um por pasta (`AAAA/MM/DD-slug/index.md`), e o `GUIA.md` de escrita e revisão.
+- `src/lib/blog/`: `posts.ts` lê e valida os posts; `markdown.ts` gera o HTML no build. Rotas em `src/app/[lang]/blog/`, componentes em `src/components/blog/` e a seção "Do blog" da home em `sections/blog-latest.tsx`.
 - `src/components/sticker.tsx` e `src/lib/sticker/peel.ts`: o adesivo de papel do rodapé.
 - `src/components/privacy-notice.tsx`: aviso de privacidade na primeira visita.
 - `src/components/anchor-jump.tsx`: links internos longos cortam direto para a seção em vez de rolar por todas as cenas.
