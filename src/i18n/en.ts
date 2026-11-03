@@ -343,7 +343,7 @@ export const en: Dictionary = {
     nav: 'Blog',
     meta: { title: 'Blog — Connections Hub', description: 'Articles, opinions and analyses about technology, and the making of the Connections Hub projects.', announcements: 'Announcements — Connections Hub', tag: 'Posts about {tag} — Connections Hub' },
     label: 'Blog',
-    title: ['Writing down', 'what I learn.'],
+    title: ['Articles'],
     intro: 'Articles, opinions and analyses about technology, and the making of each project: what worked, what went wrong and why.',
     announcements: { label: 'Announcements', title: ['News from', 'the projects.'], intro: 'New versions, launches and changes to the site and the products.' },
     tagTitle: 'Posts about {tag}',
