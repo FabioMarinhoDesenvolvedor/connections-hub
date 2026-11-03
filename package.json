@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "assets": "node scripts/prepare-assets.mjs",
     "verify": "node scripts/verify.mjs",
-    "social": "node scripts/social-card.mjs"
+    "social": "node scripts/social-card.mjs",
+    "post:new": "node scripts/new-post.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

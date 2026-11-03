@@ -1,5 +1,9 @@
 @AGENTS.md
 
+## Blog
+
+Posts are Markdown in `content/blog/AAAA/MM/DD-slug/`, written by the owner. When asked to review a post, follow `content/blog/GUIA.md`: point out problems with the smallest fix as a diff, never rewrite paragraphs or change the author's opinion, and edit the file only with the items the author accepted.
+
 <!-- ai-memory:start -->
 ## Long-term memory (ai-memory)
 
