@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const state = url.searchParams.get('state') ?? '';
   const expected = (await cookies()).get(STATE_COOKIE)?.value ?? '';
   const denied = (reason: string) => {
-    const response = NextResponse.redirect(here(request, `/admin/comentarios?erro=${reason}`), 303);
+    const response = NextResponse.redirect(here(request, `/admin/posts?erro=${reason}`), 303);
     response.cookies.delete(STATE_COOKIE);
     return response;
   };
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
   }).then(r => r.json()).catch(() => null) as { login?: string } | null;
   if (!user?.login || user.login.toLowerCase() !== adminLogin()) return denied('conta');
 
-  const response = NextResponse.redirect(here(request, '/admin/comentarios'), 303);
+  const response = NextResponse.redirect(here(request, '/admin/posts'), 303);
   response.cookies.delete(STATE_COOKIE);
   const { value, maxAge } = sessionValue(user.login);
   response.cookies.set(SESSION_COOKIE, value, cookieOptions(maxAge));

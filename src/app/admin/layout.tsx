@@ -3,13 +3,13 @@ import localFont from 'next/font/local';
 import '../globals.css';
 
 /*
-  The owner's moderation panel. Its own root layout (outside the languages): Portuguese only,
+  The owner's panel (posts and comments). Its own root layout (outside the languages): Portuguese only,
   never indexed, no navigation of the public site.
 */
 const satoshi = localFont({ src: '../../../public/fonts/Satoshi-Variable.woff2', variable: '--font-satoshi', display: 'swap', weight: '300 900', fallback: ['Arial', 'sans-serif'] });
 
 export const metadata: Metadata = {
-  title: 'Moderação — Connections Hub',
+  title: 'Painel — Connections Hub',
   robots: { index: false, follow: false },
   icons: { icon: '/favicon.png' },
 };

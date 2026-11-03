@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   if (process.env.NODE_ENV === 'development' && process.env.ADMIN_DEV_LOGIN === '1') {
-    const response = NextResponse.redirect(here(request, '/admin/comentarios'), 303);
+    const response = NextResponse.redirect(here(request, '/admin/posts'), 303);
     const { value, maxAge } = sessionValue(adminLogin());
     response.cookies.set(SESSION_COOKIE, value, cookieOptions(maxAge));
     return response;

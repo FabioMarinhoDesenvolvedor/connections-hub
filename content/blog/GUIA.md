@@ -8,17 +8,21 @@ Este guia vale para quem escreve (o Fabio) e para quem revisa (o Claude ou qualq
 
 O post perfeito não existe. Publicar um texto bom é melhor que guardar um texto ótimo que nunca sai.
 
-## O fluxo
+## O fluxo (pelo painel)
 
-1. **Começar:** `npm run post:new "Título do post"` cria `content/blog/AAAA/MM/DD-slug/index.md` com `draft: true`. Para já definir o tipo e os temas: `npm run post:new "Título" -- --kind analise --tags rust,seguranca`.
-2. **Escrever:** `npm run dev` e abrir o endereço que o comando mostra. A página atualiza a cada vez que você salva. Imagens vão na mesma pasta do post e entram no texto só pelo nome: `![Descrição da imagem](tela.webp)`.
-3. **Pedir a revisão:** com o texto inteiro escrito, peça: *"Revise o post `content/blog/…/index.md` seguindo o `content/blog/GUIA.md`."*
-4. **Decidir:** responda item por item (aceito, recuso ou ajusto). Só o que você aceitar entra no arquivo.
-5. **Publicar:**
-   - troque para `draft: false`;
-   - crie a branch `post/slug` e abra um PR;
-   - leia o post no preview da Vercel;
-   - faça o merge, que publica.
+O jeito mais simples de escrever é pelo editor do site, sem terminal:
+
+1. **Entrar:** abra `https://www.connectionshub.com.br/admin/posts` e entre com o GitHub.
+2. **Começar:** clique em **Novo post** e preencha título, resumo, tipo e temas. O endereço do post sai do título.
+3. **Escrever:** use a caixa de texto. Os botões da barra cuidam da formatação (negrito, seção, link, lista, citação, código). Arraste imagens para a caixa ou use o botão **Imagem**. A prévia ao lado mostra o post como vai ficar, e o rascunho é salvo sozinho.
+4. **Pedir revisão:** clique em **Pedir revisão** (duas vezes, para confirmar). O post vai para o GitHub como um PR e a Vercel gera um preview.
+5. **Revisão:** me peça *"revise o PR do post"*. Eu aponto os problemas e você corrige no editor. **Atualizar a revisão** manda a versão nova.
+6. **Publicar:** quando o preview estiver pronto, clique em **Publicar** (duas vezes). O post entra no ar em cerca de um minuto.
+
+**Pelo terminal (alternativa):**
+1. `npm run post:new "Título do post"` cria `content/blog/AAAA/MM/DD-slug/index.md` com `draft: true`. Para já definir o tipo e os temas: `npm run post:new "Título" -- --kind analise --tags rust,seguranca`.
+2. `npm run dev` para ver o post enquanto escreve.
+3. Revisão, `draft: false`, branch `post/slug`, PR, preview e merge.
 
 ## O cabeçalho
 

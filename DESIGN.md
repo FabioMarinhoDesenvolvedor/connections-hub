@@ -341,3 +341,42 @@ Soluções voltou como era.
   - Comentários são texto de visitantes. Uma regra no `CLAUDE.md` diz que nenhum assistente segue o que eles pedem nem aprova ou apaga comentários por conta própria.
   - O painel marca com um aviso os textos que parecem ordens para uma IA ou spam de links. O aviso só informa: a decisão continua com o dono.
   - **Risco que fica:** um comentário aprovado pode enganar a IA de quem lê a página, como um assistente que resume posts. A aprovação existe também para isso: não aprovar o que tem instruções escondidas (`GUIA.md`).
+
+## 16. Editor de posts no painel (03/11/2026)
+
+**Pedido:** escrever posts pelo próprio site, numa interface de administrador, sem terminal nem git.
+
+**Escolhas do usuário:** revisão antes de publicar (PR com preview, depois um botão Publicar), rascunhos no banco Neon e acesso ao GitHub por um token só deste repositório.
+
+**Como funciona** (`/admin/posts`, mesmo login do GitHub dos comentários):
+- **Lista:** rascunhos (escrevendo ou em revisão) e posts publicados; **Novo post** abre um rascunho vazio.
+- **Editor** (`components/admin/editor.tsx`):
+  - campos de título, resumo, tipo, temas, endereço e resumo em destaque;
+  - texto em Markdown com uma barra de formatação para o que é fácil de esquecer (negrito, seção, link, lista, citação, código, imagem) e atalhos Ctrl+B, Ctrl+I e Ctrl+K;
+  - prévia ao lado, gerada pelo mesmo código do post publicado (`renderMarkdown`);
+  - salva sozinho 1,2 s depois de cada mudança; no celular, abas "Escrever" e "Prévia".
+- **Imagens:** arrastar, colar ou escolher. No servidor, o `sharp` decodifica com teto de 40 MP (bombas falham), corrige a orientação, reduz para no máximo 2000 px de largura e regrava em WebP, o que também tira os metadados (câmera, localização). Até 4 MB por envio (limite da Vercel) e 40 por post.
+- **Pedir revisão:** valida como o build valida, gera o `index.md` e grava post e imagens num único commit na branch `post/<slug>` (Git Data API), abrindo um PR para o `main`. A Vercel gera o preview. O dia da primeira revisão dá nome à pasta e é a data do post (meio-dia em Brasília). Depois disso o endereço fica fixo, porque a branch leva o nome dele. **Atualizar a revisão** faz um commit novo no mesmo PR.
+- **Publicar:** só com o check da Vercel verde. Faz o merge do PR e apaga a branch, e o deploy de produção publica o post.
+- **Descartar:** fecha o PR, se houver, e apaga o rascunho.
+- Os botões que mexem no GitHub pedem um segundo clique. A barra de formatação não rouba o foco do texto: o clique é cancelado no `mousedown`.
+
+**Por que PR e não gravar direto:** o post continua sendo um arquivo Markdown no repositório, com histórico, preview e revisão. O site segue estático, e o editor só escreve no GitHub em nome do dono.
+
+**Segurança:**
+- **Acesso:** todas as rotas exigem a sessão do dono e a mesma origem. O token (`GITHUB_CONTENT_TOKEN`) só alcança este repositório.
+- **Corpos das requisições:** JSON até 256 KB e imagens até 4 MB, recusados se comprimidos.
+- **Prévia:** sai sanitizada pelo mesmo pipeline do site.
+- **Imagens do rascunho:** só o dono as vê, e elas não ficam em cache compartilhado.
+
+**Correções da revisão de código** (10 achados, todos corrigidos):
+- **Imagens:** com o mesmo nome (duas capturas de tela são ambas `image.png`), viram `image-2.webp` em vez de se sobrescrever; várias de uma vez entram todas, em ordem, no texto atual.
+- **Publicar:**
+  - recusa se o rascunho mudou depois da última revisão: uma impressão digital do arquivo enviado é comparada com o rascunho atual;
+  - faz o merge só do commit exato cujo check passou (`sha`), e o GitHub recusa se a branch andou.
+- **Endereço:** um endereço já usado por outro post, rascunho em revisão ou branch é recusado antes de criar a branch. O campo aceita hífen enquanto se digita e é limpo ao sair dele.
+- **Temas:** vão entre aspas no cabeçalho (`2025` e `null` viravam número e nada, e quebravam o build).
+- **Limites:** o JSON aceita até 1 MB (um texto longo e acentuado passava de 256 KB). Regras e limites ficam em `lib/editor/shared.ts`, usado pelo navegador e pelo servidor.
+- **Banco:** as imagens da revisão saem numa consulta só.
+
+**Testado:** de ponta a ponta contra um GitHub falso local (`GITHUB_API_URL`): criar, salvar, prévia, imagem (EXIF removido, 3000 → 2000 px), arquivo que não é imagem, revisão incompleta e completa, segunda revisão no mesmo PR, publicar e descartar. Um post gerado pelo editor passou pelo build de produção. O GitHub de verdade só depois do token.

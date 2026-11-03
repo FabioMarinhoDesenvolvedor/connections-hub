@@ -1,4 +1,5 @@
-import { Arrow } from '@/components/arrow';
+import { AdminNav } from '@/components/admin/admin-nav';
+import { SignIn } from '@/components/admin/sign-in';
 import { localePath, type Locale } from '@/i18n/config';
 import { getPosts } from '@/lib/blog/posts';
 import { DatabaseUnavailable } from '@/lib/comments/db';
@@ -14,26 +15,13 @@ import { listAll, type Comment } from '@/lib/comments/store';
 */
 export const dynamic = 'force-dynamic';
 
-const ERRORS: Record<string, string> = {
-  estado: 'O login expirou ou veio de outro lugar. Tente de novo.',
-  github: 'O GitHub não confirmou o login. Tente de novo.',
-  conta: 'Esta conta do GitHub não tem acesso à moderação.',
-};
 
 const when = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Sao_Paulo' });
 
 export default async function Moderation({ searchParams }: PageProps<'/admin/comentarios'>) {
   const admin = await currentAdmin();
   const { erro } = await searchParams;
-  if (!admin) {
-    return <main id="conteudo" className="admin shell">
-      <p className="label"><span className="point" aria-hidden="true" />Moderação</p>
-      <h1 className="admin-title">Comentários do blog</h1>
-      {typeof erro === 'string' && ERRORS[erro] && <p className="comment-status" data-tone="error" role="alert" style={{ display: 'block' }}>{ERRORS[erro]}</p>}
-      <p className="admin-lead">Só a conta do dono entra aqui.</p>
-      <a className="button button-primary" href="/api/auth/github">Entrar com GitHub<Arrow /></a>
-    </main>;
-  }
+  if (!admin) return <SignIn error={typeof erro === 'string' ? erro : undefined} />;
 
   let comments: Comment[] | null = null;
   try { comments = await listAll(); } catch (error) { if (!(error instanceof DatabaseUnavailable)) throw error; }
@@ -42,13 +30,8 @@ export default async function Moderation({ searchParams }: PageProps<'/admin/com
   const approved = comments?.filter(c => c.status === 'approved') ?? [];
 
   return <main id="conteudo" className="admin shell">
-    <header className="admin-head">
-      <div>
-        <p className="label"><span className="point" aria-hidden="true" />Moderação · {admin}</p>
-        <h1 className="admin-title">Comentários do blog</h1>
-      </div>
-      <form method="post" action="/api/auth/logout"><button className="button button-secondary button-small" type="submit">Sair</button></form>
-    </header>
+    <AdminNav current="comentarios" login={admin} />
+    <h1 className="admin-title">Comentários do blog</h1>
     <p id="aprovado" className="comment-status" data-tone="ok" role="status">Comentário aprovado: já aparece no post.</p>
     <p id="apagado" className="comment-status" data-tone="ok" role="status">Comentário apagado.</p>
     <p id="indisponivel" className="comment-status" data-tone="error" role="alert">O banco não respondeu; nada mudou. Tente de novo.</p>

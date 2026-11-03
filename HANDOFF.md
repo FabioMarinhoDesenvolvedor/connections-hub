@@ -5,6 +5,7 @@ Estado do que foi feito e do que está em andamento. Leia antes de continuar o t
 **Agora:**
 - O blog está pronto na branch `feature/blog`, em PR (#8). Detalhes na seção 4.
 - Os comentários com aprovação estão na branch `feature/comentarios`, feita em cima do blog (seção 4b). Eles dependem de três configurações que o usuário faz na Vercel e no GitHub.
+- O editor de posts no painel (`/admin/posts`) está na branch `feature/editor-posts` (seção 4c). Ele precisa de um token do GitHub que o usuário cria.
 - O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
 
 **Antes de mexer no código:**
@@ -183,6 +184,24 @@ Detalhes e o risco que fica em `DESIGN.md` §15. O `verify` cobre corpo gigante,
 4. **Publicar:** merge do PR #8 e depois do #9, e então entrar em `/admin/comentarios`.
 
 **Desenvolvimento local:** `DATABASE_URL=pglite:./.pglite ADMIN_DEV_LOGIN=1 npm run dev`. O banco local fica em `.pglite/`, que está no `.gitignore`.
+
+## 4c. Editor de posts no painel (feito em 03/11/2026, branch `feature/editor-posts`)
+
+**Pedido:** o usuário achou confuso escrever pelo terminal e quer escrever no próprio site.
+
+**Feito:** `/admin/posts`. Decisões e testes em `DESIGN.md` §16; passo a passo para o usuário em `content/blog/GUIA.md`.
+- **Fluxo:** escrever (com prévia e salvamento automático), Pedir revisão (abre um PR com preview), revisão do Claude no PR e Publicar (faz o merge).
+- Blog, comentários e título "Artigos" já estão em produção (PRs #8, #9 e #10).
+
+**Falta, com o usuário:**
+1. **Criar o token:** https://github.com/settings/personal-access-tokens/new →
+   - Repository access: **Only select repositories** → `connections-hub`;
+   - Permissions: **Contents** e **Pull requests** em *Read and write*; **Commit statuses** e **Deployments** em *Read-only*;
+   - validade de 1 ano (anotar para renovar).
+2. **Cadastrar na Vercel:** `GITHUB_CONTENT_TOKEN` em Production, como Sensitive.
+3. **Merge do PR do editor** e primeiro post de verdade pelo painel.
+
+**Revisão de um post vindo do editor:** o rascunho mora no banco. O Claude revisa o PR (`gh pr diff`) e entrega as correções para o usuário aplicar no editor, sem dar push na branch (regra no `CLAUDE.md`).
 
 ## 5. Próximo: refazer a seção Segurança
 

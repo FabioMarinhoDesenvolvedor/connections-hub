@@ -64,7 +64,7 @@ async function size(file: string): Promise<{ width: number; height: number } | n
   return width && height ? { width, height } : null;
 }
 
-function postSteps(post: Post, toc: TocItem[], images: Map<string, { width: number; height: number } | null>) {
+function postSteps(imageBase: string, toc: TocItem[], images: Map<string, { width: number; height: number } | null>) {
   return () => (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
       if (node.tagName === 'h1') node.tagName = 'h2';
@@ -91,8 +91,7 @@ function postSteps(post: Post, toc: TocItem[], images: Map<string, { width: numb
         const src = node.properties.src;
         if (!/^[a-z]+:|^\//i.test(src)) {
           const name = path.basename(src);
-          // Served next to this language's page, so a translation never depends on another one.
-          node.properties.src = `${localePath(post.locale, post.path)}/${name}`;
+          node.properties.src = `${imageBase}/${name}`;
           const dims = images.get(name);
           if (dims) Object.assign(node.properties, dims);
         }
@@ -117,17 +116,26 @@ export async function renderPost(post: Post): Promise<Rendered> {
     if (!fs.existsSync(file)) throw new Error(`Blog: ${path.relative(process.cwd(), post.dir)}: the image "${name}" is not in the post's folder`);
     images.set(name, await size(file));
   }
+  // Served next to this language's page, so a translation never depends on another one.
+  return renderMarkdown(post.body, post.locale, localePath(post.locale, post.path), images);
+}
+
+/**
+  The pipeline itself, shared by the published post and the editor's preview (which serves its
+  images from the draft): Markdown in, sanitised HTML, the headings and the reading time out.
+*/
+export async function renderMarkdown(body: string, locale: Post['locale'], imageBase: string, images: Map<string, { width: number; height: number } | null>): Promise<Rendered> {
   const toc: TocItem[] = [];
   const file = await unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkRehype, { footnoteLabel: FOOTNOTES[post.locale].label, footnoteBackLabel: FOOTNOTES[post.locale].back })
+    .use(remarkRehype, { footnoteLabel: FOOTNOTES[locale].label, footnoteBackLabel: FOOTNOTES[locale].back })
     // remark-rehype already prefixes footnote ids; a second prefix would break their links.
     .use(rehypeSanitize, { ...defaultSchema, clobberPrefix: '' })
     .use(rehypeSlug)
-    .use(postSteps(post, toc, images))
+    .use(postSteps(imageBase, toc, images))
     .use(rehypeStringify)
-    .process(post.body);
-  const words = post.locale === 'ja' ? post.body.replace(/\s/g, '').length / JA_CHARS_PER_MINUTE : post.body.split(/\s+/).filter(Boolean).length / WORDS_PER_MINUTE;
+    .process(body);
+  const words = locale === 'ja' ? body.replace(/\s/g, '').length / JA_CHARS_PER_MINUTE : body.split(/\s+/).filter(Boolean).length / WORDS_PER_MINUTE;
   return { html: String(file), toc, minutes: Math.max(1, Math.round(words)) };
 }

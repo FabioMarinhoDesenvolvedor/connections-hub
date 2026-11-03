@@ -38,6 +38,7 @@ npm run post:new "Título"   # cria um rascunho de post em content/blog/ (veja c
 - `src/components/projects/`: `explorer.tsx` (abas e ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).
 - `content/blog/`: os posts em Markdown, um por pasta (`AAAA/MM/DD-slug/index.md`), e o `GUIA.md` de escrita e revisão.
 - `src/lib/blog/`: `posts.ts` lê e valida os posts; `markdown.ts` gera o HTML no build. Rotas em `src/app/[lang]/blog/`, componentes em `src/components/blog/` e a seção "Do blog" da home em `sections/blog-latest.tsx`.
+- `src/lib/editor/`, `src/components/admin/editor.tsx` e `src/app/admin/posts/`: o editor de posts do painel (rascunhos no banco, imagens convertidas para WebP, revisão como PR e publicação pelo merge, via `GITHUB_CONTENT_TOKEN`).
 - `src/lib/comments/`, `src/app/api/` e `src/app/admin/`: os comentários (banco, sessão do dono, envio e moderação) e o painel `/admin/comentarios`. A seção no post é `src/components/blog/comments.tsx`.
 - `src/components/sticker.tsx` e `src/lib/sticker/peel.ts`: o adesivo de papel do rodapé.
 - `src/components/privacy-notice.tsx`: aviso de privacidade na primeira visita.
