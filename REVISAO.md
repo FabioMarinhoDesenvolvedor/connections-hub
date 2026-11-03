@@ -19,7 +19,7 @@
    - O contato usa as perguntas do post da marca.
 5. **Motion:** um relógio de scroll para a história. Títulos revelados por linha, hairlines que se desenham, esquemas que se traçam, anel do processo que avança com o ponto. Nada em loop; reduced motion recebe o layout estático.
 
-**Removidos:** Three.js e `@types/three`; a cena e o tubo paramétrico anteriores; o rodapé 3D.
+**Removidos:** Three.js e `@types/three` (voltaram em 17/10, ver o fim deste arquivo); a cena e o tubo paramétrico anteriores; o rodapé 3D.
 
 **Performance:** Lighthouse mobile 98 / desktop 100, CLS 0, TBT mobile 50–60 ms (era 810 ms antes da compilação paralela do shader), 60 fps na história com CPU normal em todos os viewports testados. Detalhes e limites em `VALIDATION.md`.
 
@@ -62,3 +62,5 @@ Desempenho medido em `VALIDATION.md`.
 - **Onde funciona:** temas claro e escuro, celular, sem WebGL (entra girando em CSS) e com movimento reduzido (parado).
 - **Sem fotos de escritório ou equipe:** o "Sobre" mostra um painel da marca e a imagem de compartilhamento usa só o logo oficial.
 - Decisões em `DESIGN.md` §12.
+
+**Observação (02/11/2026):** o three.js voltou para a abertura (17/10) e para o adesivo (19/10). Ele é carregado sob demanda e o `verify` confere que não entra nos scripts iniciais. A cena SDF da primeira iteração e o `npm run bake` não existem mais.

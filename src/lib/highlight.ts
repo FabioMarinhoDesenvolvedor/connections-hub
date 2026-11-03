@@ -1,8 +1,8 @@
-export type CodeLanguage = 'ts' | 'rust' | 'sql' | 'ruby' | 'glsl';
+export type CodeLanguage = 'ts' | 'rust' | 'sql' | 'ruby' | 'glsl' | 'bash' | 'json';
 
 /*
-  A small syntax highlighter (used by the Security vault): enough to read TypeScript, Rust,
-  SQL, Ruby and GLSL the way an editor shows them. Colours are roles mapped to the brand palette
+  A small syntax highlighter (used by the Security vault and the blog's code blocks): enough to
+  read TypeScript, Rust, SQL, Ruby, GLSL, shell and JSON the way an editor shows them. Colours are roles mapped to the brand palette
   in globals.css (.tk-*), never a third-party theme.
 */
 export type TokenKind = 'plain' | 'comment' | 'string' | 'number' | 'keyword' | 'type' | 'fn' | 'punct';
@@ -14,8 +14,17 @@ const KEYWORDS: Record<CodeLanguage, string[]> = {
   sql: ['ALTER', 'TABLE', 'ADD', 'COLUMN', 'INTEGER', 'NOT', 'NULL', 'DEFAULT', 'DROP', 'CONSTRAINT', 'CHECK', 'IS', 'OR', 'IN', 'AND', 'SELECT', 'FROM', 'WHERE'],
   ruby: ['module', 'def', 'self', 'end', 'class', 'if', 'else', 'return', 'true', 'false', 'nil'],
   glsl: ['float', 'vec2', 'vec3', 'vec4', 'int', 'if', 'for', 'return', 'uniform', 'varying', 'void'],
+  bash: ['if', 'then', 'else', 'fi', 'for', 'in', 'do', 'done', 'case', 'esac', 'export', 'cd', 'echo', 'npm', 'npx', 'git'],
+  json: ['true', 'false', 'null'],
 };
-const LINE_COMMENT: Record<CodeLanguage, string> = { ts: '//', rust: '//', sql: '--', ruby: '#', glsl: '//' };
+const LINE_COMMENT: Record<CodeLanguage, string> = { ts: '//', rust: '//', sql: '--', ruby: '#', glsl: '//', bash: '#', json: '//' };
+
+/** Fence names a post may use, mapped to the languages above; anything else stays plain. */
+export const FENCE_LANGUAGES: Record<string, CodeLanguage> = {
+  ts: 'ts', tsx: 'ts', typescript: 'ts', js: 'ts', jsx: 'ts', javascript: 'ts',
+  rust: 'rust', rs: 'rust', sql: 'sql', ruby: 'ruby', rb: 'ruby', glsl: 'glsl',
+  bash: 'bash', sh: 'bash', shell: 'bash', zsh: 'bash', json: 'json',
+};
 
 /** Splits one line into tokens. */
 function line(text: string, language: CodeLanguage): Token[] {
@@ -29,9 +38,12 @@ function line(text: string, language: CodeLanguage): Token[] {
   };
   while (i < text.length) {
     const rest = text.slice(i);
-    if (rest.startsWith(comment)) { push('comment', rest); break; }
+    // In shell, # and ' only mean something at the start of a word: ${#arr} and don't are not a
+    // comment or a string.
+    const wordStart = language !== 'bash' || i === 0 || /[\s=(|;&]/.test(text[i - 1]);
+    if (rest.startsWith(comment) && wordStart) { push('comment', rest); break; }
     const quote = rest[0];
-    if (quote === '"' || quote === "'" || (quote === '`' && language === 'ts')) {
+    if ((quote === '"' || quote === "'" || (quote === '`' && language === 'ts')) && (quote !== "'" || wordStart)) {
       let j = 1;
       while (j < rest.length && rest[j] !== quote) j += rest[j] === '\\' ? 2 : 1;
       push('string', rest.slice(0, j + 1));

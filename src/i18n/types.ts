@@ -1,5 +1,6 @@
 import type { FactId, InfraRole, LayerId, ProjectId, ProjectStatus } from '@/data/projects';
 import type { SolutionId } from '@/data/site';
+import type { PostKind } from '@/lib/blog/posts';
 
 /*
   Every visible or announced string on the site, per language. The Portuguese is the
@@ -121,4 +122,40 @@ export type Dictionary = {
   };
   privacy: { label: string; text: string; dismiss: string };
   console: { signature: string };
+  /** Interface of the blog; the posts themselves are Markdown in content/blog. */
+  blog: {
+    nav: string;
+    meta: { title: string; description: string; announcements: string; tag: string };
+    label: string;
+    title: string[];
+    intro: string;
+    announcements: { label: string; title: string[]; intro: string };
+    /** {tag} */
+    tagTitle: string;
+    kinds: Record<PostKind, string>;
+    all: string;
+    tags: string;
+    rss: string;
+    /** {n}, singular and plural */
+    count: { one: string; other: string };
+    toc: string;
+    top: string;
+    tldr: string;
+    /** {n} */
+    minutes: string;
+    /** {date} */
+    updated: string;
+    by: string;
+    back: string;
+    newer: string;
+    older: string;
+    draft: string;
+    empty: string;
+    /** Shown in English and Japanese while there are no translations yet. */
+    emptyLanguage: string;
+    readOriginal: string;
+    alsoIn: string;
+    reply: { label: string; text: string; email: string; subject: string };
+    latest: { label: string; title: string[]; all: string };
+  };
 };

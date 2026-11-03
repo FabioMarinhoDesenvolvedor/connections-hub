@@ -1,6 +1,16 @@
-# Handoff — 19/10/2026
+# Handoff — atualizado em 03/11/2026
 
-Estado de tudo o que foi feito nesta sessão e do que está em andamento. Leia antes de continuar o trabalho no site ou no Tasks.
+Estado do que foi feito e do que está em andamento. Leia antes de continuar o trabalho no site ou no Tasks.
+
+**Agora:**
+- O blog está pronto na branch `feature/blog`, em PR. Detalhes na seção 4.
+- O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
+
+**Antes de mexer no código:**
+- Rode `npm install` e leia o guia do Next em `node_modules/next/dist/docs/` (exigência do `AGENTS.md`).
+- Rode `git fetch` antes de começar: em 22/10, outra sessão publicou três commits da seção Segurança direto no `main`, e este handoff não sabia deles até 03/11.
+
+**Commits:** o Git desta máquina não tem identidade global. Use `git -c user.name="Fabio Marinho" -c user.email=fabiomarinho202020@gmail.com commit …`.
 
 ## 1. Seção Projetos do site (em produção)
 
@@ -42,10 +52,10 @@ Estado de tudo o que foi feito nesta sessão e do que está em andamento. Leia a
 **Deploy**
 
 - Fluxo: PRs #4, #5 e #6 no `main`. A Vercel publica produção sozinha em https://connections-hub-zeta.vercel.app.
-- Como fazer: o `gh` não está instalado e o Git não tem identidade global. Commit com `-c user.name="Fabio Marinho" -c user.email=…` e PR e merge pela API do GitHub, com o token de `git credential fill`. Esperar o preview da Vercel ficar verde antes do merge.
+- Como fazer: commit com a identidade explícita (ver o topo), push da branch e PR com o `gh` (instalado e logado desde 03/11). Esperar o preview da Vercel ficar verde antes do merge.
 - Verificação: `scripts/verify.mjs` passa tudo, menos a checagem que exige a pasta `Referências/`, que não existe nesta máquina.
 
-## 1b. Abertura e fotos (19/10, não commitado)
+## 1b. Abertura e fotos (19/10, em produção pelo PR #7)
 
 - **Pedido:** tirar as fotos de escritório, porque não há escritório para visitar, e fazer a logo girando da abertura em nível profissional.
 - **Reprovadas no caminho:**
@@ -57,9 +67,9 @@ Estado de tudo o que foi feito nesta sessão e do que está em andamento. Leia a
   - `tsc` e build passam. O `verify` passa tudo, menos a checagem de `Referências/`, que continua ausente.
   - Testado: 1440 claro e escuro e 390, sem WebGL e com movimento reduzido, sem erros.
 - **Logo:** rodinha (girar, pegar, soltar, encaixar), gota de tinta com relevo, escorridos e ondulação, que muda só a cor da logo. A aba lateral de puxar o tema saiu.
-- **"Sobre":** o painel da marca foi reprovado e trocado por um terminal que digita código real de cinco projetos/linguagens (`code-terminal.tsx`, `data/code.ts`). Os trechos de Tasks, WorkHub e WSN vêm de repositórios privados: confirmar com o usuário que pode publicar.
+- **"Sobre":** o painel da marca foi reprovado e trocado por um terminal que digitava código real de cinco projetos. Em 22/10 o terminal saiu, junto com os trechos de repositórios privados, e deu lugar à seção Segurança (seção 5).
 - **Também:** logo com rotação livre em todas as direções; terminal interativo (qualquer tecla vira código, e segurar no celular); adesivo refeito como papel de verdade em 3D.
-- **Próximo passo:** aprovação do usuário, depois commit, PR e merge.
+- **Status:** aprovado e publicado (commit 412844d, PR #7).
 
 ## 2. Tasks público (download)
 
@@ -97,3 +107,45 @@ O aviso "O Windows protegeu o computador" aparece porque o `.exe` não tem assin
 4. Depois da aprovação, trocar o botão do site para a loja.
 
 **Não testado:** instalar o MSIX localmente. Exige o Modo de Desenvolvedor do Windows, que está desligado.
+
+## 4. Blog (feito em 03/11/2026, branch `feature/blog`)
+
+**Pedido:** um lugar para artigos, opiniões, análises e bastidores de projetos, no espírito do blog do Akita (akitaonrails.com), com anúncios como a página de notícias da Anthropic. O usuário quer criar o hábito de escrever; o Claude revisa sem reescrever.
+
+**O que foi feito** (decisões em `DESIGN.md` §14):
+- **Posts:** Markdown em `content/blog/AAAA/MM/DD-slug/index.md`, com imagens na mesma pasta e traduções opcionais em `index.en.md` e `index.ja.md`. O cabeçalho é validado no build.
+- **Rotas:** `/blog`, `/blog/AAAA/MM/DD/slug`, `/blog/anuncios`, `/blog/tags/[tag]` e `/blog/rss.xml`, também em `/en` e `/ja`. "Blog" entra no menu e no rodapé, e a home ganha a seção "Do blog", que fica escondida enquanto não houver posts.
+- **Escrita:** `npm run post:new "Título"` cria o rascunho. `content/blog/GUIA.md` tem o fluxo e as regras da revisão; a regra também está no `CLAUDE.md`.
+- **Rascunhos:** só no dev ou com `BLOG_DRAFTS=1`. Existe um post de exemplo em rascunho (`content/blog/2026/11/03-exemplo-de-post`), para apagar quando sair o primeiro post de verdade.
+- **Também nesta branch:**
+  - ai-memory no `CLAUDE.md`;
+  - Next 16.3.7 → 16.4.4 pelo `npm audit` (1 falha crítica e 1 alta, agora 0);
+  - README, DESIGN §5 e REVISAO corrigidos;
+  - `verify` pula com aviso a checagem de `Referências/` quando a pasta não existe.
+
+**Verificado:**
+- `typecheck`, `build` e `verify` passam, com e sem `BLOG_DRAFTS=1`.
+- Navegador em 1440 px nos temas claro e escuro, e em 390 px (antes do rebase sobre a Segurança), sem erros de console.
+- Uma revisão de código (`/code-review`) achou 10 problemas, todos corrigidos no commit `fix(blog)`.
+
+**Pegadinhas:**
+- Nas rotas internas do blog, o `generateStaticParams` precisa devolver todas as combinações, já com o `lang`. Uma lista montada a partir do idioma recebido do layout foi ignorada pelo build.
+- O `usePathname` vê `/pt/...` no pré-render e `/...` no navegador; o menu normaliza isso.
+- A CSP (`security-headers.ts`) e o `X-Frame-Options: DENY` valem para o blog. Uma página não abre dentro de iframe, nem para testar o celular: use outro jeito de mudar a largura.
+
+**Próximos passos:**
+1. O usuário revisa o PR no preview da Vercel e faz o merge.
+2. Escrever o primeiro post (sugestão: "Como o Tasks trata um arquivo em que não confia") e passar pela revisão do guia.
+3. Apagar o post de exemplo quando o primeiro post de verdade sair.
+
+## 5. Próximo: refazer a seção Segurança
+
+- **O que existe** (em produção desde 22/10, `DESIGN.md` §13): "Seguro desde a primeira linha.", com três selos (conexão cifrada, só o que é nosso, seus dados em paz) e o cofre 3D que criptografa a CSP do site ao vivo.
+  - Código em `components/sections/security.tsx`, `components/security/vault.tsx`, `lib/cipher/renderer.ts` e `lib/security-headers.ts`.
+- **O pedido do usuário (02/11):** achou a seção "curta e sem graça" e quer melhorar bastante. Ficou para o fim, depois do blog.
+- **Cuidado com o histórico de 22/10:**
+  - duas versões foram reprovadas por excesso de informação ("lixo"; "informação demais para vender a marca");
+  - as duas trocaram a seção Soluções por engano.
+  - Melhorar sem voltar a encher de lista técnica, e sem tocar em Soluções.
+- **Primeiro passo:** perguntar ao usuário o que falta (profundidade, interação, prova, visual) antes de propor. Uma ideia possível é ligar a seção a um post do blog com os detalhes técnicos, para manter a seção enxuta.
+- **Fica para depois:** a página de segurança do Tasks e o README do repositório público, ideias do plano de 02/11, ainda sem pedido confirmado.

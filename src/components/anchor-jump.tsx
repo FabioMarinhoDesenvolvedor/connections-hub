@@ -16,8 +16,10 @@ export function AnchorJump() {
     let timer = 0;
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
-      const id = link?.getAttribute('href')?.slice(1);
+      // "#sobre", or "/#sobre" pointing at this same page (the footer's links work from the blog too).
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href*="#"]');
+      if (!link || link.pathname !== location.pathname || link.origin !== location.origin) return;
+      const id = link.hash.slice(1);
       const target = id ? document.getElementById(decodeURIComponent(id)) : null;
       if (!target) return;
       const distance = Math.abs(target.getBoundingClientRect().top);

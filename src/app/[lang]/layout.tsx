@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { JetBrains_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { site } from '@/data/site';
+import { site, siteOrigin } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, locales } from '@/i18n';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
@@ -29,7 +29,7 @@ export function generateStaticParams() {
   return locales.map(lang => ({ lang }));
 }
 
-const origin = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, '');
+const origin = siteOrigin();
 
 export async function generateMetadata({ params }: LayoutProps<'/[lang]'>): Promise<Metadata> {
   const { lang } = await params;
@@ -83,9 +83,9 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
     </head>
     <body>
       <a className="skip-link" href="#conteudo">{t.ui.skip}</a>
-      <Navigation locale={lang} t={{ ui: t.ui, nav: t.nav }} />
+      <Navigation locale={lang} t={{ ui: t.ui, nav: t.nav, blog: t.blog.nav }} />
       {children}
-      <Footer t={t} />
+      <Footer t={t} locale={lang} />
       <ScrollEffects />
       <AnchorJump />
       <PrivacyNotice t={t.privacy} />

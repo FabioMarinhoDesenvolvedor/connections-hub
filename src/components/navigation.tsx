@@ -1,8 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { Dictionary, Locale } from '@/i18n';
-import { localeInfo, locales } from '@/i18n/config';
+import { localeInfo, localePath, locales } from '@/i18n/config';
 import { github } from '@/data/projects';
 import { Arrow } from './arrow';
 import { GithubMark } from './github-mark';
@@ -10,7 +11,7 @@ import { ThemeToggle } from './theme-toggle';
 
 const NAV_LINE = 40; // px from the top where the bar samples the surface underneath
 
-type Props = { locale: Locale; t: Pick<Dictionary, 'ui' | 'nav'> };
+type Props = { locale: Locale; t: Pick<Dictionary, 'ui' | 'nav'> & { blog: string } };
 
 /** The studio's repositories: an icon in the bar, named for assistive tech. */
 function GithubLink({ t, onPick }: { t: Pick<Dictionary['ui'], 'github' | 'newTab'>; onPick?: () => void }) {
@@ -19,12 +20,16 @@ function GithubLink({ t, onPick }: { t: Pick<Dictionary['ui'], 'github' | 'newTa
   </a>;
 }
 
-/** The three languages, each named in its own language; the current one is not a link. */
-function Languages({ locale, label, onPick }: { locale: Locale; label: string; onPick?: () => void }) {
+/**
+  The three languages, each named in its own language; the current one is not a link.
+  From the blog it leads to the other language's blog (a post may not be translated; the
+  post itself links its translations).
+*/
+function Languages({ locale, label, inBlog, onPick }: { locale: Locale; label: string; inBlog: boolean; onPick?: () => void }) {
   return <nav className="languages" aria-label={label}>
     {locales.map(l => l === locale
       ? <span key={l} aria-current="true" lang={localeInfo[l].html} title={localeInfo[l].label}>{localeInfo[l].short}</span>
-      : <a key={l} href={localeInfo[l].path} hrefLang={localeInfo[l].html} lang={localeInfo[l].html} title={localeInfo[l].label} onClick={onPick}>
+      : <a key={l} href={inBlog ? localePath(l, '/blog') : localeInfo[l].path} hrefLang={localeInfo[l].html} lang={localeInfo[l].html} title={localeInfo[l].label} onClick={onPick}>
         <span aria-hidden="true">{localeInfo[l].short}</span><span className="sr-only">{localeInfo[l].label}</span>
       </a>)}
   </nav>;
@@ -36,6 +41,15 @@ export function Navigation({ locale, t }: Props) {
   const [dark, setDark] = useState(false);
   const [active, setActive] = useState('');
   const toggle = useRef<HTMLButtonElement>(null);
+  // Section links are in-page anchors on the home; from the blog they lead back to the home.
+  // While prerendering, Portuguese pages are seen at their internal path (/pt, /pt/blog);
+  // the browser sees / and /blog. Both must give the same links, or hydration would differ.
+  const pathname = usePathname().replace(/^\/pt(?=\/|$)/, '') || '/';
+  const home = localeInfo[locale].path;
+  const onHome = pathname === home || pathname === `${home}/`;
+  const blogPath = localePath(locale, '/blog');
+  const inBlog = pathname.startsWith(blogPath);
+  const to = (hash: string) => (onHome ? hash : `${home}${hash}`);
 
   useEffect(() => {
     // The bar takes the tone of the surface beneath it, and marks the section being read.
@@ -94,20 +108,21 @@ export function Navigation({ locale, t }: Props) {
   return <>
     <header className="site-header" data-scrolled={scrolled || open} data-theme={dark && !open ? 'dark' : 'light'}>
       <div className="navigation shell">
-        <a href="#inicio" className="brand-link" aria-label={t.ui.home} onClick={close}>
+        <a href={to('#inicio')} className="brand-link" aria-label={t.ui.home} onClick={close}>
           {/* Official artwork, unaltered: navy on light surfaces, the light version on navy. */}
           <img className="logo-default" src="/brand/logo.svg" width="142" height="31" alt="" />
           <img className="logo-light" src="/brand/logo-light.svg" width="142" height="31" alt="" />
         </a>
         <nav className="desktop-navigation" aria-label={t.ui.mainNav}>
-          {t.nav.map(item => <a key={item.href} href={item.href} aria-current={active === item.href ? 'location' : undefined}>{item.label}</a>)}
+          {t.nav.map(item => <a key={item.href} href={to(item.href)} aria-current={onHome && active === item.href ? 'location' : undefined}>{item.label}</a>)}
+          <a href={blogPath} aria-current={inBlog ? 'page' : undefined}>{t.blog}</a>
         </nav>
         <div className="header-tools">
-          <Languages locale={locale} label={t.ui.language} />
+          <Languages locale={locale} label={t.ui.language} inBlog={inBlog} />
           <GithubLink t={t.ui} />
           <ThemeToggle labels={t.ui.theme} />
         </div>
-        <a className="button button-primary button-small header-contact" href="#contato">{t.ui.contactShort}</a>
+        <a className="button button-primary button-small header-contact" href={to('#contato')}>{t.ui.contactShort}</a>
         <button ref={toggle} className="menu-toggle" aria-label={open ? t.ui.closeMenu : t.ui.openMenu} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>
           <span /><span />
         </button>
@@ -115,10 +130,11 @@ export function Navigation({ locale, t }: Props) {
     </header>
     <nav id="mobile-navigation" className="mobile-navigation" aria-label={t.ui.mobileNav} data-open={open} inert={!open}>
       <div className="shell">
-        {t.nav.map((item, index) => <a key={item.href} href={item.href} onClick={close} style={{ '--i': index } as React.CSSProperties}>{item.label}</a>)}
-        <a className="mobile-contact" href="#contato" onClick={close} style={{ '--i': t.nav.length } as React.CSSProperties}>{t.ui.contactShort}<Arrow /></a>
-        <div className="mobile-tools" style={{ '--i': t.nav.length + 1 } as React.CSSProperties}>
-          <Languages locale={locale} label={t.ui.language} onPick={close} />
+        {t.nav.map((item, index) => <a key={item.href} href={to(item.href)} onClick={close} style={{ '--i': index } as React.CSSProperties}>{item.label}</a>)}
+        <a href={blogPath} onClick={close} aria-current={inBlog ? 'page' : undefined} style={{ '--i': t.nav.length } as React.CSSProperties}>{t.blog}</a>
+        <a className="mobile-contact" href={to('#contato')} onClick={close} style={{ '--i': t.nav.length + 1 } as React.CSSProperties}>{t.ui.contactShort}<Arrow /></a>
+        <div className="mobile-tools" style={{ '--i': t.nav.length + 2 } as React.CSSProperties}>
+          <Languages locale={locale} label={t.ui.language} inBlog={inBlog} onPick={close} />
           <GithubLink t={t.ui} onPick={close} />
           <ThemeToggle labels={t.ui.theme} />
         </div>

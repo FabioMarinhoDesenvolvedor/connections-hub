@@ -13,6 +13,9 @@ export const site = {
   },
 };
 
+/** The production origin, without a trailing slash: NEXT_PUBLIC_SITE_URL, else the domain above. */
+export const siteOrigin = () => (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, '');
+
 export const solutionIds = ['sites', 'sistemas', 'dashboards', 'ecommerce'] as const;
 export type SolutionId = (typeof solutionIds)[number];
 

@@ -21,12 +21,19 @@ const config: NextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders(process.env.NODE_ENV === 'development') }];
   },
-  // Portuguese is served at the root; /pt only exists internally.
+  // Portuguese is served at the root (the home and the blog); /pt only exists internally.
   async rewrites() {
-    return [{ source: '/', destination: '/pt' }];
+    return [
+      { source: '/', destination: '/pt' },
+      { source: '/blog', destination: '/pt/blog' },
+      { source: '/blog/:path*', destination: '/pt/blog/:path*' },
+    ];
   },
   async redirects() {
-    return [{ source: '/pt', destination: '/', permanent: true }];
+    return [
+      { source: '/pt', destination: '/', permanent: true },
+      { source: '/pt/blog/:path*', destination: '/blog/:path*', permanent: true },
+    ];
   },
 };
 export default config;
