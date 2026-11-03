@@ -294,3 +294,50 @@ Soluções voltou como era.
 **Menu:** ganha "Blog". Fora da home, os links das seções levam de volta a ela (`/#sobre`). O `AnchorJump` trata `/#sobre` como link interno quando já se está na home. O seletor de idioma, dentro do blog, leva ao blog do outro idioma.
 
 **Escrita e revisão:** `npm run post:new` cria o rascunho. `content/blog/GUIA.md` define o fluxo, o cabeçalho e as regras da revisão: o revisor aponta, com a menor correção em diff, e não reescreve nem muda a opinião. A regra também está no `CLAUDE.md`.
+
+## 15. Comentários com aprovação (03/11/2026)
+
+**Pedido:** comentários nos artigos, que só aparecem depois que o dono aprova e que podem ser apagados a qualquer momento.
+
+**Escolhas do usuário:** banco Neon Postgres (integração da Vercel); nome + comentário + e-mail opcional que nunca aparece; login com GitHub no painel; sem aviso por e-mail (o painel mostra os pendentes).
+
+**Como funciona:**
+- **Envio:** o formulário no fim do post é HTML puro e funciona sem JavaScript. Ele envia para `POST /api/comments`, e a resposta redireciona de volta ao post numa âncora (`#comentario-enviado` ou `#comentario-erro-…`) que o CSS revela com `:target`. A página do post continua estática.
+- **Leitura:** a lista dos aprovados é buscada no navegador (`GET /api/comments?post=…`, cache de 10 s). Por isso um comentário aprovado aparece e um apagado some sem rebuild do site. É o único JavaScript próprio da página do post. Nome e texto são exibidos como texto, nunca como HTML.
+- **Moderação:** `/admin/comentarios` mostra primeiro os pendentes. Os botões:
+  - **Aprovar:** publica o comentário;
+  - **Apagar:** um `DELETE` de verdade, para pendentes e publicados.
+
+  O painel é só em português, tem layout próprio e não é indexado.
+- **Login:** OAuth App do GitHub, sem escopo nenhum (só para saber quem é). Só a conta em `ADMIN_GITHUB_LOGIN` entra. A sessão é um cookie HttpOnly assinado com `SESSION_SECRET`, por 12 horas. É o único cookie do site, e só o dono o recebe. As ações exigem a sessão e a mesma origem.
+- **Spam, sem captcha de terceiros:**
+  - um campo escondido que só robôs preenchem: o comentário é descartado e o robô recebe "enviado";
+  - 3 envios por pessoa a cada 10 minutos;
+  - um teto de 300 pendentes.
+- **Privacidade:** o IP nunca é guardado. Para o limite de envios, um hash do IP com chave fica numa tabela à parte (`comment_attempts`), separado dos comentários, e é apagado depois de 10 minutos. A checagem dos limites e a gravação acontecem numa única instrução SQL, para envios paralelos não furarem o limite, e moderar um comentário não zera a contagem. O aviso de privacidade e o selo "Seus dados em paz" foram reescritos para dizer o que é guardado quando alguém comenta. O aviso subiu de versão e aparece de novo uma vez.
+
+**Região:** o banco Neon fica em São Paulo, e o `vercel.json` põe as funções do site em São Paulo também (`gru1`). Assim cada consulta não atravessa EUA–Brasil, e os dados dos comentários ficam no país.
+
+**Desenvolvimento local:**
+- `DATABASE_URL=pglite:./.pglite` roda um Postgres dentro do Node (PGlite, dependência de desenvolvimento), sem instalar nada.
+- `ADMIN_DEV_LOGIN=1` entra no painel sem GitHub, e só no `npm run dev`.
+
+**Pegadinhas:**
+- O PGlite precisa ficar fora do bundle (`serverExternalPackages`) e ter uma instância só por processo (em `globalThis`). O dev carrega páginas e rotas como grafos de módulos separados, e duas instâncias na mesma pasta viam dados diferentes.
+- No dev, `request.url` diz `localhost` mesmo quando o navegador usa `127.0.0.1`. Por isso os redirecionamentos e a checagem de origem usam o cabeçalho `Host` (ou `X-Forwarded-Host`).
+- As rotas que leem posts em tempo de execução precisam dos arquivos Markdown no deploy (`outputFileTracingIncludes`).
+- Qualquer falha do banco (rede, timeout, Neon suspenso) ou um `SESSION_SECRET` ausente vira "indisponível" para o visitante, nunca um erro 500; a causa fica no log.
+- A CSP continua igual: tudo é da própria origem, o formulário posta para o próprio site (`form-action 'self'`) e o login é uma navegação até o GitHub, não um formulário.
+
+**Verificação de segurança (03/11/2026, a pedido do usuário):**
+- **Bombas de descompressão:**
+  - O servidor não descompacta o corpo das requisições. Um gzip de 200 KB que se expandiria para 200 MB foi recusado em 10 ms, sem gasto de memória, e agora qualquer `Content-Encoding` é recusado explicitamente (415).
+  - Imagens de post com mais de 40 milhões de pixels ou 15 MB param o build. O `sharp` só lê o cabeçalho, nunca os pixels.
+  - O único corpo comprimido que o servidor lê é a resposta do GitHub no login, que tem prazo de 8 s.
+- **Corpo gigante:** antes, um envio de 60 MB era lido inteiro (cerca de 120 MB de memória a mais). Agora o corpo é recusado acima de 64 KB, antes de ler (pelo `Content-Length`) e durante a leitura (envio em partes). Aceita só formulário URL-encoded, sem multipart.
+- **XSS:** nome e comentário são sempre texto (React escapa). Um `<script>` enviado aparece escrito no painel e no post. Caracteres invisíveis e de direção da escrita são removidos, e o texto é normalizado (NFC). E-mails com caracteres que acrescentariam parâmetros a um link `mailto:` são recusados.
+- **Redirecionamentos:** só para endereços do próprio site (domínio de produção, URLs da Vercel, localhost). Um `Host` falsificado leva ao domínio oficial.
+- **Prompt injection:**
+  - Comentários são texto de visitantes. Uma regra no `CLAUDE.md` diz que nenhum assistente segue o que eles pedem nem aprova ou apaga comentários por conta própria.
+  - O painel marca com um aviso os textos que parecem ordens para uma IA ou spam de links. O aviso só informa: a decisão continua com o dono.
+  - **Risco que fica:** um comentário aprovado pode enganar a IA de quem lê a página, como um assistente que resume posts. A aprovação existe também para isso: não aprovar o que tem instruções escondidas (`GUIA.md`).

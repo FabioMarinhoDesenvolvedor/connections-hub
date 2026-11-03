@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Arrow } from '@/components/arrow';
 import { fill, isoDay, longDate } from '@/components/blog/format';
+import { Comments } from '@/components/blog/comments';
 import { TagList } from '@/components/blog/post-list';
 import { credits, site, siteOrigin } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, localePath, locales, type Locale } from '@/i18n';
@@ -12,7 +13,7 @@ import { getPost, getPosts } from '@/lib/blog/posts';
   One post. Everything is HTML from the build: the Markdown rendered by lib/blog/markdown.ts,
   "On this page" from its headings, and no script of its own.
   Layout: the title block, then the text in a reading column with the contents beside it
-  (above it, folded, on phones), then the conversation and the neighbouring posts.
+  (above it, folded, on phones), then the comments (approved by the owner) and the neighbouring posts.
 */
 export const dynamicParams = false;
 
@@ -77,7 +78,6 @@ export default async function PostPage({ params }: Params) {
     author: { '@type': 'Person', name: credits.name, url: credits.href },
     publisher: { '@type': 'Organization', name: site.name, logo: `${origin}/brand/logo.svg` },
   };
-  const mail = `mailto:${site.contact.email}?subject=${encodeURIComponent(fill(t.reply.subject, { title: post.title }))}`;
 
   return <main id="conteudo" className="blog post">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
@@ -120,11 +120,7 @@ export default async function PostPage({ params }: Params) {
       </div>
 
       <footer className="post-foot">
-        <section className="post-reply" aria-labelledby="post-conversa">
-          <p id="post-conversa" className="label"><span className="point" aria-hidden="true" />{t.reply.label}</p>
-          <p>{t.reply.text}</p>
-          <a className="button button-primary" href={mail}>{t.reply.email}<Arrow /></a>
-        </section>
+        <Comments postId={post.id} locale={lang} title={post.title} t={t} />
         {(newer || older) && <nav className="post-neighbours" aria-label={t.all}>
           {older && <Neighbour post={older} label={t.older} lang={lang} />}
           {newer && <Neighbour post={newer} label={t.newer} lang={lang} />}

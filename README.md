@@ -18,7 +18,7 @@ npm run social          # redesenha public/images/social.jpg a partir do logo of
 npm run post:new "Título"   # cria um rascunho de post em content/blog/ (veja content/blog/GUIA.md)
 ```
 
-`NEXT_PUBLIC_SITE_URL` sobrescreve o domínio de canonical, sitemap, RSS e JSON-LD. `BLOG_DRAFTS=1` mostra os rascunhos do blog num build de produção (para revisar num preview).
+`NEXT_PUBLIC_SITE_URL` sobrescreve o domínio de canonical, sitemap, RSS e JSON-LD. `BLOG_DRAFTS=1` mostra os rascunhos do blog num build de produção (para revisar num preview). Os comentários usam `DATABASE_URL`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `ADMIN_GITHUB_LOGIN` e `SESSION_SECRET` (veja `.env.example`). Para testar localmente: `DATABASE_URL=pglite:./.pglite ADMIN_DEV_LOGIN=1 npm run dev` e o painel em `/admin/comentarios`.
 
 ## Arquitetura
 
@@ -38,6 +38,7 @@ npm run post:new "Título"   # cria um rascunho de post em content/blog/ (veja c
 - `src/components/projects/`: `explorer.tsx` (abas e ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).
 - `content/blog/`: os posts em Markdown, um por pasta (`AAAA/MM/DD-slug/index.md`), e o `GUIA.md` de escrita e revisão.
 - `src/lib/blog/`: `posts.ts` lê e valida os posts; `markdown.ts` gera o HTML no build. Rotas em `src/app/[lang]/blog/`, componentes em `src/components/blog/` e a seção "Do blog" da home em `sections/blog-latest.tsx`.
+- `src/lib/comments/`, `src/app/api/` e `src/app/admin/`: os comentários (banco, sessão do dono, envio e moderação) e o painel `/admin/comentarios`. A seção no post é `src/components/blog/comments.tsx`.
 - `src/components/sticker.tsx` e `src/lib/sticker/peel.ts`: o adesivo de papel do rodapé.
 - `src/components/privacy-notice.tsx`: aviso de privacidade na primeira visita.
 - `src/components/anchor-jump.tsx`: links internos longos cortam direto para a seção em vez de rolar por todas as cenas.

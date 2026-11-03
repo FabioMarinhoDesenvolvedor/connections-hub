@@ -120,6 +120,7 @@ export type Dictionary = {
     note: string;
     items: Record<ProjectId, { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] }>;
   };
+  /** {email} in text: the contact address, filled from data/site.ts. */
   privacy: { label: string; text: string; dismiss: string };
   console: { signature: string };
   /** Interface of the blog; the posts themselves are Markdown in content/blog. */
@@ -155,7 +156,21 @@ export type Dictionary = {
     emptyLanguage: string;
     readOriginal: string;
     alsoIn: string;
-    reply: { label: string; text: string; email: string; subject: string };
+    /** The e-mail alternative under the comments. {title} in subject. */
+    reply: { prefer: string; email: string; subject: string };
+    comments: {
+      title: string;
+      intro: string;
+      /** {n}, singular and plural */
+      count: { one: string; other: string };
+      empty: string;
+      loading: string;
+      unavailable: string;
+      noscript: string;
+      form: { title: string; name: string; email: string; body: string; send: string; /** {email} */ note: string };
+      sent: string;
+      errors: { invalido: string; limite: string; indisponivel: string };
+    };
     latest: { label: string; title: string[]; all: string };
   };
 };

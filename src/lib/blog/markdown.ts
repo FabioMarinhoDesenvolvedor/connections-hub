@@ -45,14 +45,23 @@ const RESERVED_IDS = new Set(['conteudo', 'post-topo', 'post-conversa', 'post-ne
 const el = (tagName: string, className: string, children: ElementContent[]): Element =>
   ({ type: 'element', tagName, properties: { className: [className] }, children });
 
+// An image this large is a mistake (or a decompression bomb: a small file that expands to
+// gigabytes when a browser decodes it). The build refuses it instead of serving it.
+const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
+const MAX_IMAGE_PIXELS = 40_000_000; // about 8000 × 5000
+
 async function size(file: string): Promise<{ width: number; height: number } | null> {
+  if (fs.statSync(file).size > MAX_IMAGE_BYTES) throw new Error(`Blog: ${path.relative(process.cwd(), file)}: larger than 15 MB; export a smaller image`);
+  let dims: { width?: number; height?: number };
   try {
     const sharp = (await import('sharp')).default;
-    const { width, height } = await sharp(file).metadata();
-    return width && height ? { width, height } : null;
+    dims = await sharp(file).metadata(); // reads the header only, never decodes the pixels
   } catch {
     return null;
   }
+  const { width, height } = dims;
+  if (width && height && width * height > MAX_IMAGE_PIXELS) throw new Error(`Blog: ${path.relative(process.cwd(), file)}: ${width} × ${height} pixels is too large; resize it (up to about 8000 × 5000)`);
+  return width && height ? { width, height } : null;
 }
 
 function postSteps(post: Post, toc: TocItem[], images: Map<string, { width: number; height: number } | null>) {
