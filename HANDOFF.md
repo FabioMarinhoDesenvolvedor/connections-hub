@@ -169,19 +169,18 @@ O aviso "O Windows protegeu o computador" aparece porque o `.exe` não tem assin
 
 Detalhes e o risco que fica em `DESIGN.md` §15. O `verify` cobre corpo gigante, gzip e `Host` falsificado.
 
-**Para ligar em produção** (o usuário faz; o Claude não cria contas):
-1. **Banco:** na Vercel, projeto → Storage → Create Database → Neon (plano gratuito) → ligar ao projeto nos ambientes Production e Preview. Isso cria a variável `DATABASE_URL`. A tabela é criada sozinha no primeiro comentário.
-2. **Login:** no GitHub, Settings → Developer settings → OAuth Apps → New OAuth App.
-   - Homepage URL: `https://www.connectionshub.com.br`
-   - Callback URL: `https://www.connectionshub.com.br/api/auth/github/callback`
-   - Copie o Client ID e gere um Client Secret.
-   - O callback só vale para esse domínio. Para logar num preview, crie um segundo OAuth App com a URL do preview.
-3. **Variáveis na Vercel:** Settings → Environment Variables, no ambiente Production:
+**Configuração de produção (03/11, feita no navegador junto com o usuário):**
+1. **Banco: feito.** Neon `connections-hub-comentarios`, plano Free, região São Paulo (gru1), sem Neon Auth nem Realtime. Ligado só ao ambiente Production, com prefixo `DATABASE` (gera `DATABASE_URL`, marcado como Sensitive).
+   - Não foi ligado ao Preview: os previews gravariam no banco de produção, e o login nem funcionaria lá (o callback é só do domínio oficial).
+   - As funções rodam em São Paulo pelo `vercel.json`.
+2. **OAuth App do GitHub: feito.** "Connections Hub moderação", callback `https://www.connectionshub.com.br/api/auth/github/callback`. O usuário gera e guarda o Client Secret.
+3. **Variáveis no ambiente Production da Vercel: o usuário cadastra.**
    - `GITHUB_CLIENT_ID`;
-   - `GITHUB_CLIENT_SECRET`;
-   - `ADMIN_GITHUB_LOGIN=FabioMarinhoDesenvolvedor`;
-   - `SESSION_SECRET`, gerado com `openssl rand -base64 48`.
-4. Fazer um redeploy e entrar em `/admin/comentarios`.
+   - `GITHUB_CLIENT_SECRET` (Sensitive);
+   - `SESSION_SECRET` (Sensitive), gerado com `openssl rand -base64 48`.
+
+   `ADMIN_GITHUB_LOGIN` é opcional: o padrão no código já é `FabioMarinhoDesenvolvedor`.
+4. **Publicar:** merge do PR #8 e depois do #9, e então entrar em `/admin/comentarios`.
 
 **Desenvolvimento local:** `DATABASE_URL=pglite:./.pglite ADMIN_DEV_LOGIN=1 npm run dev`. O banco local fica em `.pglite/`, que está no `.gitignore`.
 

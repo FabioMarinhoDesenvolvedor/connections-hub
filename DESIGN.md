@@ -316,6 +316,8 @@ Soluções voltou como era.
   - um teto de 300 pendentes.
 - **Privacidade:** o IP nunca é guardado. Para o limite de envios, um hash do IP com chave fica numa tabela à parte (`comment_attempts`), separado dos comentários, e é apagado depois de 10 minutos. A checagem dos limites e a gravação acontecem numa única instrução SQL, para envios paralelos não furarem o limite, e moderar um comentário não zera a contagem. O aviso de privacidade e o selo "Seus dados em paz" foram reescritos para dizer o que é guardado quando alguém comenta. O aviso subiu de versão e aparece de novo uma vez.
 
+**Região:** o banco Neon fica em São Paulo, e o `vercel.json` põe as funções do site em São Paulo também (`gru1`). Assim cada consulta não atravessa EUA–Brasil, e os dados dos comentários ficam no país.
+
 **Desenvolvimento local:**
 - `DATABASE_URL=pglite:./.pglite` roda um Postgres dentro do Node (PGlite, dependência de desenvolvimento), sem instalar nada.
 - `ADMIN_DEV_LOGIN=1` entra no painel sem GitHub, e só no `npm run dev`.
