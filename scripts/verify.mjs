@@ -27,12 +27,21 @@ for (const image of ['alcool-gel', 'detergente', 'luva-nitrilica', 'papel-toalha
 for (const id of ['inicio', 'sobre', 'seguranca', 'solucoes', 'solucao-sites', 'solucao-sistemas', 'solucao-dashboards', 'solucao-ecommerce', 'projetos', 'projeto-marketing', 'processo', 'contato']) assert.ok(html.includes(`id="${id}"`), `Anchor ${id}`);
 for (const link of ['https://wa.me/5511974589226', 'mailto:contato@connectionshub.com.br', 'tel:+5511974589226']) assert.ok(html.includes(link), `Official channel ${link}`);
 for (const asset of ['/brand/logo.svg', '/brand/logo-light.svg', '/brand/signature-sand.svg', '/brand/ring-orange.svg', '/images/social.jpg', '/fonts/Satoshi-Variable.woff2', '/favicon.png', '/robots.txt', '/sitemap.xml']) assert.equal((await fetch(origin + asset)).status, 200, asset);
+// Byte-for-byte integrity against the brand's source files. They are not in the repository,
+// so on a machine without Referências/ this check is skipped (and said so), not failed.
 const originals = path.resolve('Referências/CONNECTIONS HUB ID VISUAL/SVG');
-const files = await fs.readdir(originals);
-const hash = data => crypto.createHash('sha256').update(data).digest('hex');
-const originalHashes = new Set(await Promise.all(files.map(async file => hash(await fs.readFile(path.join(originals, file))))));
-for (const file of await fs.readdir('public/brand')) assert.ok(originalHashes.has(hash(await fs.readFile(path.join('public/brand', file)))), `${file} must be an unchanged official SVG`);
-assert.equal(hash(await fs.readFile('public/fonts/Satoshi-Variable.woff2')), hash(await fs.readFile('Referências/FONTE_ Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2')), 'Official Satoshi must be intact');
+let integrity = 'byte-for-byte SVG/font integrity';
+try {
+  const files = await fs.readdir(originals);
+  const hash = data => crypto.createHash('sha256').update(data).digest('hex');
+  const originalHashes = new Set(await Promise.all(files.map(async file => hash(await fs.readFile(path.join(originals, file))))));
+  for (const file of await fs.readdir('public/brand')) assert.ok(originalHashes.has(hash(await fs.readFile(path.join('public/brand', file)))), `${file} must be an unchanged official SVG`);
+  assert.equal(hash(await fs.readFile('public/fonts/Satoshi-Variable.woff2')), hash(await fs.readFile('Referências/FONTE_ Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2')), 'Official Satoshi must be intact');
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+  integrity = 'SVG/font integrity SKIPPED (no Referências/ on this machine)';
+  console.warn('Warning: Referências/ not found; the byte-for-byte check of the brand files was skipped.');
+}
 const mainJS = [...html.matchAll(/<script src="([^"]+)"/g)].map(match => match[1]);
 let transferred = 0;
 for (const src of mainJS) {
@@ -62,4 +71,34 @@ assert.match(html, /localStorage\.getItem\('theme'\)/, 'Theme is applied by an i
 assert.ok(html.includes('class="for-light" src="/brand/symbol-navy.svg"'), 'Opening stands on the official symbol');
 assert.ok(html.includes('src="/brand/logo-light.svg"'), 'Dark theme uses the official light logo');
 
-console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, byte-for-byte SVG/font integrity, PT/EN/JA routes and copy, theme boot. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
+// Blog: served at /blog in Portuguese (/pt/blog redirects there) and under each language
+// prefix, with its feed and sitemap entries. Drafts never reach a production build.
+assert.ok(html.includes('href="/blog"'), 'Home links to the blog');
+assert.equal((await fetch(origin + '/pt/blog', { redirect: 'manual' })).status, 308, '/pt/blog redirects to /blog');
+for (const blog of ['/blog', '/en/blog', '/ja/blog', '/blog/anuncios']) {
+  const response = await fetch(origin + blog);
+  assert.equal(response.status, 200, blog);
+  const page = await response.text();
+  assert.equal((page.match(/<h1\b/g) || []).length, 1, `${blog} has exactly one h1`);
+  assert.match(page, /rel="canonical"/, `${blog} canonical`);
+}
+const feed = await fetch(origin + '/blog/rss.xml');
+assert.equal(feed.status, 200, 'RSS feed');
+assert.match(feed.headers.get('content-type') || '', /rss\+xml/, 'RSS content type');
+const rss = await feed.text();
+assert.match(rss, /<rss version="2.0"/, 'RSS 2.0 document');
+const sitemapXml = await (await fetch(origin + '/sitemap.xml')).text();
+assert.ok(sitemapXml.includes('/blog</loc>'), 'Sitemap lists the blog');
+const draft = '/blog/2026/11/03/exemplo-de-post';
+if (process.env.BLOG_DRAFTS !== '1') {
+  assert.equal((await fetch(origin + draft)).status, 404, 'A draft is not published');
+  assert.ok(!rss.includes('exemplo-de-post') && !sitemapXml.includes('exemplo-de-post'), 'A draft is not in the feed or the sitemap');
+} else {
+  const post = await (await fetch(origin + draft)).text();
+  assert.match(post, /name="robots" content="noindex/, 'A draft shown for review is not indexed');
+  assert.ok(post.includes('class="post-code"') && post.includes('tk-keyword'), 'Code blocks use the site highlighter');
+  assert.ok(/<img[^>]+width="\d+"[^>]+height="\d+"/.test(post), 'Post images carry their size');
+  assert.equal((await fetch(origin + draft + '/capa.jpg')).status, 200, 'Post images are served next to the post');
+}
+
+console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, ${integrity}, PT/EN/JA routes and copy, theme boot, blog routes, feed and sitemap. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
