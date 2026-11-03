@@ -1,10 +1,16 @@
-# Handoff — atualizado em 02/11/2026
+# Handoff — atualizado em 03/11/2026
 
-Estado do que foi feito e do que está em andamento. Leia antes de continuar o trabalho no site ou no Tasks. O próximo trabalho planejado está na seção 4.
+Estado do que foi feito e do que está em andamento. Leia antes de continuar o trabalho no site ou no Tasks.
 
-**Antes de mexer no código:** `node_modules` não existe nesta máquina. Rode `npm install` e leia o guia do Next em `node_modules/next/dist/docs/` (exigência do `AGENTS.md`).
+**Agora:**
+- O blog está pronto na branch `feature/blog`, em PR. Detalhes na seção 4.
+- O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
 
-**Docs desatualizados:** o `README.md` ainda cita `hero-stage.tsx`, `src/lib/hero/`, `three-studio.ts` e `npm run bake`, que não existem mais, e diz que o three.js saiu (ele voltou para a logo). O mesmo vale para `DESIGN.md` §5 e `REVISAO.md`. Corrigir junto com a seção 4.
+**Antes de mexer no código:**
+- Rode `npm install` e leia o guia do Next em `node_modules/next/dist/docs/` (exigência do `AGENTS.md`).
+- Rode `git fetch` antes de começar: em 22/10, outra sessão publicou três commits da seção Segurança direto no `main`, e este handoff não sabia deles até 03/11.
+
+**Commits:** o Git desta máquina não tem identidade global. Use `git -c user.name="Fabio Marinho" -c user.email=fabiomarinho202020@gmail.com commit …`.
 
 ## 1. Seção Projetos do site (em produção)
 
@@ -46,7 +52,7 @@ Estado do que foi feito e do que está em andamento. Leia antes de continuar o t
 **Deploy**
 
 - Fluxo: PRs #4, #5 e #6 no `main`. A Vercel publica produção sozinha em https://connections-hub-zeta.vercel.app.
-- Como fazer: o `gh` não está instalado e o Git não tem identidade global. Commit com `-c user.name="Fabio Marinho" -c user.email=…` e PR e merge pela API do GitHub, com o token de `git credential fill`. Esperar o preview da Vercel ficar verde antes do merge.
+- Como fazer: commit com a identidade explícita (ver o topo), push da branch e PR com o `gh` (instalado e logado desde 03/11). Esperar o preview da Vercel ficar verde antes do merge.
 - Verificação: `scripts/verify.mjs` passa tudo, menos a checagem que exige a pasta `Referências/`, que não existe nesta máquina.
 
 ## 1b. Abertura e fotos (19/10, em produção pelo PR #7)
@@ -61,9 +67,9 @@ Estado do que foi feito e do que está em andamento. Leia antes de continuar o t
   - `tsc` e build passam. O `verify` passa tudo, menos a checagem de `Referências/`, que continua ausente.
   - Testado: 1440 claro e escuro e 390, sem WebGL e com movimento reduzido, sem erros.
 - **Logo:** rodinha (girar, pegar, soltar, encaixar), gota de tinta com relevo, escorridos e ondulação, que muda só a cor da logo. A aba lateral de puxar o tema saiu.
-- **"Sobre":** o painel da marca foi reprovado e trocado por um terminal que digita código real de cinco projetos/linguagens (`code-terminal.tsx`, `data/code.ts`). Os trechos de Tasks, WorkHub e WSN vêm de repositórios privados: confirmar com o usuário que pode publicar.
+- **"Sobre":** o painel da marca foi reprovado e trocado por um terminal que digitava código real de cinco projetos. Em 22/10 o terminal saiu, junto com os trechos de repositórios privados, e deu lugar à seção Segurança (seção 5).
 - **Também:** logo com rotação livre em todas as direções; terminal interativo (qualquer tecla vira código, e segurar no celular); adesivo refeito como papel de verdade em 3D.
-- **Status:** aprovado e publicado (commit 412844d, PR #7). A pendência dos trechos privados continua.
+- **Status:** aprovado e publicado (commit 412844d, PR #7).
 
 ## 2. Tasks público (download)
 
@@ -102,54 +108,44 @@ O aviso "O Windows protegeu o computador" aparece porque o `.exe` não tem assin
 
 **Não testado:** instalar o MSIX localmente. Exige o Modo de Desenvolvedor do Windows, que está desligado.
 
-## 4. Próximo: blog e seção de segurança (planejado em 02/11/2026, nada implementado)
+## 4. Blog (feito em 03/11/2026, branch `feature/blog`)
 
-**Pedido:** um lugar para publicar artigos de tecnologia, opiniões, análises e projetos, no espírito do blog do Akita (akitaonrails.com), com uma área de anúncios como a da Anthropic. O usuário quer criar o hábito de escrever e passar cada texto por uma revisão com o Claude. Também quer refazer a seção de segurança, que achou curta e sem graça.
+**Pedido:** um lugar para artigos, opiniões, análises e bastidores de projetos, no espírito do blog do Akita (akitaonrails.com), com anúncios como a página de notícias da Anthropic. O usuário quer criar o hábito de escrever; o Claude revisa sem reescrever.
 
-### Referência: como o Akita faz
+**O que foi feito** (decisões em `DESIGN.md` §14):
+- **Posts:** Markdown em `content/blog/AAAA/MM/DD-slug/index.md`, com imagens na mesma pasta e traduções opcionais em `index.en.md` e `index.ja.md`. O cabeçalho é validado no build.
+- **Rotas:** `/blog`, `/blog/AAAA/MM/DD/slug`, `/blog/anuncios`, `/blog/tags/[tag]` e `/blog/rss.xml`, também em `/en` e `/ja`. "Blog" entra no menu e no rodapé, e a home ganha a seção "Do blog", que fica escondida enquanto não houver posts.
+- **Escrita:** `npm run post:new "Título"` cria o rascunho. `content/blog/GUIA.md` tem o fluxo e as regras da revisão; a regra também está no `CLAUDE.md`.
+- **Rascunhos:** só no dev ou com `BLOG_DRAFTS=1`. Existe um post de exemplo em rascunho (`content/blog/2026/11/03-exemplo-de-post`), para apagar quando sair o primeiro post de verdade.
+- **Também nesta branch:**
+  - ai-memory no `CLAUDE.md`;
+  - Next 16.3.7 → 16.4.4 pelo `npm audit` (1 falha crítica e 1 alta, agora 0);
+  - README, DESIGN §5 e REVISAO corrigidos;
+  - `verify` pula com aviso a checagem de `Referências/` quando a pasta não existe.
 
-- **Fontes:** "Meu Novo Blog - Como Eu Fiz" (10/09/2025), "20 Anos de Blog" (09/04/2026), o guia de contribuição com Docker (29/08/2025) e o FrankMD parte 1 (01/02/2026).
-- **Stack:** Hugo com tema Hextra, um `index.md` por post, deploy por push no Git. Imagens num bucket S3, fora do repositório.
-- **URLs por data:** `/AAAA/MM/DD/slug/`. A tradução fica em `/en/...` com o slug traduzido, num arquivo irmão `index.en.md`.
-- **Front matter:** title, date, slug, tags, draft, description.
-- **Home:** destaques num carrossel e artigos agrupados por mês com contagem. Tags em `/tags/`, arquivo completo e RSS.
-- **Página do post:** índice "Nesta página", tags, data, bloco TL;DR no início, botão "TL;DR com IA", Disqus e link para o próximo post.
-- **Escrita:** ele escreve tudo em Markdown. A IA só corrige gramática e devolve um diff para aceitar, editar ou cancelar; não reescreve o texto. Na tradução, a IA não "corrige" as ideias técnicas e segue instruções de voz e estilo. Lemas: "Just f…ng write!!" e "O blog perfeito não existe".
+**Verificado:**
+- `typecheck`, `build` e `verify` passam, com e sem `BLOG_DRAFTS=1`.
+- Navegador em 1440 px nos temas claro e escuro, e em 390 px (antes do rebase sobre a Segurança), sem erros de console.
+- Uma revisão de código (`/code-review`) achou 10 problemas, todos corrigidos no commit `fix(blog)`.
 
-### Decisões propostas
+**Pegadinhas:**
+- Nas rotas internas do blog, o `generateStaticParams` precisa devolver todas as combinações, já com o `lang`. Uma lista montada a partir do idioma recebido do layout foi ignorada pelo build.
+- O `usePathname` vê `/pt/...` no pré-render e `/...` no navegador; o menu normaliza isso.
+- A CSP (`security-headers.ts`) e o `X-Frame-Options: DENY` valem para o blog. Uma página não abre dentro de iframe, nem para testar o celular: use outro jeito de mudar a largura.
 
-- **Continuar no Next.js, sem Hugo:** o blog fica no mesmo site, com o mesmo design system e o mesmo deploy (PR → preview da Vercel → merge publica).
-- **Conteúdo:** `content/blog/AAAA/MM/DD-slug/index.md`, com imagens na mesma pasta (sem S3). Front matter: `title`, `date`, `description`, `tags`, `kind` (artigo, opinião, análise, projeto, anúncio), `draft` e `tldr`.
-- **Rotas:** `/blog`, `/blog/AAAA/MM/DD/slug`, `/blog/tags/[tag]`, `/blog/anuncios` e `/blog/rss.xml`. Tudo estático (`generateStaticParams`), sem JavaScript no cliente para ler um post.
-- **Idiomas:** PT primeiro. A versão em inglês ou japonês existe só quando houver um `index.en.md` ou `index.ja.md`, e só então o seletor de idioma aparece no post.
-- **Sem Disqus nem comentários de terceiros:** quebrariam o aviso de privacidade (sem cookies e sem rastreadores). Em troca, um link "Comentar no GitHub" ou por e-mail.
-- **Anúncios:** posts com `kind: anuncio` (lançamento de versão do Tasks, novidades do site) aparecem em `/blog/anuncios` e nos três últimos da home do site.
-- **Antes de escolher a lib de Markdown e o realce de código no servidor:** ler o guia de MDX em `node_modules/next/dist/docs/` e comparar com o `src/lib/highlight.ts` que já existe.
+**Próximos passos:**
+1. O usuário revisa o PR no preview da Vercel e faz o merge.
+2. Escrever o primeiro post (sugestão: "Como o Tasks trata um arquivo em que não confia") e passar pela revisão do guia.
+3. Apagar o post de exemplo quando o primeiro post de verdade sair.
 
-### Fluxo de escrita e revisão
+## 5. Próximo: refazer a seção Segurança
 
-1. `npm run post:new "Título"` cria a pasta do dia e o `index.md` com `draft: true`.
-2. O usuário escreve o texto inteiro.
-3. A revisão segue o guia `content/blog/GUIA.md`. A IA aponta erros, trechos confusos, afirmações sem fonte e fatos que não batem com os repositórios. Ela não reescreve parágrafos nem muda a opinião; cada sugestão vem como diff para aceitar ou recusar.
-4. Branch `post/slug` e PR; o preview da Vercel serve para ler o post publicado antes do merge.
-5. O merge publica. O `verify.mjs` passa a checar `/blog`, o RSS e o sitemap.
-
-### Seção de segurança
-
-- **Suposição a confirmar:** é a seção "Segurança" do README público do Tasks (cinco tópicos curtos), que o site não tem.
-- **Proposta para o site:** uma página `/projetos/tasks/seguranca` no visual de desenho técnico do site, com:
-  - um diagrama das fronteiras de confiança (interface → comandos validados → SQLite);
-  - o caminho da restauração de backup passo a passo, com o trecho Rust real que já está em `data/code.ts`;
-  - uma tabela do que o app faz e do que ele não faz;
-  - o portão de auditoria do release (`cargo audit` e `npm audit`);
-  - como conferir o SHA-256 no PowerShell (`Get-FileHash`).
-- **README do Tasks:** a seção fica com a mesma estrutura, mais curta, e um link para a página. Também ganha um `SECURITY.md` com o relato privado de vulnerabilidades do GitHub, no lugar de pedir uma issue pública.
-- **Primeiro post sugerido:** "Como o Tasks trata um arquivo em que não confia", escrito pelo usuário a partir dessa página.
-
-### Ordem sugerida
-
-1. Corrigir os docs desatualizados (README, DESIGN §5, REVISAO).
-2. Montar a estrutura do blog: rotas, listagem, página do post, RSS, sitemap e verify.
-3. Criar `post:new` e o `GUIA.md`.
-4. Fazer a página de segurança e o README do Tasks.
-5. Primeiro post, para testar o fluxo inteiro.
+- **O que existe** (em produção desde 22/10, `DESIGN.md` §13): "Seguro desde a primeira linha.", com três selos (conexão cifrada, só o que é nosso, seus dados em paz) e o cofre 3D que criptografa a CSP do site ao vivo.
+  - Código em `components/sections/security.tsx`, `components/security/vault.tsx`, `lib/cipher/renderer.ts` e `lib/security-headers.ts`.
+- **O pedido do usuário (02/11):** achou a seção "curta e sem graça" e quer melhorar bastante. Ficou para o fim, depois do blog.
+- **Cuidado com o histórico de 22/10:**
+  - duas versões foram reprovadas por excesso de informação ("lixo"; "informação demais para vender a marca");
+  - as duas trocaram a seção Soluções por engano.
+  - Melhorar sem voltar a encher de lista técnica, e sem tocar em Soluções.
+- **Primeiro passo:** perguntar ao usuário o que falta (profundidade, interação, prova, visual) antes de propor. Uma ideia possível é ligar a seção a um post do blog com os detalhes técnicos, para manter a seção enxuta.
+- **Fica para depois:** a página de segurança do Tasks e o README do repositório público, ideias do plano de 02/11, ainda sem pedido confirmado.
