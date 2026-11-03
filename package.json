@@ -12,10 +12,20 @@
     "social": "node scripts/social-card.mjs"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
+    "hast-util-to-string": "^3.0.1",
     "next": "^16.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "three": "^0.180.0"
+    "rehype-sanitize": "^6.0.0",
+    "rehype-slug": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "three": "^0.180.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.2.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

@@ -83,9 +83,9 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
     </head>
     <body>
       <a className="skip-link" href="#conteudo">{t.ui.skip}</a>
-      <Navigation locale={lang} t={{ ui: t.ui, nav: t.nav }} />
+      <Navigation locale={lang} t={{ ui: t.ui, nav: t.nav, blog: t.blog.nav }} />
       {children}
-      <Footer t={t} />
+      <Footer t={t} locale={lang} />
       <ScrollEffects />
       <AnchorJump />
       <PrivacyNotice t={t.privacy} />

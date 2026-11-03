@@ -10,4 +10,4 @@ const dictionaries: Record<Locale, Dictionary> = { pt, en, ja };
 export const getDictionary = (locale: Locale): Dictionary => dictionaries[locale];
 
 export type { Dictionary, Locale };
-export { isLocale, localeInfo, locales, defaultLocale } from './config';
+export { isLocale, localeInfo, localePath, locales, defaultLocale } from './config';

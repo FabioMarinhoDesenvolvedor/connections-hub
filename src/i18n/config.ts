@@ -14,3 +14,6 @@ export const localeInfo: Record<Locale, { html: string; og: string; path: string
   en: { html: 'en', og: 'en_US', path: '/en', label: 'English', short: 'EN' },
   ja: { html: 'ja', og: 'ja_JP', path: '/ja', label: '日本語', short: 'JA' },
 };
+
+/** A site path in one language: '/blog' stays '/blog' in Portuguese and becomes '/en/blog' in English. */
+export const localePath = (locale: Locale, path: string) => (locale === defaultLocale ? path : `/${locale}${path === '/' ? '' : path}`);
