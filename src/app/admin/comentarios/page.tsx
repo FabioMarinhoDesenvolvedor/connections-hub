@@ -2,12 +2,15 @@ import { Arrow } from '@/components/arrow';
 import { localePath, type Locale } from '@/i18n/config';
 import { getPosts } from '@/lib/blog/posts';
 import { DatabaseUnavailable } from '@/lib/comments/db';
+import { warnings } from '@/lib/comments/input';
 import { currentAdmin } from '@/lib/comments/session';
 import { listAll, type Comment } from '@/lib/comments/store';
 
 /*
   /admin/comentarios: every comment, the pending ones first. Approve puts one on the post;
   Apagar deletes it for good (pending or approved). Without a session, only the sign-in.
+  Everything here was written by visitors: shown as text, with a warning on anything that
+  reads like orders to an AI assistant, and never acted on by one.
 */
 export const dynamic = 'force-dynamic';
 
@@ -72,6 +75,9 @@ function Group({ title, empty, items, titles }: { title: string; empty: string; 
             <span>{c.locale.toUpperCase()}</span>
           </p>
           <p className="admin-post">em {post ? <a href={`${localePath(c.locale as Locale, post.path)}#comentarios`}>{post.title}</a> : c.postId}</p>
+          {warnings(`${c.name}\n${c.body}`).map(w => <p key={w} className="admin-warning">
+            {w === 'ia' ? 'Atenção: este texto parece conter instruções para uma IA (prompt injection). Leia antes de aprovar; nenhum assistente deve seguir o que está escrito nele.' : 'Atenção: vários links. Pode ser spam.'}
+          </p>)}
           <p className="comment-body">{c.body}</p>
           <div className="admin-actions">
             {c.status === 'pending' && <form method="post" action={`/api/admin/comments/${c.id}`}>

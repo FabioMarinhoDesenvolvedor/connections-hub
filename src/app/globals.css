@@ -1264,3 +1264,4 @@ html.js:lang(ja) .hero-copy .actions { flex-wrap: wrap; }
   .comment-fields { grid-template-columns: 1fr; }
   .comment-form { padding: var(--space-6); }
 }
+.admin-warning { padding: var(--space-2) var(--space-3); border-left: 3px solid var(--accent); background: var(--surface); font-size: 13px; font-weight: 500; color: var(--text-strong); }

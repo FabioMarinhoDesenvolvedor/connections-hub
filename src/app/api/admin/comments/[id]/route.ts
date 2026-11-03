@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { DatabaseUnavailable } from '@/lib/comments/db';
+import { BadBody, readForm } from '@/lib/comments/input';
 import { approve, remove } from '@/lib/comments/store';
 import { currentAdmin, here, sameOrigin } from '@/lib/comments/session';
 
@@ -12,7 +13,8 @@ export async function POST(request: Request, { params }: RouteContext<'/api/admi
   const { id } = await params;
   if (!sameOrigin(request) || !(await currentAdmin())) return new NextResponse('Forbidden', { status: 403 });
   if (!UUID.test(id)) return new NextResponse('Not found', { status: 404 });
-  const action = String((await request.formData()).get('action') ?? '');
+  let action = '';
+  try { action = (await readForm(request)).get('action') ?? ''; } catch (error) { if (!(error instanceof BadBody)) throw error; }
   if (action !== 'approve' && action !== 'delete') return new NextResponse('Bad request', { status: 400 });
   try {
     await (action === 'approve' ? approve(id) : remove(id));

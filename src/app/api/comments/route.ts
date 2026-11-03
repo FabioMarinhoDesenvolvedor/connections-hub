@@ -3,6 +3,7 @@ import { isLocale, localePath } from '@/i18n/config';
 import { getPosts } from '@/lib/blog/posts';
 import { DatabaseUnavailable } from '@/lib/comments/db';
 import { here, sameOrigin } from '@/lib/comments/session';
+import { BadBody, cleanLine, cleanText, EMAIL, readForm } from '@/lib/comments/input';
 import { approvedFor, hashIp, LIMITS, submit } from '@/lib/comments/store';
 
 /*
@@ -14,8 +15,6 @@ import { approvedFor, hashIp, LIMITS, submit } from '@/lib/comments/store';
   Spam: a hidden field people never fill (website), a per-person limit and a cap on pending.
 */
 export const dynamic = 'force-dynamic';
-
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function GET(request: Request) {
   const post = new URL(request.url).searchParams.get('post') ?? '';
@@ -29,7 +28,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const form = await request.formData();
+  let form: URLSearchParams;
+  try {
+    form = await readForm(request);
+  } catch (error) {
+    if (error instanceof BadBody) return new NextResponse('Bad request', { status: error.message === 'size' ? 413 : 415 });
+    throw error;
+  }
   const field = (name: string) => String(form.get(name) ?? '').trim();
   const locale = field('locale');
   const lang = isLocale(locale) ? locale : 'pt';
@@ -42,9 +47,9 @@ export async function POST(request: Request) {
   // The hidden field: a person never sees it, a bot fills it. Pretend it worked.
   if (field('website')) return back('comentario-enviado');
 
-  const name = field('name').replace(/\s+/g, ' ');
+  const name = cleanLine(field('name'));
   const email = field('email').toLowerCase() || null;
-  const body = field('body').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+  const body = cleanText(field('body'));
   if (!name || name.length > LIMITS.name || body.length < 3 || body.length > LIMITS.body || (email && (email.length > LIMITS.email || !EMAIL.test(email)))) {
     return back('comentario-erro-invalido');
   }

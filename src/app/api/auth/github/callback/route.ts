@@ -6,6 +6,8 @@ import { adminLogin, cookieOptions, here, SESSION_COOKIE, sessionValue, STATE_CO
 // GitHub sends the owner back here: check the state, ask GitHub who it is, let only the owner in.
 export const dynamic = 'force-dynamic';
 
+const GITHUB_TIMEOUT = 8000; // ms: a slow GitHub must not hold the function open
+
 const same = (a: string, b: string) => {
   const x = Buffer.from(a), y = Buffer.from(b);
   return x.length === y.length && timingSafeEqual(x, y);
@@ -27,11 +29,13 @@ export async function GET(request: Request) {
     method: 'POST',
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify({ client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code }),
+    signal: AbortSignal.timeout(GITHUB_TIMEOUT),
   }).then(r => r.json()).catch(() => null) as { access_token?: string } | null;
   if (!token?.access_token) return denied('github');
 
   const user = await fetch('https://api.github.com/user', {
     headers: { Authorization: `Bearer ${token.access_token}`, Accept: 'application/vnd.github+json', 'User-Agent': 'connections-hub' },
+    signal: AbortSignal.timeout(GITHUB_TIMEOUT),
   }).then(r => r.json()).catch(() => null) as { login?: string } | null;
   if (!user?.login || user.login.toLowerCase() !== adminLogin()) return denied('conta');
 

@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { cookies } from 'next/headers';
+import { siteOrigin } from '@/data/site';
 
 /*
   The owner's login to the moderation panel. GitHub says who the person is (see
@@ -53,22 +54,36 @@ export const cookieOptions = (maxAge: number) => ({
 });
 
 /*
-  The address the visitor actually used (Host, or X-Forwarded-Host behind Vercel's proxy).
-  request.url can name another host (the dev server reports localhost), which would send the
-  owner to a host where the session cookie does not exist.
+  Where redirects go. The Host header names the address the visitor used (request.url can
+  name another one: the dev server reports localhost), but anyone can send any Host, so it is
+  only used when it is one of this site's own addresses: the production domain, the Vercel
+  deployment and branch URLs, or a local server. Anything else falls back to the production
+  domain, so a forged header can never turn a redirect into a link to another site.
 */
+const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/;
+function allowedHosts(): Set<string> {
+  const hosts = [new URL(siteOrigin()).host, process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL];
+  return new Set(hosts.filter((h): h is string => Boolean(h)).map(h => h.toLowerCase()));
+}
+
 export function originOf(request: Request): string {
-  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host') ?? new URL(request.url).host;
-  const proto = request.headers.get('x-forwarded-proto') ?? new URL(request.url).protocol.replace(':', '');
-  return `${proto}://${host}`;
+  const host = (request.headers.get('x-forwarded-host') ?? request.headers.get('host') ?? '').toLowerCase();
+  if (LOCAL.test(host) && !process.env.VERCEL) return `http://${host}`; // a server on this machine
+  if (allowedHosts().has(host)) return `https://${host}`;
+  return siteOrigin();
 }
 
 /** An absolute URL on this site, for redirects. */
 export const here = (request: Request, path: string) => new URL(path, originOf(request));
 
-/** Form posts must come from this site (the cookie is SameSite=Lax; this is a second lock). */
+/*
+  Form posts must come from a page of this same site (the cookie is SameSite=Lax; this is a
+  second lock). A browser always sends the real Origin and Host, so a page on another site
+  cannot pass this check on a visitor's behalf.
+*/
 export function sameOrigin(request: Request): boolean {
   const origin = request.headers.get('origin');
-  if (!origin) return false;
-  try { return new URL(origin).host === new URL(originOf(request)).host; } catch { return false; }
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  if (!origin || !host) return false;
+  try { return new URL(origin).host.toLowerCase() === host.toLowerCase(); } catch { return false; }
 }

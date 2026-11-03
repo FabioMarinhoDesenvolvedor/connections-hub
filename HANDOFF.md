@@ -160,6 +160,15 @@ O aviso "O Windows protegeu o computador" aparece porque o `.exe` não tem assin
 - Testado de ponta a ponta com o PGlite: envio válido e inválido, robô, outra origem, limite de envios, aprovar, apagar, painel sem login e ações sem sessão. No navegador, nos temas claro e escuro, sem erros.
 - **Não testado:** o login real com o GitHub e o Neon de verdade, que dependem das configurações abaixo.
 
+**Segurança verificada em 03/11:**
+- bombas de descompressão (corpo gzip e imagens);
+- corpo gigante;
+- XSS e caracteres invisíveis;
+- `Host` falsificado;
+- prompt injection.
+
+Detalhes e o risco que fica em `DESIGN.md` §15. O `verify` cobre corpo gigante, gzip e `Host` falsificado.
+
 **Para ligar em produção** (o usuário faz; o Claude não cria contas):
 1. **Banco:** na Vercel, projeto → Storage → Create Database → Neon (plano gratuito) → ligar ao projeto nos ambientes Production e Preview. Isso cria a variável `DATABASE_URL`. A tabela é criada sozinha no primeiro comentário.
 2. **Login:** no GitHub, Settings → Developer settings → OAuth Apps → New OAuth App.

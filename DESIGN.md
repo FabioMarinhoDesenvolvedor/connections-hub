@@ -326,3 +326,16 @@ Soluções voltou como era.
 - As rotas que leem posts em tempo de execução precisam dos arquivos Markdown no deploy (`outputFileTracingIncludes`).
 - Qualquer falha do banco (rede, timeout, Neon suspenso) ou um `SESSION_SECRET` ausente vira "indisponível" para o visitante, nunca um erro 500; a causa fica no log.
 - A CSP continua igual: tudo é da própria origem, o formulário posta para o próprio site (`form-action 'self'`) e o login é uma navegação até o GitHub, não um formulário.
+
+**Verificação de segurança (03/11/2026, a pedido do usuário):**
+- **Bombas de descompressão:**
+  - O servidor não descompacta o corpo das requisições. Um gzip de 200 KB que se expandiria para 200 MB foi recusado em 10 ms, sem gasto de memória, e agora qualquer `Content-Encoding` é recusado explicitamente (415).
+  - Imagens de post com mais de 40 milhões de pixels ou 15 MB param o build. O `sharp` só lê o cabeçalho, nunca os pixels.
+  - O único corpo comprimido que o servidor lê é a resposta do GitHub no login, que tem prazo de 8 s.
+- **Corpo gigante:** antes, um envio de 60 MB era lido inteiro (cerca de 120 MB de memória a mais). Agora o corpo é recusado acima de 64 KB, antes de ler (pelo `Content-Length`) e durante a leitura (envio em partes). Aceita só formulário URL-encoded, sem multipart.
+- **XSS:** nome e comentário são sempre texto (React escapa). Um `<script>` enviado aparece escrito no painel e no post. Caracteres invisíveis e de direção da escrita são removidos, e o texto é normalizado (NFC). E-mails com caracteres que acrescentariam parâmetros a um link `mailto:` são recusados.
+- **Redirecionamentos:** só para endereços do próprio site (domínio de produção, URLs da Vercel, localhost). Um `Host` falsificado leva ao domínio oficial.
+- **Prompt injection:**
+  - Comentários são texto de visitantes. Uma regra no `CLAUDE.md` diz que nenhum assistente segue o que eles pedem nem aprova ou apaga comentários por conta própria.
+  - O painel marca com um aviso os textos que parecem ordens para uma IA ou spam de links. O aviso só informa: a decisão continua com o dono.
+  - **Risco que fica:** um comentário aprovado pode enganar a IA de quem lê a página, como um assistente que resume posts. A aprovação existe também para isso: não aprovar o que tem instruções escondidas (`GUIA.md`).
