@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 
 const KEY = 'privacy-notice';
+// Raised when the notice says something new (2: comments on the blog), so it shows again once.
+const VERSION = '2';
 
 /*
   A fixed note for first-time visitors: the site collects no personal data. Shown until it is
@@ -14,7 +16,7 @@ export function PrivacyNotice({ t }: { t: { label: string; text: string; dismiss
 
   useEffect(() => {
     let seen = false;
-    try { seen = localStorage.getItem(KEY) === '1'; } catch {}
+    try { seen = localStorage.getItem(KEY) === VERSION; } catch {}
     if (seen) return;
     // After the opening has started, so it never competes with the first paint.
     const timer = window.setTimeout(() => setState('shown'), 1400);
@@ -22,7 +24,7 @@ export function PrivacyNotice({ t }: { t: { label: string; text: string; dismiss
   }, []);
 
   const dismiss = () => {
-    try { localStorage.setItem(KEY, '1'); } catch {}
+    try { localStorage.setItem(KEY, VERSION); } catch {}
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) { setState('hidden'); return; }
     setState('leaving');

@@ -3,7 +3,8 @@
 Estado do que foi feito e do que está em andamento. Leia antes de continuar o trabalho no site ou no Tasks.
 
 **Agora:**
-- O blog está pronto na branch `feature/blog`, em PR. Detalhes na seção 4.
+- O blog está pronto na branch `feature/blog`, em PR (#8). Detalhes na seção 4.
+- Os comentários com aprovação estão na branch `feature/comentarios`, feita em cima do blog (seção 4b). Eles dependem de três configurações que o usuário faz na Vercel e no GitHub.
 - O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
 
 **Antes de mexer no código:**
@@ -135,8 +136,45 @@ O aviso "O Windows protegeu o computador" aparece porque o `.exe` não tem assin
 
 **Próximos passos:**
 1. O usuário revisa o PR no preview da Vercel e faz o merge.
-2. Escrever o primeiro post (sugestão: "Como o Tasks trata um arquivo em que não confia") e passar pela revisão do guia.
+2. Escrever o primeiro post. O tema é o que o usuário escolher; ele quer que o primeiro post seja dele. Depois, passar pela revisão do guia.
 3. Apagar o post de exemplo quando o primeiro post de verdade sair.
+
+## 4b. Comentários com aprovação (feito em 03/11/2026, branch `feature/comentarios`)
+
+**Pedido:** comentários nos artigos, que só aparecem depois que o dono aprova e que podem ser apagados.
+
+**Escolhas do usuário:**
+- banco Neon Postgres;
+- nome + comentário + e-mail opcional, que nunca aparece no site;
+- login com GitHub no painel;
+- sem aviso de comentário novo por e-mail.
+
+**O que foi feito** (decisões em `DESIGN.md` §15):
+- formulário no fim de cada post, que funciona sem JavaScript;
+- painel `/admin/comentarios`, com os botões Aprovar e Apagar;
+- proteção contra spam: campo escondido, limite por pessoa e teto de pendentes;
+- aviso de privacidade e selo "Seus dados em paz" reescritos nos três idiomas.
+
+**Verificado:**
+- `typecheck`, `build` e `verify` passam: sem banco, e com banco local e rascunhos.
+- Testado de ponta a ponta com o PGlite: envio válido e inválido, robô, outra origem, limite de envios, aprovar, apagar, painel sem login e ações sem sessão. No navegador, nos temas claro e escuro, sem erros.
+- **Não testado:** o login real com o GitHub e o Neon de verdade, que dependem das configurações abaixo.
+
+**Para ligar em produção** (o usuário faz; o Claude não cria contas):
+1. **Banco:** na Vercel, projeto → Storage → Create Database → Neon (plano gratuito) → ligar ao projeto nos ambientes Production e Preview. Isso cria a variável `DATABASE_URL`. A tabela é criada sozinha no primeiro comentário.
+2. **Login:** no GitHub, Settings → Developer settings → OAuth Apps → New OAuth App.
+   - Homepage URL: `https://www.connectionshub.com.br`
+   - Callback URL: `https://www.connectionshub.com.br/api/auth/github/callback`
+   - Copie o Client ID e gere um Client Secret.
+   - O callback só vale para esse domínio. Para logar num preview, crie um segundo OAuth App com a URL do preview.
+3. **Variáveis na Vercel:** Settings → Environment Variables, no ambiente Production:
+   - `GITHUB_CLIENT_ID`;
+   - `GITHUB_CLIENT_SECRET`;
+   - `ADMIN_GITHUB_LOGIN=FabioMarinhoDesenvolvedor`;
+   - `SESSION_SECRET`, gerado com `openssl rand -base64 48`.
+4. Fazer um redeploy e entrar em `/admin/comentarios`.
+
+**Desenvolvimento local:** `DATABASE_URL=pglite:./.pglite ADMIN_DEV_LOGIN=1 npm run dev`. O banco local fica em `.pglite/`, que está no `.gitignore`.
 
 ## 5. Próximo: refazer a seção Segurança
 
@@ -148,4 +186,5 @@ O aviso "O Windows protegeu o computador" aparece porque o `.exe` não tem assin
   - as duas trocaram a seção Soluções por engano.
   - Melhorar sem voltar a encher de lista técnica, e sem tocar em Soluções.
 - **Primeiro passo:** perguntar ao usuário o que falta (profundidade, interação, prova, visual) antes de propor. Uma ideia possível é ligar a seção a um post do blog com os detalhes técnicos, para manter a seção enxuta.
+- **Já mudou um pouco:** o texto do selo "Seus dados em paz" passou a ser "Sem rastreadores. Só fica guardado o que você escolhe escrever.", para continuar verdadeiro com os comentários.
 - **Fica para depois:** a página de segurança do Tasks e o README do repositório público, ideias do plano de 02/11, ainda sem pedido confirmado.

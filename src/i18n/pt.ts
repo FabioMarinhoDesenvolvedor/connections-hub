@@ -64,7 +64,7 @@ export const pt: Dictionary = {
     pillars: [
       { title: "Conexão cifrada", text: "HTTPS em todas as páginas." },
       { title: "Só o que é nosso", text: "Nada de scripts de terceiros nem páginas falsas por cima." },
-      { title: "Seus dados em paz", text: "Sem rastreadores e sem coleta." },
+      { title: "Seus dados em paz", text: "Sem rastreadores. Só fica guardado o que você escolhe escrever." },
     ],
   },
   solutions: {
@@ -345,7 +345,7 @@ export const pt: Dictionary = {
       },
     },
   },
-  privacy: { label: 'Privacidade', text: 'Este site não coleta dados pessoais. Não usamos cookies, rastreadores nem ferramentas de análise; só a sua escolha de tema e este aviso ficam salvos, no seu próprio navegador.', dismiss: 'Entendi' },
+  privacy: { label: 'Privacidade', text: 'Não usamos cookies, rastreadores nem ferramentas de análise. No seu navegador ficam só a escolha de tema e este aviso. Se você comentar num post, guardamos o nome, o comentário e o e-mail (se informar, nunca publicado) para moderar e responder; para apagar, escreva para contato@connectionshub.com.br.', dismiss: 'Entendi' },
   console: { signature: 'Design e código' },
   blog: {
     nav: 'Blog',
@@ -374,7 +374,19 @@ export const pt: Dictionary = {
     emptyLanguage: 'Ainda não há posts traduzidos para este idioma. Os originais estão em português.',
     readOriginal: 'Ler em português',
     alsoIn: 'Também em',
-    reply: { label: 'Conversa', text: 'Discordou, tem uma dúvida ou passou por algo parecido? Escreva para mim. As boas respostas podem virar um post.', email: 'Responder por e-mail', subject: 'Sobre o post: {title}' },
+    reply: { prefer: 'Prefere conversar em particular?', email: 'Responder por e-mail', subject: 'Sobre o post: {title}' },
+    comments: {
+      title: 'Comentários',
+      intro: 'Discordou, tem uma dúvida ou passou por algo parecido? Os comentários aparecem depois que eu aprovo.',
+      count: { one: '{n} comentário', other: '{n} comentários' },
+      empty: 'Nenhum comentário ainda.',
+      loading: 'Carregando os comentários…',
+      unavailable: 'Os comentários não puderam ser carregados agora.',
+      noscript: 'Ative o JavaScript para ler os comentários. O formulário funciona sem ele.',
+      form: { title: 'Deixe um comentário', name: 'Nome', email: 'E-mail (opcional, não aparece no site)', body: 'Comentário', send: 'Enviar para aprovação', note: 'O nome e o comentário aparecem no site depois de aprovados. O e-mail, se você informar, serve só para eu responder. Para apagar um comentário seu, escreva para {email}.' },
+      sent: 'Recebido! Seu comentário aparece aqui depois de aprovado.',
+      errors: { invalido: 'Confira o nome (até 60 caracteres) e o comentário (de 3 a 3.000 caracteres). Se informou um e-mail, ele precisa ser válido.', limite: 'Muitos comentários em pouco tempo. Tente de novo daqui a alguns minutos.', indisponivel: 'Não deu para guardar o comentário agora. Tente mais tarde.' },
+    },
     latest: { label: 'Blog', title: ['Do', 'blog.'], all: 'Ver todos os posts' },
   },
 };

@@ -92,6 +92,15 @@ No fim, no máximo três linhas sobre o post como um todo: o que está forte e o
 
 Depois da sua resposta, a revisão aplica só os itens aceitos e mostra o diff final.
 
+## Comentários
+
+- Cada post tem comentários no fim. Nenhum aparece sem a sua aprovação.
+- Para moderar, entre em `/admin/comentarios` com o GitHub. Lá os pendentes vêm primeiro:
+  - **Aprovar** publica na hora;
+  - **Apagar** remove de vez, seja pendente ou publicado.
+- Quem comentou pode pedir para apagar pelo e-mail de contato; o aviso de privacidade diz isso.
+- O e-mail de quem comenta aparece só para você, no painel.
+
 ## Voz e estilo
 
 Valem para você e para qualquer tradução:

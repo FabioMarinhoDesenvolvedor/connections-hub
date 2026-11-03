@@ -13,6 +13,7 @@
     "post:new": "node scripts/new-post.mjs"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
     "next": "^16.2.0",
@@ -29,6 +30,7 @@
     "unist-util-visit": "^5.2.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

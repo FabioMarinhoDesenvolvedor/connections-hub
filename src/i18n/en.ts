@@ -59,7 +59,7 @@ export const en: Dictionary = {
     pillars: [
       { title: "Encrypted connection", text: "HTTPS on every page." },
       { title: "Only our own code", text: "No third-party scripts, no fake pages on top." },
-      { title: "Your data left alone", text: "No trackers, no collection." },
+      { title: "Your data left alone", text: "No trackers. Only what you choose to write is kept." },
     ],
   },
   solutions: {
@@ -337,7 +337,7 @@ export const en: Dictionary = {
       },
     },
   },
-  privacy: { label: 'Privacy', text: 'This site does not collect personal data. We use no cookies, trackers or analytics; only your theme choice and this notice are saved, in your own browser.', dismiss: 'Got it' },
+  privacy: { label: 'Privacy', text: 'We use no cookies, trackers or analytics. Your browser keeps only your theme choice and this notice. If you comment on a post, we keep your name, the comment and your email (if given, never published) to moderate and reply; to delete it, write to contato@connectionshub.com.br.', dismiss: 'Got it' },
   console: { signature: 'Design and code' },
   blog: {
     nav: 'Blog',
@@ -366,7 +366,19 @@ export const en: Dictionary = {
     emptyLanguage: 'No posts have been translated into English yet. The originals are in Portuguese.',
     readOriginal: 'Read in Portuguese',
     alsoIn: 'Also in',
-    reply: { label: 'Conversation', text: 'Disagree, have a question or been through something similar? Write to me. Good replies may become a post.', email: 'Reply by email', subject: 'About the post: {title}' },
+    reply: { prefer: 'Rather talk in private?', email: 'Reply by email', subject: 'About the post: {title}' },
+    comments: {
+      title: 'Comments',
+      intro: 'Disagree, have a question or been through something similar? Comments appear once I approve them.',
+      count: { one: '{n} comment', other: '{n} comments' },
+      empty: 'No comments yet.',
+      loading: 'Loading comments…',
+      unavailable: 'Comments could not be loaded right now.',
+      noscript: 'Turn on JavaScript to read the comments. The form works without it.',
+      form: { title: 'Leave a comment', name: 'Name', email: 'Email (optional, never shown)', body: 'Comment', send: 'Send for approval', note: 'Your name and comment appear on the site once approved. Your email, if you give it, is only for me to reply. To delete a comment of yours, write to {email}.' },
+      sent: 'Received! Your comment will appear here once approved.',
+      errors: { invalido: 'Check the name (up to 60 characters) and the comment (3 to 3,000 characters). If you gave an email, it must be valid.', limite: 'Too many comments in a short time. Try again in a few minutes.', indisponivel: 'The comment could not be saved right now. Please try later.' },
+    },
     latest: { label: 'Blog', title: ['From', 'the blog.'], all: 'See all posts' },
   },
 };

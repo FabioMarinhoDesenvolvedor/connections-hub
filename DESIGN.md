@@ -294,3 +294,34 @@ Soluções voltou como era.
 **Menu:** ganha "Blog". Fora da home, os links das seções levam de volta a ela (`/#sobre`). O `AnchorJump` trata `/#sobre` como link interno quando já se está na home. O seletor de idioma, dentro do blog, leva ao blog do outro idioma.
 
 **Escrita e revisão:** `npm run post:new` cria o rascunho. `content/blog/GUIA.md` define o fluxo, o cabeçalho e as regras da revisão: o revisor aponta, com a menor correção em diff, e não reescreve nem muda a opinião. A regra também está no `CLAUDE.md`.
+
+## 15. Comentários com aprovação (03/11/2026)
+
+**Pedido:** comentários nos artigos, que só aparecem depois que o dono aprova e que podem ser apagados a qualquer momento.
+
+**Escolhas do usuário:** banco Neon Postgres (integração da Vercel); nome + comentário + e-mail opcional que nunca aparece; login com GitHub no painel; sem aviso por e-mail (o painel mostra os pendentes).
+
+**Como funciona:**
+- **Envio:** o formulário no fim do post é HTML puro e funciona sem JavaScript. Ele envia para `POST /api/comments`, e a resposta redireciona de volta ao post numa âncora (`#comentario-enviado` ou `#comentario-erro-…`) que o CSS revela com `:target`. A página do post continua estática.
+- **Leitura:** a lista dos aprovados é buscada no navegador (`GET /api/comments?post=…`, cache de 10 s). Por isso um comentário aprovado aparece e um apagado some sem rebuild do site. É o único JavaScript próprio da página do post. Nome e texto são exibidos como texto, nunca como HTML.
+- **Moderação:** `/admin/comentarios` mostra primeiro os pendentes. Os botões:
+  - **Aprovar:** publica o comentário;
+  - **Apagar:** um `DELETE` de verdade, para pendentes e publicados.
+
+  O painel é só em português, tem layout próprio e não é indexado.
+- **Login:** OAuth App do GitHub, sem escopo nenhum (só para saber quem é). Só a conta em `ADMIN_GITHUB_LOGIN` entra. A sessão é um cookie HttpOnly assinado com `SESSION_SECRET`, por 12 horas. É o único cookie do site, e só o dono o recebe. As ações exigem a sessão e a mesma origem.
+- **Spam, sem captcha de terceiros:**
+  - um campo escondido que só robôs preenchem: o comentário é descartado e o robô recebe "enviado";
+  - 3 envios por pessoa a cada 10 minutos;
+  - um teto de 300 pendentes.
+- **Privacidade:** o IP nunca é guardado, só um hash com chave (para o limite), e ele é apagado quando o comentário é aprovado. O aviso de privacidade e o selo "Seus dados em paz" foram reescritos para dizer o que é guardado quando alguém comenta. O aviso subiu de versão e aparece de novo uma vez.
+
+**Desenvolvimento local:**
+- `DATABASE_URL=pglite:./.pglite` roda um Postgres dentro do Node (PGlite, dependência de desenvolvimento), sem instalar nada.
+- `ADMIN_DEV_LOGIN=1` entra no painel sem GitHub, e só no `npm run dev`.
+
+**Pegadinhas:**
+- O PGlite precisa ficar fora do bundle (`serverExternalPackages`) e ter uma instância só por processo (em `globalThis`). O dev carrega páginas e rotas como grafos de módulos separados, e duas instâncias na mesma pasta viam dados diferentes.
+- No dev, `request.url` diz `localhost` mesmo quando o navegador usa `127.0.0.1`. Por isso os redirecionamentos e a checagem de origem usam o cabeçalho `Host` (ou `X-Forwarded-Host`).
+- As rotas que leem posts em tempo de execução precisam dos arquivos Markdown no deploy (`outputFileTracingIncludes`).
+- A CSP continua igual: tudo é da própria origem, o formulário posta para o próprio site (`form-action 'self'`) e o login é uma navegação até o GitHub, não um formulário.

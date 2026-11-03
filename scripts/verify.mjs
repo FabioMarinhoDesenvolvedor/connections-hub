@@ -101,4 +101,22 @@ if (process.env.BLOG_DRAFTS !== '1') {
   assert.equal((await fetch(origin + draft + '/capa.jpg')).status, 200, 'Post images are served next to the post');
 }
 
-console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, ${integrity}, PT/EN/JA routes and copy, theme boot, blog routes, feed and sitemap. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
+// Comments: the moderation panel is closed without the owner's session and never indexed;
+// the API refuses malformed requests and moderation without a session. A missing database
+// (no DATABASE_URL here) is reported as 503, never as an error page.
+const panel = await fetch(origin + '/admin/comentarios');
+assert.equal(panel.status, 200, 'Moderation panel answers');
+const panelHtml = await panel.text();
+assert.ok(panelHtml.includes('href="/api/auth/github"') && !panelHtml.includes('/api/admin/comments/'), 'Without a session the panel only offers sign-in');
+assert.match(panelHtml, /name="robots" content="noindex/, 'Moderation panel is not indexed');
+assert.equal((await fetch(origin + '/api/admin/comments/00000000-0000-0000-0000-000000000000', { method: 'POST', headers: { Origin: origin }, body: new URLSearchParams({ action: 'delete' }) })).status, 403, 'Moderation needs the owner');
+assert.equal((await fetch(origin + '/api/comments?post=..%2Fetc')).status, 400, 'Comment API rejects a malformed post id');
+assert.ok([200, 503].includes((await fetch(origin + '/api/comments?post=2026/11/03-exemplo-de-post')).status), 'Comment API answers (or says the database is not configured)');
+if (process.env.BLOG_DRAFTS === '1') {
+  const post = await (await fetch(origin + draft)).text();
+  assert.ok(post.includes('action="/api/comments"') && post.includes('name="website"'), 'Posts carry the comment form with its spam trap');
+  const foreign = await fetch(origin + '/api/comments', { method: 'POST', redirect: 'manual', headers: { Origin: 'https://example.com' }, body: new URLSearchParams({ post: '2026/11/03-exemplo-de-post', locale: 'pt', name: 'X', body: 'hello' }) });
+  assert.match(foreign.headers.get('location') || '', /#comentario-erro-invalido$/, 'A comment posted from another site is refused');
+}
+
+console.log(`Verified: metadata, headings, anchors, official contacts, asset HTTP responses, ${integrity}, PT/EN/JA routes and copy, theme boot, blog routes, feed and sitemap, comments and moderation guard. Initial script source: ${Math.round(transferred / 1024)} KiB uncompressed.`);
