@@ -1,7 +1,7 @@
 export type CodeLanguage = 'ts' | 'rust' | 'sql' | 'ruby' | 'glsl' | 'bash' | 'json';
 
 /*
-  A small syntax highlighter (used by the Security vault and the blog's code blocks): enough to
+  A small syntax highlighter (used by the blog's code blocks): enough to
   read TypeScript, Rust, SQL, Ruby, GLSL, shell and JSON the way an editor shows them. Colours are roles mapped to the brand palette
   in globals.css (.tk-*), never a third-party theme.
 */

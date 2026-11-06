@@ -111,7 +111,7 @@ function frame(view: { w: number; h: number }, size: Size, pitch: number, yaw: n
   return { fit, cx, cy };
 }
 
-export function Scene({ project, layer, node, focus, leaving, guided, labels, interfaceLabel, t, onLayer, onNode, onFocus, onManual, children, register }: {
+export function Scene({ project, layer, node, focus, leaving, guided, labels, sub, interfaceLabel, t, onLayer, onNode, onFocus, onManual, children, register }: {
   project: Project;
   layer: LayerId;
   node?: string;
@@ -121,6 +121,8 @@ export function Scene({ project, layer, node, focus, leaving, guided, labels, in
   /** A guided run is on: the visitor's own hand on the interface pauses it. */
   guided: boolean;
   labels: Record<LayerId, string>;
+  /** The technical name of each layer, shown before its stack. */
+  sub?: Record<LayerId, string>;
   interfaceLabel: string;
   t: Copy;
   onLayer: (layer: LayerId) => void;
@@ -525,7 +527,7 @@ export function Scene({ project, layer, node, focus, leaving, guided, labels, in
             </div>
             <button type="button" className="xp-tag" data-selected={selected || undefined} onClick={event => { event.stopPropagation(); choose(id, true); }} tabIndex={-1} aria-hidden="true">
               <span className="xp-tag-name"><span>{String(4 - i).padStart(2, '0')}</span>{id === 'interface' ? interfaceLabel : labels[id]}</span>
-              <span className="xp-tag-tech">{project.layers[id].tech.map(x => x.name).join(' · ')}</span>
+              <span className="xp-tag-tech">{[sub?.[id], ...project.layers[id].tech.map(x => x.name)].filter(Boolean).join(' · ')}</span>
             </button>
           </section>;
         })}

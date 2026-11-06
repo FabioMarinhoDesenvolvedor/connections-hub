@@ -102,8 +102,6 @@
   --button-fg: var(--off-white);
   --button-bg-hover: var(--ink);
   --figure-ink: var(--navy);
-  --dial-track: var(--mist);
-  --dial-arc: var(--navy);
   --outcome-bg: color-mix(in srgb, var(--sand) 45%, transparent);
   --bench: color-mix(in srgb, var(--sand) 32%, var(--off-white));
 }
@@ -136,8 +134,6 @@
   --button-fg: var(--navy);
   --button-bg-hover: var(--sand);
   --figure-ink: var(--sand);
-  --dial-track: color-mix(in srgb, var(--mist) 14%, transparent);
-  --dial-arc: var(--sand);
   --outcome-bg: color-mix(in srgb, var(--navy) 70%, transparent);
   --bench: #191D22;
 }

@@ -16,10 +16,10 @@ for (const label of ['Aplicação da identidade', 'Conhecimento como pilar centr
 for (const text of ['Conectando ideias.', 'Construindo soluções.', 'Tem um projeto, uma ideia ou um problema para resolver?']) assert.ok(html.includes(text), `Copy rendered as HTML: ${text}`);
 // Security: the section's claims are headers the site really sends.
 for (const [name, expected] of [['strict-transport-security', 'max-age='], ['content-security-policy', "frame-ancestors 'none'"], ['content-security-policy', "default-src 'self'"], ['x-content-type-options', 'nosniff'], ['x-frame-options', 'DENY'], ['referrer-policy', 'strict-origin-when-cross-origin'], ['permissions-policy', 'camera=()']]) assert.ok((page.headers.get(name) || '').includes(expected), `Security header ${name}: ${expected}`);
-assert.ok(html.includes('primeira linha.') && html.includes('frame-ancestors'), 'Security section rendered as HTML');
+for (const text of ['primeira linha.', 'Conexão cifrada', 'Wi-Fi do café', 'Site Connections Hub']) assert.ok(html.includes(text), `Security section rendered as HTML: ${text}`);
 assert.ok(!html.includes('class="code-term"'), 'The code terminal is gone (replaced by Security)');
 for (const step of ['Entendemos', 'Planejamos', 'Desenvolvemos', 'Implementamos']) assert.ok(html.includes(step), `Preserved process: ${step}`);
-for (const text of ['Código em uso.', 'Marketing Dashboard', 'WorkHub', 'WSN Loja', 'Tasks', '/api/cards/{id}/enviar-ao-cliente', 'card_approved_snapshots', 'Ver em ação', 'dados fictícios']) assert.ok(html.includes(text), `Projects rendered as HTML: ${text}`);
+for (const text of ['Código em uso.', 'Para quem', 'Onde guarda', 'Marketing Dashboard', 'WorkHub', 'WSN Loja', 'Tasks', '/api/cards/{id}/enviar-ao-cliente', 'card_approved_snapshots', 'Ver em ação', 'dados fictícios']) assert.ok(html.includes(text), `Projects rendered as HTML: ${text}`);
 for (const removed of ['Clozi', 'Cifra Pompeia', 'Tina Tur']) assert.ok(!html.includes(removed), `Project no longer shown: ${removed}`);
 assert.ok(html.includes('href="https://github.com/FabioMarinhoDesenvolvedor"'), 'GitHub profile linked');
 for (const photo of ['brand-office', 'brand-people', 'brand-technology']) assert.ok(!html.includes(photo), `No office or team mockup published: ${photo}`);

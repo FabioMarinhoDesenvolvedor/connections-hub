@@ -16,7 +16,7 @@ export type ExplorerItem = {
   status: ProjectStatus;
   statusLabel: string;
   history: string;
-  copy: { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] };
+  copy: { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[]; story: { for: string; challenge: string; built: string[] }; effects: Record<string, string> };
 };
 export type ExplorerCopy = {
   tabs: string; layers: Record<LayerId, string>; facts: Record<string, string>; hint: string; tryLabel: string;
@@ -26,6 +26,8 @@ export type ExplorerCopy = {
   roles: Record<InfraRole, string>; routes: string; columns: string; response: string; clickNode: string;
   play: { start: string; pause: string; resume: string; again: string; label: string; step: string };
   inspect: { request: string; service: string; data: string; effect: string; response: string };
+  story: { for: string; challenge: string; built: string; happened: string; idle: string };
+  plain: Record<LayerId, string>;
 };
 type Play = { state: 'idle' | 'playing' | 'paused' | 'done'; step: number };
 type Locale = 'pt' | 'en' | 'ja';
@@ -61,9 +63,11 @@ function Count({ value }: { value: number }) {
 }
 
 /*
-  The projects, one at a time: tabs choose the project, the scene takes it apart, the panel
-  says what each layer is made of. Choosing a layer or a node in either place opens it in
-  the other; using the interface sends a request down the stack and the panel spells it out.
+  The projects, one at a time:
+  the scene takes each one apart into its stack, named in plain words, and the panel tells
+  who it is for, the challenge and what was built, then what each layer is made of. Choosing a
+  layer or a node in either place opens it in the other; using the interface sends a request
+  down the stack, says in one sentence what it did, and the panel spells out the request.
 */
 export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerItem[]; t: ExplorerCopy; hero: Record<Locale, HeroCopy>; locale: Locale }) {
   const [current, setCurrent] = useState(0);
@@ -71,6 +75,7 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
   const [layer, setLayer] = useState<LayerId>('interface');
   const [picked, setPicked] = useState<{ layer: LayerId; node: Node } | null>(null);
   const [focus, setFocus] = useState(false);
+  const [happened, setHappened] = useState<{ text: string; at: number }[]>([]);
   const [trace, setTrace] = useState<{ flow: Flow; at: number } | null>(null);
   const scene = useRef<SceneHandle | null>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -78,6 +83,8 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
   const [play, setPlay] = useState<Play>({ state: 'idle', step: -1 });
   const [miniKey, setMiniKey] = useState(0);
   const runId = useRef(0);
+  /** The visitor has used an interface by hand. */
+  const used = useRef(false);
   const doneStep = useRef(-1);
   const item = items[current];
   const { project, copy } = item;
@@ -92,7 +99,7 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
     }
     clearTimeout(swap.current);
     runId.current++;
-    const reset = () => { setCurrent(index); setLayer('interface'); setPicked(null); setFocus(false); setTrace(null); setLeaving(false); setPlay({ state: 'idle', step: -1 }); };
+    const reset = () => { setCurrent(index); setLayer('interface'); setPicked(null); setFocus(false); setTrace(null); setHappened([]); setLeaving(false); setPlay({ state: 'idle', step: -1 }); };
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { reset(); return; }
     setLeaving(true);
     swap.current = window.setTimeout(reset, SWAP);
@@ -122,7 +129,11 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
     const route = project.flows[flow];
     if (!route) return;
     const request = filled(route, values);
-    setTrace({ flow: request, at: performance.now() });
+    const at = performance.now();
+    setTrace({ flow: request, at });
+    if (playRef.current !== 'playing') used.current = true;
+    const said = copy.effects[flow];
+    if (said) setHappened(list => [{ text: said, at }, ...list].slice(0, 4));
     scene.current?.run(request, from);
     // A card that moves column is a new element: keyboard focus follows it to its next control.
     if (document.activeElement === from && from.dataset.id) {
@@ -133,7 +144,7 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
         (scene.current?.find(`[data-id="${CSS.escape(id)}"]`) ?? scene.current?.find('[data-flow]:not(:disabled)'))?.focus({ preventScroll: true });
       });
     }
-  }, [project]);
+  }, [project, copy]);
 
   // The guided run: the brand's ring works the live interface, one step at a time, and the
   // stack and the inspector answer each step as they would a visitor.
@@ -182,6 +193,7 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
     setLayer('interface');
     setPicked(null);
     setTrace(null);
+    setHappened([]);
     setPlay({ state: 'playing', step: 0 });
     await sleep(500);
     if (runId.current === id) perform(0, id);
@@ -201,6 +213,24 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
     return () => observer.disconnect();
   }, [play.state, pausePlay]);
   useEffect(() => { if (focus) pausePlay(); }, [focus, pausePlay]);
+  // The first time the bench is well in view, the project shows itself working: the guided run
+  // starts on its own, unless the visitor has already put a hand on the interface.
+  const startRef = useRef(startPlay);
+  startRef.current = startPlay;
+  const playRef = useRef(play.state);
+  playRef.current = play.state;
+  useEffect(() => {
+    const el = stage.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let timer = 0;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.intersectionRatio < 0.5) return;
+      observer.disconnect();
+      timer = window.setTimeout(() => { if (playRef.current === 'idle' && !used.current) startRef.current(); }, 1800);
+    }, { threshold: [0, 0.5] });
+    observer.observe(el);
+    return () => { observer.disconnect(); window.clearTimeout(timer); };
+  }, []);
   const chooseLayer = (id: LayerId) => { setLayer(id); setPicked(current => current?.layer === id ? current : null); };
   const chooseNode = (id: LayerId, node: Node) => { setLayer(id); setPicked({ layer: id, node }); };
   const labelOf = (id: LayerId, name?: string) => project.layers[id].nodes.find(n => n.id === name)?.label ?? name;
@@ -242,8 +272,9 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
         node={picked?.node.id}
         focus={focus}
         leaving={leaving}
-        labels={t.layers}
-        interfaceLabel={t.layers.interface}
+        labels={t.plain}
+        interfaceLabel={t.plain.interface}
+        sub={t.layers}
         t={{ more: t.more, roles: t.roles, routes: t.routes, columns: t.columns, reset: t.reset, back: t.back }}
         onLayer={chooseLayer}
         onNode={chooseNode}
@@ -252,6 +283,7 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
         onManual={pausePlay}
         register={register}
       >{mini}</Scene>
+      {happened[0] && play.state !== 'playing' && <p key={happened[0].at} className="xp-said" aria-hidden="true"><span className="point" />{happened[0].text}</p>}
       <div className="xp-player" data-state={play.state}>
         <button type="button" className="button button-primary button-small xp-play" onClick={() => play.state === 'playing' ? pausePlay() : play.state === 'paused' ? resumePlay() : startPlay()}>
           <span className="xp-play-icon" data-icon={play.state === 'playing' ? 'pause' : play.state === 'done' ? 'again' : 'play'} aria-hidden="true" />
@@ -278,6 +310,14 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
         <h3>{project.name}</h3>
         <p className="xp-summary">{copy.summary}</p>
       </header>
+      <dl className="xp-brief" key={`brief-${project.id}`}>
+        <div><dt>{t.story.for}</dt><dd>{copy.story.for}</dd></div>
+        <div><dt>{t.story.challenge}</dt><dd>{copy.story.challenge}</dd></div>
+      </dl>
+        <div className="xp-built" key={`built-${project.id}`}>
+          <p className="xp-built-title">{t.story.built}</p>
+          <ul>{copy.story.built.map(entry => <li key={entry}><svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" /></svg>{entry}</li>)}</ul>
+        </div>
       <dl className="xp-facts" key={`facts-${project.id}`}>
         {project.facts.map(fact => <div key={fact.id}><dd><Count value={fact.value} /></dd><dt>{t.facts[fact.id]}</dt></div>)}
       </dl>
@@ -295,7 +335,7 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
         </div>
       </div>}
       <footer className="xp-foot">
-        <button type="button" className="button button-secondary button-small" aria-pressed={focus} onClick={() => setFocus(f => !f)}>{focus ? t.back : `${t.front} · ${t.layers[layer]}`}</button>
+        <button type="button" className="button button-secondary button-small" aria-pressed={focus} onClick={() => setFocus(f => !f)}>{focus ? t.back : `${t.front} · ${t.plain[layer]}`}</button>
         <p className="xp-history">{item.history}</p>
         {project.repo
           ? <a className="text-link" href={project.repo} target="_blank" rel="noopener noreferrer">{t.repo}<span className="sr-only"> {t.newTab}</span><Arrow /></a>
@@ -304,6 +344,12 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
       </div>
 
       <div className="xp-panel-side">
+        <div className="xp-happened" aria-live="polite">
+          <p className="xp-happened-title">{t.story.happened}</p>
+          {happened.length
+            ? <ol>{happened.map((entry, i) => <li key={entry.at} data-latest={i === 0 || undefined}>{entry.text}</li>)}</ol>
+            : <p className="xp-happened-idle">{t.story.idle}</p>}
+        </div>
 
       <ol className="xp-layers">
         {layerIds.map((id, i) => {
@@ -312,8 +358,8 @@ export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerIte
           return <li key={id} data-open={open || undefined}>
             <button type="button" className="xp-layer" aria-expanded={open} aria-controls={`camada-${project.id}-${id}`} onClick={() => chooseLayer(id)}>
               <span className="xp-layer-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              <span className="xp-layer-name">{t.layers[id]}</span>
-              <span className="xp-layer-tech">{project.layers[id].tech.map(x => x.name).join(' · ')}</span>
+              <span className="xp-layer-name">{t.plain[id]}</span>
+              <span className="xp-layer-tech">{[t.layers[id], ...project.layers[id].tech.map(x => x.name)].join(' · ')}</span>
             </button>
             <div className="xp-layer-body" id={`camada-${project.id}-${id}`} hidden={!open}>
               <p>{copy.layers[id]}</p>

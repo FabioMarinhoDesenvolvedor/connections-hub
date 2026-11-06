@@ -13,6 +13,7 @@ export const pt: Dictionary = {
     tagline: 'Conectando ideias. Construindo soluções.',
     socialAlt: 'Identidade visual Connections Hub',
   },
+  footer: {"statement": ["Conectando ideias.", "Construindo soluções."], "lead": "Sites, sistemas, dashboards e e-commerces sob medida, do primeiro problema à implantação.", "site": "Site", "solutions": "Soluções", "contact": "Contato", "top": "Voltar ao topo", "privacy": "Sem cookies e sem rastreadores.", "made": "Feito pela Connections Hub, com código aberto no GitHub.", "language": "Idioma"},
   ui: {
     skip: 'Pular para o conteúdo',
     home: 'Connections Hub, início',
@@ -59,11 +60,43 @@ export const pt: Dictionary = {
   security: {
     label: "Segurança",
     title: ["Seguro", "desde a primeira linha."],
-    lead: "Todo site da Connections Hub já nasce protegido. Este aqui é a prova: veja o próprio código dele ser criptografado.",
-    vault: { protect: "Proteger", again: "Ver de novo", code: "Código", sealed: "Protegido", area: "O código de segurança deste site sendo criptografado, em 3D." },
+    lead: "Todo site da Connections Hub já nasce protegido contra os golpes mais comuns da internet. Escolha um e veja a diferença entre um site comum e um nosso.",
+    shield: {
+      modes: { open: "Site comum", safe: "Site Connections Hub" },
+      replay: "Ver de novo",
+      area: "Demonstração: o mesmo golpe num site comum e num site da Connections Hub.",
+      address: "connectionshub.com.br",
+      insecure: "Não seguro",
+      wire: {
+        you: "Você", wifi: "Wi-Fi do café", spy: "Curioso na rede", site: "O site",
+        message: "Oi! Meu telefone é (11) 98765-4321",
+        field: "Escreva uma mensagem", send: "Enviar",
+        reads: "Ele leu:", sees: "Ele vê:", confused: "Não dá pra entender nada.",
+        received: "Mensagem recebida",
+        open: "Num site comum, quem está na mesma rede lê tudo o que você envia.",
+        safe: "Aqui a mensagem viaja trancada. No caminho vira embaralhado; só o site consegue abrir.",
+      },
+      inject: {
+        threats: ["Script de outro site", "Anúncio injetado", "Página falsa"],
+        effects: ["Você ganhou um prêmio!", "Anúncio: clique aqui", "Confirme sua senha"],
+        password: "Senha", enter: "Entrar",
+        blocked: "Barrado", count: "3 de 3 barrados",
+        open: "Num site comum, código de fora entra e muda a página que você vê, até com tela falsa pedindo senha.",
+        safe: "Aqui o site só aceita o próprio código. Todo o resto é barrado na porta.",
+      },
+      track: {
+        trackers: ["Pixel de anúncios", "Rede social", "Análise de terceiros"],
+        profile: "O que sabem de você",
+        facts: ["Entrou às 14:32, pelo celular", "Está em São Paulo", "Quer criar um site", "Chegou por um anúncio"],
+        empty: "Nada. Ninguém de fora soube que você passou aqui.",
+        none: "Nenhum rastreador",
+        open: "Num site comum, várias empresas anotam o que você faz e montam um perfil seu.",
+        safe: "Aqui não tem rastreador nenhum. Sua visita é só sua.",
+      },
+    },
     pillars: [
-      { title: "Conexão cifrada", text: "HTTPS em todas as páginas." },
-      { title: "Só o que é nosso", text: "Nada de scripts de terceiros nem páginas falsas por cima." },
+      { title: "Conexão cifrada", text: "O que você digita viaja trancado. Ninguém no caminho consegue ler." },
+      { title: "Só o que é nosso", text: "Código de fora, anúncio injetado e página falsa ficam de fora." },
       { title: "Seus dados em paz", text: "Sem rastreadores. Só fica guardado o que você escolhe escrever." },
     ],
   },
@@ -71,7 +104,8 @@ export const pt: Dictionary = {
     label: 'Soluções',
     title: ['Do problema', 'à solução.'],
     intro: 'Quatro frentes de trabalho, definidas com você a partir do que a operação precisa. Um mesmo projeto pode combinar mais de uma.',
-    figure: 'Fig.',
+    modes: { problem: 'O problema', solution: 'A solução', label: 'Ver o problema ou a solução' },
+    replay: 'Ver de novo',
     solvesLabel: 'Resolve',
     includesLabel: 'Pode incluir',
     items: {
@@ -80,7 +114,7 @@ export const pt: Dictionary = {
         summary: 'Presença institucional que explica com clareza o que a sua empresa faz e facilita o primeiro contato.',
         solves: 'Empresas difíceis de encontrar, ou encontradas sem conseguir mostrar o que oferecem.',
         cta: 'Conversar sobre sites',
-        figure: { title: 'Composição de front-end', caption: 'Um layout, todas as telas: os mesmos componentes reorganizados do desktop ao celular, com o contato sempre à mão.' },
+        result: 'Quem procura encontra a sua empresa, entende o que ela faz e fala com você em um toque, no computador ou no celular.',
         includes: ['Site institucional e páginas de serviço', 'Estrutura e conteúdo preparados para buscadores', 'Formulários e contato direto pelo WhatsApp', 'Gerenciamento de conteúdo', 'Publicação, domínio e métricas de acesso'],
       },
       sistemas: {
@@ -88,7 +122,7 @@ export const pt: Dictionary = {
         summary: 'Software para os processos internos que a operação usa todos os dias: cadastros, pedidos, estoque, financeiro.',
         solves: 'Processos espalhados em planilhas, retrabalho e informações que dependem de uma única pessoa.',
         cta: 'Conversar sobre sistemas e ERP',
-        figure: { title: 'Processos integrados', caption: 'Cada área da empresa conectada a uma base de dados única, com acesso por perfil e integração ao que já existe.' },
+        result: 'Tudo num sistema só: cada área vê os mesmos dados, e o que muda num lugar se atualiza em todos.',
         includes: ['Módulos sob medida para cada área', 'Perfis de acesso e permissões', 'Integração com sistemas e planilhas existentes', 'Relatórios e exportação de dados', 'Migração de dados e implantação acompanhada'],
       },
       dashboards: {
@@ -96,7 +130,7 @@ export const pt: Dictionary = {
         summary: 'Os indicadores da operação reunidos em um só lugar, atualizados a partir dos seus próprios dados.',
         solves: 'Decisões tomadas sem números confiáveis, ou relatórios que levam dias para serem montados.',
         cta: 'Conversar sobre dashboards',
-        figure: { title: 'Dos dados à decisão', caption: 'Fontes de dados tratadas e reunidas em indicadores, com metas que mostram onde agir.' },
+        result: 'Os números da operação na tela, atualizados sozinhos, mostrando onde agir.',
         includes: ['Definição dos indicadores com a sua equipe', 'Conexão com sistemas, bancos de dados e planilhas', 'Atualização automática', 'Filtros por período, unidade ou responsável', 'Acesso no computador e no celular'],
       },
       ecommerce: {
@@ -104,15 +138,41 @@ export const pt: Dictionary = {
         summary: 'Lojas virtuais para apresentar produtos, receber pedidos e vender online com uma operação organizada por trás.',
         solves: 'Vendas que dependem só do atendimento manual ou de canais de terceiros.',
         cta: 'Conversar sobre e-commerces',
-        figure: { title: 'Da vitrine ao pedido', caption: 'Do catálogo ao pedido, com pagamento, frete e estoque integrados à operação.' },
+        result: 'A loja vende a qualquer hora: o cliente escolhe, paga, e o pedido já chega com o estoque atualizado.',
         includes: ['Catálogo, carrinho e checkout', 'Meios de pagamento e cálculo de frete', 'Gestão de pedidos e estoque', 'Integração com o sistema da empresa', 'Páginas preparadas para buscadores e campanhas'],
       },
     },
-    schematic: {
-      sites: { nav: 'NAV', hero: 'HERO', sections: 'SEÇÕES', contact: 'CONTATO' },
-      sistemas: { modules: ['PEDIDOS', 'ESTOQUE', 'FATURAMENTO', 'FINANCEIRO'], profiles: 'PERFIS DE ACESSO', database: 'BASE DE DADOS ÚNICA', sheets: 'PLANILHAS · SISTEMA ATUAL', reports: 'RELATÓRIOS · EXPORTAÇÃO', integration: 'integração' },
-      dashboards: { sources: ['ERP', 'PLANILHAS', 'BANCO DE DADOS'], processing: 'TRATAMENTO', period: 'PERÍODO', unit: 'UNIDADE', target: 'META', decision: 'decisão' },
-      ecommerce: { flow: ['CATÁLOGO', 'CARRINHO', 'CHECKOUT', 'PAGAMENTO', 'PEDIDO', 'ESTOQUE · ERP'], add: 'ADICIONAR', checkout: 'CHECKOUT', payment: 'PAGAMENTO', shipping: 'FRETE', total: 'TOTAL', finish: 'FINALIZAR' },
+    scenes: {
+      sites: {
+        query: 'clínica veterinária perto de mim',
+        results: [{ name: 'Clínica Bicho Feliz', url: 'bichofeliz.com.br' }, { name: 'VetCenter 24 horas', url: 'vetcenter24h.com.br' }, { name: 'Pet & Cia Veterinária', url: 'petecia.vet.br' }],
+        missing: 'Sua clínica não aparece', leads: 'contatos pelo site esta semana',
+        domain: 'vetamigo.com.br', rank: '1º na busca', cta: 'Agendar consulta',
+        toast: 'Novo contato pelo site', toastText: 'Quero agendar uma consulta para sábado.',
+      },
+      sistemas: {
+        files: ['pedidos_FINAL_v3.xlsx', 'estoque (2).xlsx', 'financeiro-maria.xlsx', 'clientes_antigo.xlsx'],
+        stock: 'Estoque', conflict: 'Qual está certo?', note: 'Só a Maria sabe atualizar', rework: 'O mesmo pedido digitado 3 vezes',
+        modules: ['Pedidos', 'Estoque', 'Faturamento', 'Financeiro'], orders: 'Pedidos de hoje',
+        rows: ['#1042 · Mercado Central', '#1043 · Padaria Sol', '#1044 · Loja Bela'], statuses: ['Novo', 'Separado', 'Faturado'],
+        stockLabel: 'Estoque · Tinta 18 L', team: ['Vendas', 'Estoque', 'Financeiro'], shared: 'Todos veem os mesmos números', toast: 'Estoque baixou sozinho',
+      },
+      dashboards: {
+        ask: 'Quanto vendemos este mês?', answer: 'Vou juntar as planilhas. Fica pronto em 3 dias.', days: ['Seg', 'Ter', 'Qua'],
+        waiting: 'Esperando o relatório', unknown: 'Vendas do mês',
+        title: 'Vendas', period: 'Este mês', unit: 'Todas as unidades', live: 'Atualizado agora',
+        kpis: [{ label: 'Faturamento', prefix: 'R$ ', value: 248, suffix: ' mil' }, { label: 'Pedidos', prefix: '', value: 312, suffix: '' }, { label: 'Da meta', prefix: '', value: 92, suffix: '%' }],
+        trend: 'Vendas por dia', target: 'Meta', units: ['Centro', 'Norte', 'Sul', 'Leste'], act: 'Sul abaixo da meta',
+      },
+      ecommerce: {
+        inbox: 'Conversas', unread: '12 não lidas',
+        messages: [{ text: 'Tem no tamanho M?', time: '23:12' }, { text: 'Qual o frete pra Curitiba?', time: '23:20' }, { text: 'Ainda tem a azul?', time: '23:31' }, { text: 'Oi??', time: '23:40' }],
+        away: 'Resposta só amanhã, às 9h', lost: 'clientes desistiram esta noite',
+        product: 'Camiseta básica azul', price: 'R$ 79,90', sizes: ['P', 'M', 'G'], add: 'Adicionar ao carrinho',
+        shipping: 'Frete · Curitiba', shippingValue: 'R$ 18,00', total: 'Total', totalValue: 'R$ 97,90', pay: 'Pix', paid: 'Pagamento aprovado',
+        order: 'Pedido #1042 pago', orderTime: '23:41 · enquanto você dormia', stock: 'Estoque M: 8 → 7',
+        flow: ['Catálogo', 'Carrinho', 'Checkout', 'Pagamento', 'Pedido', 'Estoque'],
+      },
     },
   },
   // Step names preserved verbatim from the process post.
@@ -127,6 +187,7 @@ export const pt: Dictionary = {
       { title: 'Desenvolvemos', text: 'Construímos e testamos em ciclos curtos, com entregas que você vê e revisa durante o caminho.', outcome: 'Versões funcionais para validar antes da entrega final.' },
       { title: 'Implementamos', text: 'Colocamos o projeto em uso, orientamos quem vai operar e acompanhamos os primeiros passos.', outcome: 'Projeto em funcionamento e acompanhamento na implantação.' },
     ],
+    journey: {"label": "As quatro etapas", "prev": "Etapa anterior", "next": "Próxima etapa", "pause": "Pausar", "play": "Continuar", "toasts": ["Você recebeu: o diagnóstico do problema", "Você aprovou o plano do projeto", "Nova versão pronta para você testar", "Projeto em uso. Seguimos acompanhando."], "understand": {"call": "Primeira conversa", "you": "Você", "us": "Connections Hub", "said": ["Os agendamentos chegam pelo WhatsApp e se perdem.", "Quem marca hoje? E onde isso fica anotado?"], "board": "O que descobrimos", "notes": ["Agenda em papel", "Clientes só no WhatsApp", "Recepção refaz tudo"], "doc": "Diagnóstico", "docLines": ["O problema", "Os objetivos", "Quem vai usar"]}, "plan": {"title": "Plano do projeto", "must": "Essencial", "later": "Depois", "items": ["Agenda online", "Lembrete pelo WhatsApp", "Relatórios do mês"], "timeline": "Etapas", "phases": ["Agenda", "Lembretes", "Ajustes e implantação"], "why": "Por que a agenda primeiro? É onde a clínica perde mais clientes."}, "build": {"versions": ["v0.1", "v0.2", "v1.0"], "comment": "Dá pra mostrar o telefone do tutor aqui?", "done": "Feito na v0.2", "title": "Agenda de hoje", "slots": ["09:00 · Thor · banho", "10:30 · Luna · consulta", "14:00 · Mel · vacina"]}, "launch": {"live": "No ar", "agenda": "Agenda de hoje", "bookings": ["09:00 · Thor", "10:30 · Luna", "14:00 · Mel", "16:30 · Bob"], "checks": ["Equipe treinada", "Dados migrados"], "ask": "Como remarco um horário?", "answer": "É só arrastar. Te mostro agora."}},
   },
   // Contact story post (its three questions, joined into one invitation).
   contact: {
@@ -137,13 +198,14 @@ export const pt: Dictionary = {
     whatsapp: 'WhatsApp',
     email: 'E-mail',
     phone: 'Ou ligue:',
+    form: {"need": "O que você precisa?", "kinds": ["Site", "Sistema ou ERP", "Dashboard", "E-commerce", "Ainda não sei"], "topics": ["um site", "um sistema ou ERP", "um dashboard", "um e-commerce"], "about": "Conte em poucas palavras", "placeholder": "Ex.: quero que meus clientes agendem pelo site.", "name": "Seu nome", "optional": "opcional", "preview": "Sua mensagem", "hello": "Olá!", "helloNamed": "Olá! Sou {name}.", "want": "Quero conversar sobre {topic}.", "unsure": "Ainda não sei bem do que preciso e quero conversar.", "whatsapp": "Enviar pelo WhatsApp", "email": "Enviar por e-mail", "subject": "Contato pelo site", "note": "Nada é enviado por este site: a mensagem abre no seu WhatsApp ou e-mail, para você revisar antes de mandar."},
   },
-  sticker: { peel: 'Descolar o adesivo da Connections Hub', found: 'Você achou o adesivo.', role: 'Design e desenvolvimento deste site', back: 'Colar de volta' },
+  sticker: {"flip": "Virar o adesivo da Connections Hub", "hint": "Um adesivo pra você. Passe o mouse e clique para virar.", "found": "Você achou o verso.", "role": "Design e desenvolvimento deste site", "back": "Virar de volta"},
   // Facts from the repositories (src/data/projects.ts). No usage numbers: none were measured.
   projects: {
     label: 'Projetos',
     title: ['Código em uso.', 'Aberto por dentro.'],
-    intro: 'Cada projeto desmontado na stack em que foi construído. Use a interface: cada ação desce pelas camadas até o banco e os serviços de fora. Clique numa camada para ver o que roda nela.',
+    intro: "Cada projeto desmontado em camadas, funcionando. Use a interface e veja cada ação descer até onde os dados ficam guardados, explicada em uma frase. Ao lado, para quem ele é e o problema que resolve.",
     status: {
       live: 'Em produção',
       staging: 'Em homologação',
@@ -213,6 +275,8 @@ export const pt: Dictionary = {
     privateOwn: 'Código privado',
     github: 'Repositórios no GitHub',
     note: 'Interfaces reconstruídas a partir do design de cada sistema, com dados fictícios. Módulos, rotas e tabelas têm os nomes que estão no código.',
+    story: {"for": "Para quem", "challenge": "O desafio", "built": "O que construímos", "happened": "O que acabou de acontecer", "idle": "Clique em algo na interface acima. Cada ação aparece aqui, em palavras simples."},
+    plain: {"interface": "O que você vê", "services": "O que processa", "data": "Onde guarda", "infra": "Com quem conversa"},
     items: {
       marketing: {
         kind: 'Plataforma de gestão',
@@ -241,6 +305,8 @@ export const pt: Dictionary = {
           webpush: 'Avisa equipe e cliente no celular quando algo muda de etapa.',
         },
         steps: ['A equipe envia o post ao cliente. O card muda de lista e o cliente recebe um aviso no celular.', 'O cliente aprova. O sistema guarda um retrato do card como foi aprovado.', 'Aprovado, o post é programado para cada rede de destino.', 'O próximo post já começa o mesmo caminho.'],
+        story: {"for": "Equipes de marketing que atendem vários clientes.", "challenge": "Muitos posts, de muitos clientes, cada um esperando uma aprovação. Sem um lugar só, o que foi aprovado, e quando, se perde.", "built": ["Quadros de trabalho para cada cliente, de arrastar e soltar", "O cliente aprova o post dentro do sistema, e a aprovação fica registrada como foi feita", "Aviso no celular quando um post muda de etapa", "Um painel com todos os clientes juntos"]},
+        effects: {"send": "O post foi para o cliente aprovar, e ele recebeu um aviso no celular.", "approve": "O cliente aprovou. A aprovação ficou guardada exatamente como foi feita.", "schedule": "Aprovado, o post foi programado para as redes do cliente."},
       },
       workhub: {
         kind: 'Sistema interno',
@@ -268,6 +334,8 @@ export const pt: Dictionary = {
           smtp: 'Avisos de chamado por e-mail.',
         },
         steps: ['Um técnico assume o chamado do Wi-Fi. A mudança de status entra no histórico e o solicitante é avisado.', 'Resolvido dentro do SLA de expediente.', 'Uma requisição de material baixa os cabos do estoque de TI.', 'Entregue o material, o chamado é encerrado.'],
+        story: {"for": "Os setores de um clube esportivo, do TI ao administrativo.", "challenge": "Chamados, estoque, contratos e agenda em lugares diferentes, sem saber o que está atrasado nem quem fez o quê.", "built": ["Chamados de TI com prazo que conta só o horário de expediente", "Estoque, contratos, agenda e newsletter no mesmo sistema", "Agenda ligada ao Outlook e avisos por e-mail", "Histórico de cada mudança e registro das ações sensíveis"]},
+        effects: {"assign": "Um técnico assumiu o chamado, e quem abriu foi avisado por e-mail.", "resolve": "Chamado resolvido dentro do prazo de expediente.", "material": "O material foi entregue e saiu do estoque de TI sozinho."},
       },
       wsn: {
         kind: 'E-commerce',
@@ -294,6 +362,8 @@ export const pt: Dictionary = {
           stripe: 'Pagamento com cartão, pronto para ativar.',
         },
         steps: ['Um cliente põe papel toalha no carrinho.', 'Mais um pacote.', 'E outro: faltam poucos reais para o frete grátis.', 'Passou de R$ 299: a promoção do Solidus zera o frete.', 'Finaliza a compra: o pagamento é criado e segue para o Stripe.'],
+        story: {"for": "Uma distribuidora de EPIs, limpeza, descartáveis e embalagens.", "challenge": "Transformar o catálogo do site institucional numa loja em que o cliente compra sozinho, a qualquer hora.", "built": ["60 produtos importados do catálogo do site", "Carrinho com frete grátis acima de R$ 299", "Pagamento com cartão, pronto para ativar", "Atendimento pelo WhatsApp a um toque"]},
+        effects: {"add": "O produto entrou no carrinho, e o total foi recalculado.", "shipping": "Passou de R$ 299: o frete ficou grátis sozinho.", "checkout": "Compra finalizada: o pagamento foi criado e segue para o cartão."},
       },
       tasks: {
         kind: 'Aplicativo desktop',
@@ -318,6 +388,8 @@ export const pt: Dictionary = {
           nsis: 'Instalador com atalhos no menu Iniciar.',
         },
         steps: ['Uma frase vira tarefa: “amanhã”, “!alta” e “#casa” saem do próprio texto.', 'Movida no quadro, a nova ordem é gravada no SQLite local.', 'Backup pela API do próprio SQLite, conferido antes de qualquer restauração.'],
+        story: {"for": "Quem organiza o próprio trabalho no Windows.", "challenge": "Um gerenciador de tarefas que funcione sem internet e sem conta, com os dados guardados no próprio computador.", "built": ["Escreva “amanhã !alta #casa” e a tarefa já nasce com data, prioridade e projeto", "Quadro, lista, calendário e foco do dia", "Cinco temas e atalhos de teclado", "Backup conferido antes de restaurar"]},
+        effects: {"create": "A frase virou tarefa: a data, a prioridade e o projeto saíram do próprio texto.", "move": "A tarefa mudou de coluna, e isso foi salvo no seu computador.", "backup": "Backup feito e conferido, sem usar a internet."},
       },
       connections: {
         kind: 'Site institucional',
@@ -342,6 +414,8 @@ export const pt: Dictionary = {
           github: 'Repositório público.',
         },
         steps: ['O site em inglês: outra rota, gerada no build.', 'E em japonês, com o mesmo conteúdo tipado.', 'O tema troca a página inteira, e os sistemas acima trocam junto.', 'E volta.', 'De volta ao português.'],
+        story: {"for": "A própria Connections Hub.", "challenge": "Um site que mostre o trabalho em vez de só falar dele, em três idiomas, rápido e seguro.", "built": ["O símbolo da marca em 3D na abertura", "Português, inglês e japonês, com tema claro e escuro", "Os projetos funcionando dentro da página", "Sem rastreadores, e com o código aberto"]},
+        effects: {"pt": "O site voltou ao português, com o mesmo conteúdo.", "en": "O site mudou para inglês, com o mesmo conteúdo.", "ja": "O site mudou para japonês, com o mesmo conteúdo.", "theme": "O tema mudou a página inteira de uma vez."},
       },
     },
   },

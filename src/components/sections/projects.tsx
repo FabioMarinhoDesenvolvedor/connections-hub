@@ -7,8 +7,8 @@ import { getDictionary, type Dictionary, type Locale } from '@/i18n';
 const fill = (template: string, values: Record<string, string | number>) => template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ''));
 
 /*
-  04 — Projects, opened up. Each project is taken apart into the stack it was built on,
-  with its interface live on top (src/components/projects). Facts come from the
+  04 — Projects, opened up. Each project is taken apart into the stack it was built on, with
+  its interface live on top and its story in plain words beside it (src/components/projects). Facts come from the
   repositories (src/data/projects.ts); no usage numbers are published because none were
   measured.
 */
@@ -38,7 +38,7 @@ export function Projects({ t, ui, locale, lang }: { t: Dictionary['projects']; u
         reset: t.reset, trace: t.trace, traceIdle: t.traceIdle, more: t.more, stackLabel: t.stackLabel,
         repo: t.repo, privateRepo: t.privateRepo, privateOwn: t.privateOwn, newTab: ui.newTab, download: t.download,
         roles: t.roles, routes: t.routes, columns: t.columns, response: t.response, clickNode: t.clickNode,
-        play: t.play, inspect: t.inspect,
+        play: t.play, inspect: t.inspect, story: t.story, plain: t.plain,
       }} />
       <p className="xp-note">{t.note}</p>
     </div>
