@@ -1,8 +1,8 @@
 ---
-title: "Bem vindos"
-description: "Bem-vindos ao blog do Connections Hub! Aqui vou falar sobre curiosidades, notícias, lançamentos e novidades dos nossos projetos e da empresa."
+title: "Bem-vindos"
+description: "Bem-vindos ao blog da Connections Hub! Aqui vou falar sobre curiosidades, notícias, lançamentos e novidades dos nossos projetos e da empresa."
 date: "2026-11-05T12:00:00-03:00"
-kind: artigo
+kind: anuncio
 tags: ["carreira", "projetos"]
 draft: false
 ---
