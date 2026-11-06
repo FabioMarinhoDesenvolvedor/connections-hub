@@ -37,6 +37,9 @@ export const en: Dictionary = {
     secondary: 'See solutions',
     index: 'Solutions',
     symbol: 'The Connections Hub symbol in 3D',
+    colours: "The symbol's official colours",
+    names: ["Navy and terracotta", "Terracotta and paper", "Paper and navy", "Navy and paper"],
+    hint: "Drag to spin · click to paint",
   },
   about: {
     label: 'About',
@@ -51,6 +54,7 @@ export const en: Dictionary = {
       { term: 'From', detail: 'Diagnosis to rollout, with deliveries you see and review.' },
       { term: 'With', detail: 'Our own code, and a direct line to the people who build it.' },
     ],
+    board: {"rotate": "We build", "words": ["websites", "systems and ERP", "dashboards", "e-commerce", "apps"], "links": ["See the solutions", "See the projects", "See the process", "Talk to us"], "problem": "Orders get lost on WhatsApp.", "solved": "Solved", "steps": ["We understand", "We plan", "We develop", "We implement"], "you": "You", "dev": "The developer", "ask": "Can we change this button?", "answer": "Changed it. Refresh the page.", "direct": "No middlemen"},
   },
   security: {
     label: "Security",
@@ -99,7 +103,6 @@ export const en: Dictionary = {
     label: 'Solutions',
     title: ['From the problem', 'to the solution.'],
     intro: 'Four areas of work, defined with you from what your operation needs. A single project can combine more than one.',
-    modes: { problem: 'The problem', solution: 'The solution', label: 'See the problem or the solution' },
     replay: 'Watch again',
     solvesLabel: 'Solves',
     includesLabel: 'Can include',
@@ -139,30 +142,21 @@ export const en: Dictionary = {
     },
     scenes: {
       sites: {
-        query: 'vet clinic near me',
-        results: [{ name: 'Happy Paws Clinic', url: 'happypaws.com' }, { name: 'VetCenter 24 hours', url: 'vetcenter24h.com' }, { name: 'Pet & Co Veterinary', url: 'petandco.vet' }],
-        missing: 'Your clinic is nowhere', leads: 'contacts from the site this week',
         domain: 'vetfriend.com', rank: '#1 in search', cta: 'Book a visit',
         toast: 'New contact from the site', toastText: 'I would like to book a visit on Saturday.',
       },
       sistemas: {
         files: ['orders_FINAL_v3.xlsx', 'stock (2).xlsx', 'finance-mary.xlsx', 'clients_old.xlsx'],
-        stock: 'Stock', conflict: 'Which one is right?', note: 'Only Mary knows how to update it', rework: 'The same order typed 3 times',
         modules: ['Orders', 'Inventory', 'Billing', 'Finance'], orders: "Today's orders",
         rows: ['#1042 · Central Market', '#1043 · Sunny Bakery', '#1044 · Bella Store'], statuses: ['New', 'Picked', 'Invoiced'],
         stockLabel: 'Stock · Paint 18 L', team: ['Sales', 'Inventory', 'Finance'], shared: 'Everyone sees the same numbers', toast: 'Stock updated on its own',
       },
       dashboards: {
-        ask: 'How much did we sell this month?', answer: "I'll put the spreadsheets together. Ready in 3 days.", days: ['Mon', 'Tue', 'Wed'],
-        waiting: 'Waiting for the report', unknown: 'Sales this month',
         title: 'Sales', period: 'This month', unit: 'All branches', live: 'Updated just now',
         kpis: [{ label: 'Revenue', prefix: '$', value: 248, suffix: 'k' }, { label: 'Orders', prefix: '', value: 312, suffix: '' }, { label: 'Of target', prefix: '', value: 92, suffix: '%' }],
         trend: 'Sales per day', target: 'Target', units: ['Downtown', 'North', 'South', 'East'], act: 'South below target',
       },
       ecommerce: {
-        inbox: 'Chats', unread: '12 unread',
-        messages: [{ text: 'Do you have it in M?', time: '11:12 pm' }, { text: 'How much is shipping?', time: '11:20 pm' }, { text: 'Is the blue one still there?', time: '11:31 pm' }, { text: 'Hello??', time: '11:40 pm' }],
-        away: 'Replies only tomorrow, 9 am', lost: 'customers gave up tonight',
         product: 'Basic blue T-shirt', price: '$19.90', sizes: ['S', 'M', 'L'], add: 'Add to cart',
         shipping: 'Shipping', shippingValue: '$4.50', total: 'Total', totalValue: '$24.40', pay: 'Card', paid: 'Payment approved',
         order: 'Order #1042 paid', orderTime: '11:41 pm · while you slept', stock: 'Stock M: 8 → 7',
@@ -193,7 +187,7 @@ export const en: Dictionary = {
     phone: 'Or call:',
     form: {"need": "What do you need?", "kinds": ["Website", "System or ERP", "Dashboard", "E-commerce", "Not sure yet"], "topics": ["a website", "a system or ERP", "a dashboard", "an e-commerce shop"], "about": "Tell us in a few words", "placeholder": "E.g. I want my clients to book through the site.", "name": "Your name", "optional": "optional", "preview": "Your message", "hello": "Hello!", "helloNamed": "Hello! I am {name}.", "want": "I would like to talk about {topic}.", "unsure": "I am not sure yet what I need and would like to talk.", "whatsapp": "Send on WhatsApp", "email": "Send by e-mail", "subject": "Contact from the website", "note": "Nothing is sent by this site: the message opens in your WhatsApp or e-mail, for you to check before sending."},
   },
-  sticker: {"flip": "Flip the Connections Hub sticker", "hint": "A sticker for you. Hover, then click to flip it.", "found": "You found the back.", "role": "Design and development of this site", "back": "Flip back"},
+  sticker: {"peel": "Peel off the Connections Hub sticker", "hint": "Pull it by the corner", "found": "You found the sticker.", "role": "Design and development of this site", "back": "Stick it back"},
   projects: {
     label: 'Projects',
     title: ['Code in use.', 'Opened up.'],
@@ -268,6 +262,7 @@ export const en: Dictionary = {
     github: 'Repositories on GitHub',
     note: 'Interfaces rebuilt from each system’s design, on made-up data. Modules, routes and tables carry the names they have in the code.',
     story: {"for": "Who it is for", "challenge": "The challenge", "built": "What we built", "happened": "What just happened", "idle": "Click something in the interface above. Each action shows up here, in plain words."},
+    showcase: {"of": "of", "next": "Scroll for the next project", "inside": "Look inside in 3D", "watch": "Watch it work", "stop": "Stop", "close": "Close"},
     plain: {"interface": "What you see", "services": "What does the work", "data": "Where it is kept", "infra": "Who it talks to"},
     items: {
       marketing: {

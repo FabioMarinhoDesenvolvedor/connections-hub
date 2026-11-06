@@ -470,3 +470,60 @@ Soluções voltou como era.
 - um clique (ou Enter) o vira, e o verso assina o site, com o link para o GitHub ao lado;
 - é tudo em CSS. Com movimento reduzido, não se inclina e vira sem animação.
 
+## 21. Sobre: a frase viva e os quatro cartões (06/11/2026)
+
+**Pedido:** melhorar a seção Sobre, que era um título, dois parágrafos e uma tabela de quatro linhas.
+
+**O que é agora** (`components/about/board.tsx`):
+- **Uma frase viva:** abaixo do título, "Construímos [sites]", com a palavra trocando a cada 2,2 s (sistemas e ERP, dashboards, e-commerces, aplicativos) e um sublinhado que marca o tempo. Leitores de tela recebem a lista inteira.
+- **As quatro linhas viraram cartões,** cada um com uma pequena cena e um atalho para a seção que prova o que ele diz:
+  - **Construímos:** os cinco tipos de produto, que acendem junto com a palavra → Soluções.
+  - **Para:** "Os pedidos se perdem no WhatsApp" é riscado e vira "Resolvido" → Projetos.
+  - **Do:** o ponto da marca percorre as quatro etapas do Processo → Processo.
+  - **Com:** você e quem desenvolve, ligados direto, numa troca de mensagens → Contato.
+- **Animação:** as cenas tocam quando os cartões entram na tela e de novo ao passar o mouse. Com movimento reduzido, a palavra fica parada e as cenas mostram o último quadro.
+- **Removido:** a tabela "spec" e as regras de revelação que só ela usava.
+
+## 22. Adesivo de volta, Soluções direto ao ponto e a abertura refinada (06/11/2026)
+
+**Adesivo.**
+- **Reprovado:** o adesivo holográfico de virar (§20). Nas palavras do usuário, "ficou um lixo" e "genérico".
+- **Voltou o de descolar,** em 3D (`components/sticker.tsx`, `lib/sticker/peel.ts`), com toda a física: cola que resiste, papel que enrola, adesivo pendurado na mão, arremessar e colar de volta.
+- **Acabamento de vinil:** verniz, um filme iridescente discreto nas cores da marca (areia, mist e terracota, nunca arco-íris) e um reflexo que segue o mouse mesmo com o adesivo colado. O verniz foi dosado para o navy do símbolo continuar navy.
+- **Convite:** na primeira vez que aparece inteiro na tela, o canto levanta alto e volta; uma seta desenhada à mão se traça até ele, com "Puxe pelo canto".
+- **Tamanho:** passou de 132 para 156 px (124 no celular).
+
+**Soluções.** Pedido: "animação só de soluções, ninguém perde tempo olhando muito".
+- Saíram a parte do problema, o seletor problema/solução e os textos que só ela usava.
+- Cada janela toca só a solução, uma vez, quando aparece. As entradas ficam 40% mais rápidas na janela (`--pace: .6`, que também escala os tempos fixos).
+- "Ver de novo" fica no cabeçalho da janela, e a frase do resultado embaixo.
+
+**Abertura.** Pedido: melhorar sem perder o símbolo 3D, com cara de design profissional.
+- **Prancheta de estúdio** em volta do símbolo, na linguagem de desenho técnico da marca: marcas de registro nos cantos, uma órbita tracejada com o ponto terracota (uma volta por minuto) e a legenda "Fig. 01 — Símbolo oficial · Laca · 3D em tempo real". Tudo em baixo contraste.
+- **As quatro cores oficiais** do símbolo como amostras: a que ele veste fica marcada, e escolher outra joga a gota de tinta dela sobre ele.
+  - O renderer ganhou `splash(x, y, to)` e `colourway`.
+  - As cores ficam em `lib/logo/colourways.ts`, para a página não carregar o three.js só por elas.
+- **Uma dica** ("Arraste para girar · clique para pintar"), que some no primeiro uso.
+- **Fechamento:** o índice das soluções numerado e "Role para conhecer", com uma linha que cai.
+
+## 23. Vidro: a vitrine dos Projetos e a abertura (06/11/2026)
+
+**Pedido:** a moldura da abertura (§22) foi reprovada ("que lixo"), e Projetos tinha "zero criatividade". O usuário pediu estilo glass e escolheu a "vitrine cinematográfica".
+
+**Projetos** (`components/projects/showcase.tsx`).
+- **No computador,** a seção é uma trilha de rolagem com um palco preso na tela, e a rolagem é a câmera: o projeto que sai sobe e some, o próximo sobe de baixo.
+- **Cada projeto toma o palco:**
+  - atrás, três luzes difusas nas cores do próprio produto (terracota e navy no Marketing, grená no WorkHub, azul e verde na WSN, laranja-queimado no Tasks), derivando devagar;
+  - mais atrás, o nome do projeto enorme, desfocado pelo vidro;
+  - na frente, uma tela de vidro fosco com a interface funcionando. Ela fica no tamanho em que foi desenhada e é escalada inteira para caber, sem refluxo nem corte;
+  - ao lado, um "celular" de vidro com a história: resumo, para quem, desafio, o que construímos e o que acabou de acontecer.
+- **Cada ação da interface** diz em uma frase o que fez.
+- **"Ver em ação"** conduz a interface com o anel da marca e uma legenda sobre a tela; pôr a mão para.
+- **"Ver por dentro em 3D"** abre a pilha 3D (explorer.tsx), já no projeto, numa janela sobre a página. Ela continua no HTML, então os fatos dos repositórios seguem verificáveis.
+- **Embaixo,** os projetos como pontos, para pular direto, e a barra de quanto da trilha já foi.
+- **Abaixo de 1100 px,** os projetos vêm um embaixo do outro, cada um no seu vidro, com a interface em retrato no celular.
+
+**Abertura.** Saíram as marcas de registro, a órbita, a legenda e o "Role para conhecer".
+- Atrás do símbolo 3D, luz suave da marca sob uma placa de vidro fosco; as duas derivam um pouco com o ponteiro, em profundidades diferentes, e a placa inclina levemente.
+- As cores oficiais ficam numa pílula de vidro.
+

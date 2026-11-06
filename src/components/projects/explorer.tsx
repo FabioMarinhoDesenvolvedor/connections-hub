@@ -69,8 +69,8 @@ function Count({ value }: { value: number }) {
   layer or a node in either place opens it in the other; using the interface sends a request
   down the stack, says in one sentence what it did, and the panel spells out the request.
 */
-export function ProjectExplorer({ items, t, hero, locale }: { items: ExplorerItem[]; t: ExplorerCopy; hero: Record<Locale, HeroCopy>; locale: Locale }) {
-  const [current, setCurrent] = useState(0);
+export function ProjectExplorer({ items, t, hero, locale, start = 0 }: { items: ExplorerItem[]; t: ExplorerCopy; hero: Record<Locale, HeroCopy>; locale: Locale; start?: number }) {
+  const [current, setCurrent] = useState(start);
   const [leaving, setLeaving] = useState(false);
   const [layer, setLayer] = useState<LayerId>('interface');
   const [picked, setPicked] = useState<{ layer: LayerId; node: Node } | null>(null);

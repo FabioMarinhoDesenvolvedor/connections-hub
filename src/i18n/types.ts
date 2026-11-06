@@ -21,10 +21,10 @@ export type ShieldCopy = {
 type Four = [string, string, string, string];
 type Three = [string, string, string];
 export type SolutionScenes = {
-  sites: { query: string; results: [{ name: string; url: string }, { name: string; url: string }, { name: string; url: string }]; missing: string; leads: string; domain: string; rank: string; cta: string; toast: string; toastText: string };
-  sistemas: { files: Four; stock: string; conflict: string; note: string; rework: string; modules: Four; orders: string; rows: Three; statuses: Three; stockLabel: string; team: Three; shared: string; toast: string };
-  dashboards: { ask: string; answer: string; days: Three; waiting: string; unknown: string; title: string; period: string; unit: string; live: string; kpis: [{ label: string; prefix: string; value: number; suffix: string }, { label: string; prefix: string; value: number; suffix: string }, { label: string; prefix: string; value: number; suffix: string }]; trend: string; target: string; units: Four; act: string };
-  ecommerce: { inbox: string; unread: string; messages: [{ text: string; time: string }, { text: string; time: string }, { text: string; time: string }, { text: string; time: string }]; away: string; lost: string; product: string; price: string; sizes: Three; add: string; shipping: string; shippingValue: string; total: string; totalValue: string; pay: string; paid: string; order: string; orderTime: string; stock: string; flow: [string, string, string, string, string, string] };
+  sites: { domain: string; rank: string; cta: string; toast: string; toastText: string };
+  sistemas: { files: Four; modules: Four; orders: string; rows: Three; statuses: Three; stockLabel: string; team: Three; shared: string; toast: string };
+  dashboards: { title: string; period: string; unit: string; live: string; kpis: [{ label: string; prefix: string; value: number; suffix: string }, { label: string; prefix: string; value: number; suffix: string }, { label: string; prefix: string; value: number; suffix: string }]; trend: string; target: string; units: Four; act: string };
+  ecommerce: { product: string; price: string; sizes: Three; add: string; shipping: string; shippingValue: string; total: string; totalValue: string; pay: string; paid: string; order: string; orderTime: string; stock: string; flow: [string, string, string, string, string, string] };
 };
 
 export type Dictionary = {
@@ -46,12 +46,19 @@ export type Dictionary = {
     theme: { label: string; toDark: string; toLight: string };
   };
   nav: { label: string; href: string }[];
-  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string; symbol: string };
+  hero: { eyebrow: string; lines: [string, string]; lead: string; primary: string; secondary: string; index: string; symbol: string; colours: string; names: [string, string, string, string]; hint: string };
   about: {
     label: string;
     title: string[];
     paragraphs: string[];
-    facts: { term: string; detail: string }[];
+    facts: [{ term: string; detail: string }, { term: string; detail: string }, { term: string; detail: string }, { term: string; detail: string }];
+    /** The board (components/about/board.tsx): the rotating line and each fact's small scene. */
+    board: {
+      rotate: string; words: [string, string, string, string, string];
+      links: [string, string, string, string];
+      problem: string; solved: string; steps: [string, string, string, string];
+      you: string; dev: string; ask: string; answer: string; direct: string;
+    };
   };
   security: {
     label: string;
@@ -66,7 +73,6 @@ export type Dictionary = {
     intro: string;
     solvesLabel: string;
     includesLabel: string;
-    modes: { problem: string; solution: string; label: string };
     replay: string;
     items: Record<SolutionId, {
       title: string;
@@ -110,7 +116,7 @@ export type Dictionary = {
       hello: string; helloNamed: string; want: string; unsure: string; whatsapp: string; email: string; subject: string; note: string;
     };
   };
-  sticker: { flip: string; hint: string; found: string; role: string; back: string };
+  sticker: { peel: string; hint: string; found: string; role: string; back: string };
   projects: {
     label: string;
     title: string[];
@@ -153,6 +159,8 @@ export type Dictionary = {
     note: string;
     /** The plain-language view: who it is for, the challenge, what was built, what each action did. */
     story: { for: string; challenge: string; built: string; happened: string; idle: string };
+    /** The glass showcase (components/projects/showcase.tsx). */
+    showcase: { of: string; next: string; inside: string; watch: string; stop: string; close: string };
     /** Each layer in plain words, for the tags and the panel (the technical name follows). */
     plain: Record<LayerId, string>;
     items: Record<ProjectId, {

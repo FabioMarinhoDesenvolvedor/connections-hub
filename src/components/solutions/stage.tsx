@@ -5,31 +5,25 @@ import { solutionIds, type SolutionId } from '@/data/site';
 import type { Dictionary, SolutionScenes } from '@/i18n/types';
 
 /*
-  The Solutions scenes. The section's title is the story: each service is shown first as the
-  problem a company lives with, then as what we build to solve it, in a small product UI.
-  - Sites: a search where the company is missing → first result, site on desktop and phone, a contact.
-  - Systems: scattered spreadsheets that disagree → one system where an order moves and stock updates.
-  - Dashboards: "how much did we sell?" answered in 3 days → a live panel against the target.
-  - E-commerce: messages unanswered at night → the customer buys alone; order and stock follow.
+  The Solutions scenes: each service shown working, in a small product UI, quick to take in.
+  - Sites: first in the search, the same site on desktop and phone, a contact arriving.
+  - Systems: the spreadsheets merge into one system; an order moves and the stock follows.
+  - Dashboards: a live panel, numbers counting, sales against the target, where to act.
+  - E-commerce: the customer buys alone; payment, order and stock follow.
 
   On wide screens one sticky window follows the service being read (its data-active, set by
-  scroll-effects); on phones each service carries its own window, which plays when in view.
-  A story plays the problem, then the solution, once. The toggle and "Watch again" take over.
-  Scenes restart by remounting (the key); resting styles are the last frame, so reduced motion
-  and no JavaScript simply show the solution.
+  scroll-effects); on phones each service carries its own window. A scene plays once when it
+  is on screen (at a brisk pace, --pace); "Watch again" replays it. Scenes restart by
+  remounting (the key); resting styles are the last frame, so reduced motion and no
+  JavaScript simply show it finished.
 */
 type T = Dictionary['solutions'];
-type Mode = 'problem' | 'solution';
-type Story = { mode: Mode; run: number; auto: boolean };
-
-const PROBLEM_MS = 5800;
 /** Delay (seconds) for an element's entrance in the scene timeline. */
 const at = (d: number, extra?: CSSProperties) => ({ '--d': `${d}s`, ...extra } as CSSProperties);
 
 const Icon = ({ d, size = '1.15em' }: { d: string; size?: string }) => <svg viewBox="0 0 20 20" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 const WARN = 'M10 3.5 17.5 16.5h-15zM10 8.5v3.5M10 14.4v.1';
 const CHECK = 'm4.5 10.5 3.5 3.5 7.5-8';
-const SEARCH = 'M8.8 14.6a5.8 5.8 0 1 0 0-11.6 5.8 5.8 0 0 0 0 11.6zM13 13l4 4';
 const CHAT = 'M4 4.5h12a1 1 0 0 1 1 1v7.5a1 1 0 0 1-1 1H9l-4 3v-3H4a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1z';
 const SHEET = 'M5 2.8h7l3.5 3.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3.3a.5.5 0 0 1 .5-.5zM12 2.8v3.5h3.5M7 10h6.5M7 13h6.5M10 8v7.5';
 const BAG = 'M5 7h10l-.8 9.5a1 1 0 0 1-1 .9H6.8a1 1 0 0 1-1-.9zM7.5 7V5.5a2.5 2.5 0 0 1 5 0V7';
@@ -39,19 +33,7 @@ function AppBar({ address }: { address?: string }) {
   return <div className="sx-bar"><span className="sx-dots"><i /><i /><i /></span>{address && <span className="sx-address"><Icon d="M6 9V6.5a4 4 0 0 1 8 0V9M5 9h10v7H5z" size="1em" />{address}</span>}</div>;
 }
 
-function Sites({ s, mode }: { s: SolutionScenes['sites']; mode: Mode }) {
-  if (mode === 'problem') return <div className="sx-sites-problem">
-    <div className="sx-card sx-search a-pop" style={at(0)}>
-      <div className="sx-searchbar"><Icon d={SEARCH} /><span className="sx-typed">{s.query}</span></div>
-      <ol className="sx-results">
-        {s.results.map((r, i) => <li key={r.url} className="a-up" style={at(1.3 + i * .25)}><small>{r.url}</small><b>{r.name}</b><span className="sx-skel" /></li>)}
-      </ol>
-    </div>
-    <div className="sx-row">
-      <span className="sx-tag sx-tag-bad a-pop" style={at(2.4)}><Icon d={WARN} />{s.missing}</span>
-      <span className="sx-stat a-pop" style={at(3)}><b>0</b>{s.leads}</span>
-    </div>
-  </div>;
+function Sites({ s }: { s: SolutionScenes['sites'] }) {
   return <div className="sx-sites-solution">
     <span className="sx-tag sx-tag-good sx-rank a-pop" style={at(.2)}><Icon d={CHECK} />{s.rank}</span>
     <div className="sx-app sx-desktop a-pop" style={at(.5)}>
@@ -83,19 +65,11 @@ function Sites({ s, mode }: { s: SolutionScenes['sites']; mode: Mode }) {
 
 const scattered = [{ x: 4, y: 6, r: -7 }, { x: 54, y: 2, r: 5 }, { x: 8, y: 58, r: 4 }, { x: 52, y: 62, r: -5 }];
 
-function Sistemas({ s, mode }: { s: SolutionScenes['sistemas']; mode: Mode }) {
-  const files = s.files.map((name, i) => <span key={name} className={`sx-file sx-file-${i} ${mode === 'problem' ? 'a-drop' : 'a-merge'}`}
-    style={at(mode === 'problem' ? .2 + i * .3 : 0, { '--x': `${scattered[i].x}%`, '--y': `${scattered[i].y}%`, '--r': `${scattered[i].r}deg` } as CSSProperties)}>
-    <Icon d={SHEET} />{name}{i < 2 && mode === 'problem' && <em>{s.stock}: {i === 0 ? 12 : 7}</em>}
+function Sistemas({ s }: { s: SolutionScenes['sistemas'] }) {
+  const files = s.files.map((name, i) => <span key={name} className={`sx-file sx-file-${i} a-merge`}
+    style={at(0, { '--x': `${scattered[i].x}%`, '--y': `${scattered[i].y}%`, '--r': `${scattered[i].r}deg` } as CSSProperties)}>
+    <Icon d={SHEET} />{name}
   </span>);
-  if (mode === 'problem') return <div className="sx-erp-problem">
-    <div className="sx-desk">
-      {files}
-      <span className="sx-conflict a-pop" style={at(1.7)}><b>≠</b>{s.conflict}</span>
-      <span className="sx-note a-drop" style={at(2.3, { '--r': '3deg' } as CSSProperties)}>{s.note}</span>
-    </div>
-    <span className="sx-tag sx-tag-bad a-pop" style={at(3)}><Icon d={WARN} />{s.rework}</span>
-  </div>;
   return <div className="sx-erp-solution">
     <div className="sx-merging" aria-hidden="true">{files}</div>
     <div className="sx-app sx-erp a-pop" style={at(.7)}>
@@ -139,22 +113,7 @@ function Sistemas({ s, mode }: { s: SolutionScenes['sistemas']; mode: Mode }) {
   </div>;
 }
 
-function Dashboards({ s, mode }: { s: SolutionScenes['dashboards']; mode: Mode }) {
-  if (mode === 'problem') return <div className="sx-dash-problem">
-    <div className="sx-thread">
-      <p className="sx-msg sx-msg-in a-up" style={at(.2)}>{s.ask}</p>
-      <p className="sx-msg sx-msg-out a-up" style={at(1.1)}>{s.answer}</p>
-    </div>
-    <div className="sx-wait">
-      <div className="sx-calendar a-pop" style={at(1.8)}>
-        {s.days.map((day, i) => <span key={day} className={`sx-day sx-day-${i}`}>{day}</span>)}
-      </div>
-      <div className="sx-unknown a-pop" style={at(2.2)}>
-        <small>{s.unknown}</small><b>???</b>
-        <span className="sx-tag sx-tag-bad"><Icon d={WARN} />{s.waiting}</span>
-      </div>
-    </div>
-  </div>;
+function Dashboards({ s }: { s: SolutionScenes['dashboards'] }) {
   const units = [78, 64, 41, 70];
   return <div className="sx-app sx-dash a-pop" style={at(0)}>
     <AppBar />
@@ -193,17 +152,7 @@ function Dashboards({ s, mode }: { s: SolutionScenes['dashboards']; mode: Mode }
   </div>;
 }
 
-function Ecommerce({ s, mode }: { s: SolutionScenes['ecommerce']; mode: Mode }) {
-  if (mode === 'problem') return <div className="sx-shop-problem">
-    <div className="sx-chatapp a-pop" style={at(0)}>
-      <div className="sx-chat-head"><b>{s.inbox}</b><span className="sx-badge a-pop" style={at(2.4)}>{s.unread}</span></div>
-      <div className="sx-chat-list">
-        {s.messages.map((m, i) => <p key={m.text} className="sx-msg sx-msg-in a-up" style={at(.4 + i * .5)}>{m.text}<small>{m.time}</small></p>)}
-      </div>
-      <div className="sx-away a-up" style={at(2.6)}>{s.away}</div>
-    </div>
-    <span className="sx-stat sx-stat-bad a-pop" style={at(3.2)}><b>3</b>{s.lost}</span>
-  </div>;
+function Ecommerce({ s }: { s: SolutionScenes['ecommerce'] }) {
   return <div className="sx-shop-solution">
     <div className="sx-app sx-product a-pop" style={at(0)}>
       <div className="sx-photo"><Icon d="M6 3.5 3 6l2 3 1.5-1V17h7V8L15 9l2-3-3-2.5c-.6 1.3-2.2 2-4 2s-3.4-.7-4-2z" size="44%" /></div>
@@ -229,55 +178,39 @@ function Ecommerce({ s, mode }: { s: SolutionScenes['ecommerce']; mode: Mode }) 
   </div>;
 }
 
-function Scene({ id, mode, s }: { id: SolutionId; mode: Mode; s: SolutionScenes }) {
-  if (id === 'sites') return <Sites s={s.sites} mode={mode} />;
-  if (id === 'sistemas') return <Sistemas s={s.sistemas} mode={mode} />;
-  if (id === 'dashboards') return <Dashboards s={s.dashboards} mode={mode} />;
-  return <Ecommerce s={s.ecommerce} mode={mode} />;
+function Scene({ id, s }: { id: SolutionId; s: SolutionScenes }) {
+  if (id === 'sites') return <Sites s={s.sites} />;
+  if (id === 'sistemas') return <Sistemas s={s.sistemas} />;
+  if (id === 'dashboards') return <Dashboards s={s.dashboards} />;
+  return <Ecommerce s={s.ecommerce} />;
 }
 
 function SolutionWindow({ id, t, live }: { id: SolutionId; t: T; live: boolean }) {
   const reduced = useRef(false);
   const [ready, setReady] = useState(false);
-  const [story, setStory] = useState<Story>({ mode: 'solution', run: 0, auto: false });
+  const [run, setRun] = useState(0);
 
   useEffect(() => { reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches; setReady(true); }, []);
-  useEffect(() => {
-    if (live && ready && !reduced.current) setStory(s => s.run === 0 ? { mode: 'problem', run: 1, auto: true } : s);
-  }, [live, ready]);
-  useEffect(() => {
-    if (!live || story.mode !== 'problem' || !story.auto) return;
-    const timer = window.setTimeout(() => setStory(s => ({ mode: 'solution', run: s.run + 1, auto: false })), PROBLEM_MS);
-    return () => window.clearTimeout(timer);
-  }, [story, live]);
+  // It plays once, the first time it is on screen; "Watch again" replays it.
+  useEffect(() => { if (live && ready && !reduced.current) setRun(r => r || 1); }, [live, ready]);
 
-  const play = () => setStory(s => reduced.current ? { mode: 'solution', run: s.run + 1, auto: false } : { mode: 'problem', run: s.run + 1, auto: true });
-  const show = (mode: Mode) => setStory(s => ({ mode, run: s.run + 1, auto: false }));
-  const { mode, run } = story;
   const item = t.items[id];
   const number = String(solutionIds.indexOf(id) + 1).padStart(2, '0');
 
-  return <div className="solwin" data-mode={mode} data-id={id} data-ready={ready || undefined}>
+  return <div className="solwin" data-id={id} data-ready={ready || undefined}>
     <div className="solwin-head">
       <p className="solwin-step"><span className="point" aria-hidden="true" />{number} · {item.title}</p>
-      <div className="solwin-modes" role="group" aria-label={t.modes.label}>
-        {(['problem', 'solution'] as const).map(m => <button key={m} type="button" data-for={m} aria-pressed={mode === m} onClick={() => show(m)}>
-          <Icon d={m === 'problem' ? WARN : CHECK} size="14" />{t.modes[m]}
-        </button>)}
-      </div>
-    </div>
-    <div className="solwin-body" aria-hidden="true">
-      <div key={`${mode}-${run}`} className={`sx sx-${mode}`}><Scene id={id} mode={mode} s={t.scenes} /></div>
-    </div>
-    <div className="solwin-foot">
-      <p key={`${mode}-${run}`} className={`solwin-verdict solwin-verdict-${mode}`}>
-        <span className="solwin-verdict-icon"><Icon d={mode === 'problem' ? WARN : CHECK} size="16" /></span>
-        {mode === 'problem' ? item.solves : item.result}
-      </p>
-      <button type="button" className="solwin-replay" onClick={play}>
+      <button type="button" className="solwin-replay" onClick={() => setRun(r => r + 1)}>
         <Icon d="M4.5 10a5.5 5.5 0 1 0 1.8-4.1M4 3.5v3.2h3.2" size="16" />{t.replay}
       </button>
     </div>
+    <div className="solwin-body" aria-hidden="true">
+      <div key={run} className="sx sx-solution"><Scene id={id} s={t.scenes} /></div>
+    </div>
+    <p key={run} className="solwin-verdict">
+      <span className="solwin-verdict-icon"><Icon d={CHECK} size="16" /></span>
+      {item.result}
+    </p>
   </div>;
 }
 

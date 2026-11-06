@@ -42,6 +42,9 @@ export const pt: Dictionary = {
     secondary: 'Ver soluções',
     index: 'Soluções',
     symbol: 'Símbolo da Connections Hub em 3D',
+    colours: "Cores oficiais do símbolo",
+    names: ["Navy e terracota", "Terracota e papel", "Papel e navy", "Navy e papel"],
+    hint: "Arraste para girar · clique para pintar",
   },
   about: {
     label: 'Sobre',
@@ -56,6 +59,7 @@ export const pt: Dictionary = {
       { term: 'Do', detail: 'Diagnóstico à implantação, com entregas que você vê e revisa.' },
       { term: 'Com', detail: 'Código próprio e conversa direta com quem desenvolve.' },
     ],
+    board: {"rotate": "Construímos", "words": ["sites", "sistemas e ERP", "dashboards", "e-commerces", "aplicativos"], "links": ["Ver as soluções", "Ver os projetos", "Ver o processo", "Falar com a gente"], "problem": "Os pedidos se perdem no WhatsApp.", "solved": "Resolvido", "steps": ["Entendemos", "Planejamos", "Desenvolvemos", "Implementamos"], "you": "Você", "dev": "Quem desenvolve", "ask": "Dá pra mudar esse botão?", "answer": "Mudei. Atualize a página.", "direct": "Sem intermediários"},
   },
   security: {
     label: "Segurança",
@@ -104,7 +108,6 @@ export const pt: Dictionary = {
     label: 'Soluções',
     title: ['Do problema', 'à solução.'],
     intro: 'Quatro frentes de trabalho, definidas com você a partir do que a operação precisa. Um mesmo projeto pode combinar mais de uma.',
-    modes: { problem: 'O problema', solution: 'A solução', label: 'Ver o problema ou a solução' },
     replay: 'Ver de novo',
     solvesLabel: 'Resolve',
     includesLabel: 'Pode incluir',
@@ -144,30 +147,21 @@ export const pt: Dictionary = {
     },
     scenes: {
       sites: {
-        query: 'clínica veterinária perto de mim',
-        results: [{ name: 'Clínica Bicho Feliz', url: 'bichofeliz.com.br' }, { name: 'VetCenter 24 horas', url: 'vetcenter24h.com.br' }, { name: 'Pet & Cia Veterinária', url: 'petecia.vet.br' }],
-        missing: 'Sua clínica não aparece', leads: 'contatos pelo site esta semana',
         domain: 'vetamigo.com.br', rank: '1º na busca', cta: 'Agendar consulta',
         toast: 'Novo contato pelo site', toastText: 'Quero agendar uma consulta para sábado.',
       },
       sistemas: {
         files: ['pedidos_FINAL_v3.xlsx', 'estoque (2).xlsx', 'financeiro-maria.xlsx', 'clientes_antigo.xlsx'],
-        stock: 'Estoque', conflict: 'Qual está certo?', note: 'Só a Maria sabe atualizar', rework: 'O mesmo pedido digitado 3 vezes',
         modules: ['Pedidos', 'Estoque', 'Faturamento', 'Financeiro'], orders: 'Pedidos de hoje',
         rows: ['#1042 · Mercado Central', '#1043 · Padaria Sol', '#1044 · Loja Bela'], statuses: ['Novo', 'Separado', 'Faturado'],
         stockLabel: 'Estoque · Tinta 18 L', team: ['Vendas', 'Estoque', 'Financeiro'], shared: 'Todos veem os mesmos números', toast: 'Estoque baixou sozinho',
       },
       dashboards: {
-        ask: 'Quanto vendemos este mês?', answer: 'Vou juntar as planilhas. Fica pronto em 3 dias.', days: ['Seg', 'Ter', 'Qua'],
-        waiting: 'Esperando o relatório', unknown: 'Vendas do mês',
         title: 'Vendas', period: 'Este mês', unit: 'Todas as unidades', live: 'Atualizado agora',
         kpis: [{ label: 'Faturamento', prefix: 'R$ ', value: 248, suffix: ' mil' }, { label: 'Pedidos', prefix: '', value: 312, suffix: '' }, { label: 'Da meta', prefix: '', value: 92, suffix: '%' }],
         trend: 'Vendas por dia', target: 'Meta', units: ['Centro', 'Norte', 'Sul', 'Leste'], act: 'Sul abaixo da meta',
       },
       ecommerce: {
-        inbox: 'Conversas', unread: '12 não lidas',
-        messages: [{ text: 'Tem no tamanho M?', time: '23:12' }, { text: 'Qual o frete pra Curitiba?', time: '23:20' }, { text: 'Ainda tem a azul?', time: '23:31' }, { text: 'Oi??', time: '23:40' }],
-        away: 'Resposta só amanhã, às 9h', lost: 'clientes desistiram esta noite',
         product: 'Camiseta básica azul', price: 'R$ 79,90', sizes: ['P', 'M', 'G'], add: 'Adicionar ao carrinho',
         shipping: 'Frete · Curitiba', shippingValue: 'R$ 18,00', total: 'Total', totalValue: 'R$ 97,90', pay: 'Pix', paid: 'Pagamento aprovado',
         order: 'Pedido #1042 pago', orderTime: '23:41 · enquanto você dormia', stock: 'Estoque M: 8 → 7',
@@ -200,7 +194,7 @@ export const pt: Dictionary = {
     phone: 'Ou ligue:',
     form: {"need": "O que você precisa?", "kinds": ["Site", "Sistema ou ERP", "Dashboard", "E-commerce", "Ainda não sei"], "topics": ["um site", "um sistema ou ERP", "um dashboard", "um e-commerce"], "about": "Conte em poucas palavras", "placeholder": "Ex.: quero que meus clientes agendem pelo site.", "name": "Seu nome", "optional": "opcional", "preview": "Sua mensagem", "hello": "Olá!", "helloNamed": "Olá! Sou {name}.", "want": "Quero conversar sobre {topic}.", "unsure": "Ainda não sei bem do que preciso e quero conversar.", "whatsapp": "Enviar pelo WhatsApp", "email": "Enviar por e-mail", "subject": "Contato pelo site", "note": "Nada é enviado por este site: a mensagem abre no seu WhatsApp ou e-mail, para você revisar antes de mandar."},
   },
-  sticker: {"flip": "Virar o adesivo da Connections Hub", "hint": "Um adesivo pra você. Passe o mouse e clique para virar.", "found": "Você achou o verso.", "role": "Design e desenvolvimento deste site", "back": "Virar de volta"},
+  sticker: {"peel": "Descolar o adesivo da Connections Hub", "hint": "Puxe pelo canto", "found": "Você achou o adesivo.", "role": "Design e desenvolvimento deste site", "back": "Colar de volta"},
   // Facts from the repositories (src/data/projects.ts). No usage numbers: none were measured.
   projects: {
     label: 'Projetos',
@@ -276,6 +270,7 @@ export const pt: Dictionary = {
     github: 'Repositórios no GitHub',
     note: 'Interfaces reconstruídas a partir do design de cada sistema, com dados fictícios. Módulos, rotas e tabelas têm os nomes que estão no código.',
     story: {"for": "Para quem", "challenge": "O desafio", "built": "O que construímos", "happened": "O que acabou de acontecer", "idle": "Clique em algo na interface acima. Cada ação aparece aqui, em palavras simples."},
+    showcase: {"of": "de", "next": "Role para o próximo projeto", "inside": "Ver por dentro em 3D", "watch": "Ver em ação", "stop": "Parar", "close": "Fechar"},
     plain: {"interface": "O que você vê", "services": "O que processa", "data": "Onde guarda", "infra": "Com quem conversa"},
     items: {
       marketing: {
