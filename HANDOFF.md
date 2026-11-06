@@ -203,7 +203,18 @@ Detalhes e o risco que fica em `DESIGN.md` §15. O `verify` cobre corpo gigante,
 
 **Revisão de um post vindo do editor:** o rascunho mora no banco. O Claude revisa o PR (`gh pr diff`) e entrega as correções para o usuário aplicar no editor, sem dar push na branch (regra no `CLAUDE.md`).
 
-## 5. Próximo: refazer a seção Segurança
+## 5. Seções refeitas (05 e 06/11): PR #13
+
+- **Nova versão** na branch `feature/seguranca` (`DESIGN.md` §13, "Refeita em 05/11/2026"): três histórias, cada uma num site comum e depois num site Connections Hub. O cofre 3D (`vault.tsx`, `lib/cipher/renderer.ts`) foi removido.
+- O usuário aprovou ("gostei").
+- **Tudo abaixo está no PR #13** (branch `feature/seguranca`). Falta conferir o preview da Vercel e fazer o merge.
+- **Soluções também refeita** na mesma branch (`DESIGN.md` §17): cada serviço como o problema e depois a solução. Os desenhos técnicos (`schematic.tsx`) saíram. Aprovada ("amei").
+- **Projetos melhorada** na mesma branch (`DESIGN.md` §18): a pilha 3D continua protagonista e passou a se mostrar sozinha, com camadas em palavras simples, a frase do que cada ação fez e a história no painel. Uma versão com a pilha escondida foi reprovada.
+- **Processo e rodapé refeitos** na mesma branch (`DESIGN.md` §19): a jornada das quatro etapas com um projeto de exemplo e o rodapé completo.
+- **Contato e adesivo refeitos** na mesma branch (`DESIGN.md` §20): o montador de mensagem para WhatsApp ou e-mail e o adesivo holográfico que vira. O three.js do adesivo saiu.
+
+**Histórico anterior:**
+
 
 - **O que existe** (em produção desde 22/10, `DESIGN.md` §13): "Seguro desde a primeira linha.", com três selos (conexão cifrada, só o que é nosso, seus dados em paz) e o cofre 3D que criptografa a CSP do site ao vivo.
   - Código em `components/sections/security.tsx`, `components/security/vault.tsx`, `lib/cipher/renderer.ts` e `lib/security-headers.ts`.

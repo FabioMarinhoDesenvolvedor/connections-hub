@@ -29,22 +29,24 @@ npm run post:new "Título"   # cria um rascunho de post em content/blog/ (veja c
   - `hero.tsx`: markup do servidor (texto, botões, índice de soluções).
   - `hero-logo.tsx`: o símbolo oficial em 3D, que entra girando, gira como uma rodinha e recebe a gota de tinta. Mostra o arquivo oficial antes do 3D, gira em CSS sem WebGL2 e fica parado com movimento reduzido.
 - `src/lib/logo/renderer.ts`: three.js em WebGL2 (geometria extrudada do `symbol-navy.svg`, acabamento laqueado, luz de estúdio e shader da tinta). Carregado sob demanda, nunca nos scripts iniciais.
-- `src/components/sections/`: Sobre, Segurança, Soluções, Projetos, Processo e Contato. `schematic.tsx` contém os desenhos técnicos de cada serviço.
-- `src/components/security/vault.tsx`: a peça da seção Segurança: o código de segurança deste site, criptografado de verdade no navegador (AES-256-GCM, WebCrypto) quando aparece na tela.
-- `src/lib/cipher/renderer.ts`: essa peça em 3D (three.js): uma peça laqueada por caractere, que levanta, gira e se fecha num bloco cifrado.
+- `src/components/sections/`: Sobre, Segurança, Soluções, Projetos, Processo e Contato.
+- `src/components/process/journey.tsx`: a jornada da seção Processo: as quatro etapas vividas por um projeto de exemplo, com abas que avançam sozinhas.
+- `src/components/solutions/stage.tsx`: as cenas da seção Soluções: cada serviço mostrado primeiro como o problema e depois como a solução, numa interface de produto em CSS.
+- `src/components/security/shield.tsx`: a demonstração da seção Segurança: três histórias curtas (Wi-Fi, código de fora, rastreadores), cada uma num site comum e depois num site da Connections Hub. Em CSS e SVG, sem 3D.
 - `src/lib/security-headers.ts`: cabeçalhos de segurança (CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy), enviados pelo `next.config.ts` e mostrados na seção.
-- `src/lib/highlight.ts`: realce de código nas cores da marca, usado pela peça da Segurança.
+- `src/lib/highlight.ts`: realce de código nas cores da marca, usado nos blocos de código do blog.
 - `src/data/projects.ts`: cada projeto por camada (stack, módulos, tabelas, sistemas externos) e os fluxos de cada ação da interface.
-- `src/components/projects/`: `explorer.tsx` (abas e ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).
+- `src/components/projects/`: `explorer.tsx` (abas, a demonstração que começa sozinha, a história de cada projeto e a ficha), `scene.tsx` (a pilha em CSS 3D, órbita e requisições), `stack-face.tsx` (placas de serviços, dados e infra) e `minis/` (as interfaces vivas de cada projeto).
 - `content/blog/`: os posts em Markdown, um por pasta (`AAAA/MM/DD-slug/index.md`), e o `GUIA.md` de escrita e revisão.
 - `src/lib/blog/`: `posts.ts` lê e valida os posts; `markdown.ts` gera o HTML no build. Rotas em `src/app/[lang]/blog/`, componentes em `src/components/blog/` e a seção "Do blog" da home em `sections/blog-latest.tsx`.
 - `src/lib/editor/`, `src/components/admin/editor.tsx` e `src/app/admin/posts/`: o editor de posts do painel (rascunhos no banco, imagens convertidas para WebP, revisão como PR e publicação pelo merge, via `GITHUB_CONTENT_TOKEN`).
 - `src/lib/comments/`, `src/app/api/` e `src/app/admin/`: os comentários (banco, sessão do dono, envio e moderação) e o painel `/admin/comentarios`. A seção no post é `src/components/blog/comments.tsx`.
-- `src/components/sticker.tsx` e `src/lib/sticker/peel.ts`: o adesivo de papel do rodapé.
+- `src/components/contact/composer.tsx`: o montador de mensagem do Contato, que abre o WhatsApp ou o e-mail do visitante com a mensagem pronta.
+- `src/components/sticker.tsx`: o adesivo holográfico do Contato, que se inclina com o mouse e vira para mostrar o crédito.
 - `src/components/privacy-notice.tsx`: aviso de privacidade na primeira visita.
 - `src/components/anchor-jump.tsx`: links internos longos cortam direto para a seção em vez de rolar por todas as cenas.
 - `src/components/scroll-effects.tsx`: reveals, progresso e item ativo. Só funciona com motion permitido.
 - `src/app/tokens.css`: design system (cor, tipo, espaço, grid, forma, motion). `globals.css` contém os componentes.
 - `public/brand` e `public/fonts`: arquivos oficiais, intactos (verificados byte a byte).
 
-Sem GSAP, Lenis ou R3F. O three.js só existe na abertura, na peça da Segurança e no adesivo, carregado sob demanda, e o scroll é nativo. Veja `DESIGN.md` para as decisões, `VALIDATION.md` para as medições, `REVISAO.md` para o resumo das mudanças e `HANDOFF.md` para o estado atual.
+Sem GSAP, Lenis ou R3F. O three.js só existe na abertura, carregado sob demanda, e o scroll é nativo. Veja `DESIGN.md` para as decisões, `VALIDATION.md` para as medições, `REVISAO.md` para o resumo das mudanças e `HANDOFF.md` para o estado atual.

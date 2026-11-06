@@ -6,10 +6,31 @@ import type { PostKind } from '@/lib/blog/posts';
   Every visible or announced string on the site, per language. The Portuguese is the
   source; the tagline is translated faithfully, never rewritten.
 */
-export type VaultCopy = { protect: string; again: string; code: string; sealed: string; area: string };
+/** The Security demo: three short stories, each played on an ordinary site and then on ours. */
+export type ShieldCopy = {
+  modes: { open: string; safe: string };
+  replay: string;
+  area: string;
+  address: string;
+  insecure: string;
+  wire: { you: string; wifi: string; spy: string; site: string; message: string; field: string; send: string; reads: string; sees: string; confused: string; received: string; open: string; safe: string };
+  inject: { threats: [string, string, string]; effects: [string, string, string]; password: string; enter: string; blocked: string; count: string; open: string; safe: string };
+  track: { trackers: [string, string, string]; profile: string; facts: [string, string, string, string]; empty: string; none: string; open: string; safe: string };
+};
+
+type Four = [string, string, string, string];
+type Three = [string, string, string];
+export type SolutionScenes = {
+  sites: { query: string; results: [{ name: string; url: string }, { name: string; url: string }, { name: string; url: string }]; missing: string; leads: string; domain: string; rank: string; cta: string; toast: string; toastText: string };
+  sistemas: { files: Four; stock: string; conflict: string; note: string; rework: string; modules: Four; orders: string; rows: Three; statuses: Three; stockLabel: string; team: Three; shared: string; toast: string };
+  dashboards: { ask: string; answer: string; days: Three; waiting: string; unknown: string; title: string; period: string; unit: string; live: string; kpis: [{ label: string; prefix: string; value: number; suffix: string }, { label: string; prefix: string; value: number; suffix: string }, { label: string; prefix: string; value: number; suffix: string }]; trend: string; target: string; units: Four; act: string };
+  ecommerce: { inbox: string; unread: string; messages: [{ text: string; time: string }, { text: string; time: string }, { text: string; time: string }, { text: string; time: string }]; away: string; lost: string; product: string; price: string; sizes: Three; add: string; shipping: string; shippingValue: string; total: string; totalValue: string; pay: string; paid: string; order: string; orderTime: string; stock: string; flow: [string, string, string, string, string, string] };
+};
 
 export type Dictionary = {
   meta: { title: string; description: string; tagline: string; socialAlt: string };
+  /** The site footer, on every page. */
+  footer: { statement: [string, string]; lead: string; site: string; solutions: string; contact: string; top: string; privacy: string; made: string; language: string };
   ui: {
     skip: string;
     home: string;
@@ -36,30 +57,27 @@ export type Dictionary = {
     label: string;
     title: string[];
     lead: string;
-    vault: VaultCopy;
-    pillars: { title: string; text: string }[];
+    shield: ShieldCopy;
+    pillars: [{ title: string; text: string }, { title: string; text: string }, { title: string; text: string }];
   };
   solutions: {
     label: string;
     title: string[];
     intro: string;
-    figure: string;
     solvesLabel: string;
     includesLabel: string;
+    modes: { problem: string; solution: string; label: string };
+    replay: string;
     items: Record<SolutionId, {
       title: string;
       summary: string;
       solves: string;
+      result: string;
       cta: string;
-      figure: { title: string; caption: string };
       includes: string[];
     }>;
-    schematic: {
-      sites: { nav: string; hero: string; sections: string; contact: string };
-      sistemas: { modules: [string, string, string, string]; profiles: string; database: string; sheets: string; reports: string; integration: string };
-      dashboards: { sources: [string, string, string]; processing: string; period: string; unit: string; target: string; decision: string };
-      ecommerce: { flow: [string, string, string, string, string, string]; add: string; checkout: string; payment: string; shipping: string; total: string; finish: string };
-    };
+    /** What each scene shows: first the problem, then the solution (components/solutions/stage.tsx). */
+    scenes: SolutionScenes;
   };
   process: {
     label: string;
@@ -67,6 +85,15 @@ export type Dictionary = {
     intro: string;
     outcomeLabel: string;
     steps: { title: string; text: string; outcome: string }[];
+    /** The journey (components/process/journey.tsx): one example project told through the four steps. */
+    journey: {
+      label: string; prev: string; next: string; pause: string; play: string;
+      toasts: [string, string, string, string];
+      understand: { call: string; you: string; us: string; said: [string, string]; board: string; notes: [string, string, string]; doc: string; docLines: [string, string, string] };
+      plan: { title: string; must: string; later: string; items: [string, string, string]; timeline: string; phases: [string, string, string]; why: string };
+      build: { versions: [string, string, string]; comment: string; done: string; title: string; slots: [string, string, string] };
+      launch: { live: string; agenda: string; bookings: [string, string, string, string]; checks: [string, string]; ask: string; answer: string };
+    };
   };
   contact: {
     label: string;
@@ -76,8 +103,14 @@ export type Dictionary = {
     whatsapp: string;
     email: string;
     phone: string;
+    /** The message builder: it only composes; the visitor's own WhatsApp or e-mail sends it. */
+    form: {
+      need: string; kinds: [string, string, string, string, string]; topics: [string, string, string, string];
+      about: string; placeholder: string; name: string; optional: string; preview: string;
+      hello: string; helloNamed: string; want: string; unsure: string; whatsapp: string; email: string; subject: string; note: string;
+    };
   };
-  sticker: { peel: string; found: string; role: string; back: string };
+  sticker: { flip: string; hint: string; found: string; role: string; back: string };
   projects: {
     label: string;
     title: string[];
@@ -118,7 +151,16 @@ export type Dictionary = {
     privateOwn: string;
     github: string;
     note: string;
-    items: Record<ProjectId, { kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[] }>;
+    /** The plain-language view: who it is for, the challenge, what was built, what each action did. */
+    story: { for: string; challenge: string; built: string; happened: string; idle: string };
+    /** Each layer in plain words, for the tags and the panel (the technical name follows). */
+    plain: Record<LayerId, string>;
+    items: Record<ProjectId, {
+      kind: string; summary: string; try: string; layers: Record<LayerId, string>; tech: Record<string, string>; steps: string[];
+      story: { for: string; challenge: string; built: string[] };
+      /** What each action of the live interface did, keyed by its flow. */
+      effects: Record<string, string>;
+    }>;
   };
   /** {email} in text: the contact address, filled from data/site.ts. */
   privacy: { label: string; text: string; dismiss: string };

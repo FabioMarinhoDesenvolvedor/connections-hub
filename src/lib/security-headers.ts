@@ -1,8 +1,8 @@
 /*
   The site's security rules, in one place: next.config.ts sends them as response headers on
-  every route, and the Security section shows (and encrypts) this same list as the code the
-  visitor reads. Everything the page loads is served from its own origin (fonts included,
-  self-hosted by next/font), so the policy can refuse every other origin.
+  every route, and the Security section tells visitors, in plain words, what they mean.
+  Everything the page loads is served from its own origin (fonts included, self-hosted by
+  next/font), so the policy can refuse every other origin.
 
   'unsafe-inline' stays for scripts and styles: the page is static, so per-request nonces are
   not available, and Next inlines its boot data. Other origins are still refused.
@@ -34,5 +34,3 @@ export function securityHeaders(dev = false) {
   ];
 }
 
-/** The excerpt the Security section encrypts: the policy above, as it reads in code. */
-export const CSP_SOURCE = ['// next.config.ts - CSP', 'const csp = [', ...CSP.map(rule => `  "${rule}",`), "].join('; ');"].join('\n');

@@ -258,6 +258,14 @@ Soluções voltou como era.
 - **Verificação (nossa obrigação):** varredura automática em PT, EN e JA, desktop e celular, usando todas as interações do site. Zero violações de CSP, erros, falhas de rede ou estouro de largura.
 - **Removido:** o terminal de código (`code-terminal.tsx`, `data/code.ts`), que também publicava trechos de repositórios privados.
 
+**Refeita em 05/11/2026.** O cofre 3D foi reprovado: "um leigo vai ver isso e não vai entender nada". No lugar, cada selo virou uma história curta que qualquer pessoa entende (`components/security/shield.tsx`), com o mesmo golpe primeiro num **site comum** e depois num **site Connections Hub**:
+- **Conexão cifrada:** uma mensagem sai do celular pelo Wi-Fi do café; o curioso na rede lê tudo, ou só vê embaralhado. O embaralhado é o texto que a pessoa digitou, cifrado de verdade no navegador (AES-GCM). Dá para escrever a própria mensagem.
+- **Só o que é nosso:** script de outro site, anúncio injetado e página falsa voam até a página; no site comum entram (faixa de prêmio, anúncio, tela pedindo senha), no nosso batem no contorno e voltam com "Barrado".
+- **Seus dados em paz:** no site comum, rastreadores montam um perfil da visita; no nosso, "Nenhum rastreador" e o perfil fica vazio.
+- A barra de endereço mostra o que o navegador mostraria ("Não seguro" ou o cadeado). Terracota marca o que dá errado; areia, o que está protegido.
+- Ao entrar na tela, as três tocam sozinhas uma vez. Clicar num selo, no seletor ou em "Ver de novo" assume o controle.
+- Em CSS e SVG, sem three.js. Os estilos em repouso são o último quadro, então movimento reduzido e sem JavaScript mostram direto o final no nosso site. Em janelas estreitas cada história corre de cima para baixo (container query).
+
 ## 14. Blog (03/11/2026)
 
 **Pedido:** um lugar para artigos, opiniões, análises e bastidores de projetos, no espírito do blog do Akita (akitaonrails.com), com anúncios como na página de notícias da Anthropic. O dono escreve; o Claude revisa sem reescrever.
@@ -380,3 +388,85 @@ Soluções voltou como era.
 - **Banco:** as imagens da revisão saem numa consulta só.
 
 **Testado:** de ponta a ponta contra um GitHub falso local (`GITHUB_API_URL`): criar, salvar, prévia, imagem (EXIF removido, 3000 → 2000 px), arquivo que não é imagem, revisão incompleta e completa, segunda revisão no mesmo PR, publicar e descartar. Um post gerado pelo editor passou pelo build de produção. O GitHub de verdade só depois do token.
+
+## 17. Soluções: do problema à solução (06/11/2026)
+
+**Pedido:** os desenhos técnicos da seção ("o esboço") pareciam amadores. O usuário pediu o mesmo padrão da Segurança nova: moderno, bem feito e responsivo.
+
+**O que é agora** (`components/solutions/stage.tsx`): o título da seção virou a história. Cada serviço tem uma cena em duas partes, **o problema** e **a solução**:
+- **Sites:** a busca por "clínica veterinária perto de mim" não mostra a empresa e o site tem 0 contatos. Depois: 1º na busca, o mesmo site no computador e no celular, e chega um contato.
+- **Sistemas e ERP:** planilhas espalhadas com estoque 12 numa e 7 na outra, e "só a Maria sabe atualizar". Depois: os arquivos se juntam num sistema só, o pedido passa de Novo a Separado e a Faturado, e o estoque baixa sozinho de 12 para 11.
+- **Dashboards:** "Quanto vendemos este mês?" respondido em 3 dias, com o calendário virando. Depois: um painel ao vivo, com números contando, a linha de vendas contra a meta e a unidade abaixo da meta marcada.
+- **E-commerces:** mensagens sem resposta às 23h e clientes que desistem. Depois: o cliente escolhe, paga e recebe o pedido às 23:41, com o estoque atualizado e o fluxo do catálogo ao estoque aceso passo a passo.
+
+**Linguagem:** o problema aparece no escuro, com alertas em terracota; a solução é uma interface clara de produto, em off-white, navy e areia. Os dados são fictícios.
+
+**Comportamento:**
+- No desktop, uma janela fixa acompanha o serviço lido (o `data-active` do scroll-spy). Cada troca toca o problema e depois a solução.
+- No celular, cada serviço tem a sua janela, que toca quando aparece na tela.
+- O seletor e "Ver de novo" assumem o controle.
+
+**Técnica:**
+- As cenas são medidas em em, a partir da largura da janela (container query). Elas mantêm a composição do desktop ao celular; abaixo de 520 px, as colunas que apertariam viram uma só.
+- Os estilos em repouso são o último quadro, então movimento reduzido e sem JavaScript mostram a solução.
+
+**Removido:** `components/schematic.tsx` e o `[data-draw]` do `scroll-effects.tsx`, que só os desenhos usavam.
+
+## 18. Projetos: a pilha 3D explicada em palavras simples (06/11/2026)
+
+**Pedido:** melhorar bastante a seção.
+- **Primeira tentativa, reprovada:** um modo "caso de cliente", com a interface de frente e a pilha 3D escondida atrás de "Ver por dentro". O usuário respondeu: "acho que os projetos estavam melhores".
+- **Lição:** a pilha 3D é o que impressiona e deve continuar como protagonista. A explicação para leigos entra em cima dela, sem esconder nada.
+
+**O que mudou:**
+- **Ela se mostra sozinha:** na primeira vez que a bancada fica bem visível, o "Ver em ação" começa por conta própria (1,8 s depois de a pilha abrir). Não começa se a pessoa já usou a interface, nem com movimento reduzido. Pôr a mão ou sair da tela pausa, como antes.
+- **Camadas com nome simples:** "O que você vê", "O que processa", "Onde guarda" e "Com quem conversa" nas etiquetas e no painel. Logo depois vem o nome técnico e a stack (`plain` no dicionário).
+- **Cada ação explicada em uma frase** (`effects`, uma por fluxo). Exemplo: "O post foi para o cliente aprovar, e ele recebeu um aviso no celular".
+  - A frase aparece como aviso no palco e fica no registro "O que acabou de acontecer", no topo do painel.
+  - O aviso some durante a demonstração, que já tem a sua legenda.
+- **A história no painel,** antes da ficha técnica: para quem é, o desafio e o que construímos. O desafio descreve o problema que o produto resolve, não um histórico inventado do cliente.
+- **Ficou igual:** o título, as miniaturas, os fluxos, o raio-X, a ficha, os números do repositório e as regras da seção.
+
+## 19. Processo como jornada, e o rodapé completo (06/11/2026)
+
+**Pedido:** a seção das quatro etapas, "interativa, bonita e amigável", e um rodapé menos simples.
+
+**Processo** (`components/process/journey.tsx`). A rosca que preenchia com a rolagem deu lugar a uma jornada. Um projeto de exemplo, a clínica veterinária das cenas de Soluções, vive cada etapa numa janela navy, como a da Segurança:
+- **Entendemos:** a primeira conversa; o que foi ouvido vira post-its; nasce o diagnóstico.
+- **Planejamos:** prioridades ("Essencial" / "Depois"), as etapas numa linha do tempo e a decisão explicada em linguagem simples.
+- **Desenvolvemos:** a tela vai do rascunho (v0.1) à v1.0, e o comentário do cliente é atendido na v0.2.
+- **Implementamos:** "No ar", a agenda enchendo, equipe treinada e dados migrados, e o suporte respondendo.
+- Cada etapa termina com um aviso do que o cliente recebeu.
+
+**Como funciona:**
+- Abas grandes com barra de progresso avançam sozinhas (8,5 s por etapa) enquanto a seção está na tela.
+- Clicar numa aba, usar as setas do teclado ou os botões anterior/próximo assume o controle.
+- Os textos e o "Você recebe" de cada etapa continuam os da marca.
+- As cenas reaproveitam o canvas das cenas de Soluções (`.sx`).
+
+**Rodapé** (`components/footer.tsx`):
+- o slogan como frase de fechamento e um botão "Voltar ao topo";
+- quatro colunas: o site, as soluções, os contatos e o idioma;
+- o logo oficial na largura toda, só em escala, revelado de baixo para cima quando a página termina;
+- embaixo, o copyright, "Sem cookies e sem rastreadores" e o crédito.
+
+**Removido:** a rosca do Processo, os tokens `--dial-*` e o `[data-progress]` do `scroll-effects.tsx`, que só ela usava.
+
+## 20. Contato com montador de mensagem e o adesivo novo (06/11/2026)
+
+**Pedido:** a área de contato e o adesivo estavam "muito ruins".
+
+**Contato** (`components/contact/composer.tsx`). Ao lado da pergunta, um cartão de papel monta a mensagem:
+- a pessoa escolhe o que precisa (Site, Sistema ou ERP, Dashboard, E-commerce, Ainda não sei), escreve uma linha e, se quiser, o nome;
+- a prévia aparece como um balão de conversa;
+- os botões abrem o WhatsApp (`wa.me` com o texto) ou o e-mail (`mailto:` com assunto e corpo) do próprio visitante, com a mensagem pronta;
+- o site não envia nem guarda nada, então a promessa de privacidade continua valendo, e o cartão diz isso;
+- os canais diretos (WhatsApp, e-mail e telefone) ficam embaixo da pergunta;
+- no celular, o cartão vem logo depois da pergunta, e os canais e o adesivo vêm em seguida.
+
+**Adesivo** (`components/sticker.tsx`). O de descolar em three.js (`lib/sticker/peel.ts`), que quase ninguém descobria como usar, saiu. No lugar:
+- um adesivo de vinil com o ícone oficial numa margem de papel recortada e brilho holográfico;
+- ele se inclina na direção do mouse, com a luz andando sobre ele;
+- um clique (ou Enter) o vira, e o verso assina o site, com o link para o GitHub ao lado;
+- é tudo em CSS. Com movimento reduzido, não se inclina e vira sem animação.
+
