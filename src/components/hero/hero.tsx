@@ -6,8 +6,9 @@ import type { Dictionary } from '@/i18n';
 
 /*
   01 — Opening. One screen: the copy on the left (above, on phones) and, beside it, the
-  official symbol as a 3D object that spins in and stays alive (hero-logo.tsx, DESIGN.md §12).
-  No pinning, no scroll needed. All copy is server-rendered HTML.
+  official symbol as a 3D object that spins in and stays alive, in front of frosted glass, with
+  its official colourways (hero-logo.tsx, DESIGN.md §12). A numbered index of the solutions
+  closes it. No pinning. All copy is server-rendered HTML.
 */
 export function Hero({ t }: { t: Dictionary }) {
   return <section id="inicio" className="hero" aria-labelledby="hero-title">
@@ -24,10 +25,10 @@ export function Hero({ t }: { t: Dictionary }) {
           <a className="button button-secondary" href="#solucoes">{t.hero.secondary}</a>
         </div>
         <nav className="hero-index hero-rise" style={{ '--i': 3 } as CSSProperties} aria-label={t.hero.index}>
-          {solutionIds.map(id => <a key={id} href={`#solucao-${id}`}>{t.solutions.items[id].title}</a>)}
+          {solutionIds.map((id, i) => <a key={id} href={`#solucao-${id}`}><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{t.solutions.items[id].title}</a>)}
         </nav>
       </header>
-      <HeroLogo label={t.hero.symbol} />
+      <HeroLogo t={t.hero} />
     </div>
   </section>;
 }

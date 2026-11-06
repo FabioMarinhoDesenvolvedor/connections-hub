@@ -203,7 +203,13 @@ Detalhes e o risco que fica em `DESIGN.md` §15. O `verify` cobre corpo gigante,
 
 **Revisão de um post vindo do editor:** o rascunho mora no banco. O Claude revisa o PR (`gh pr diff`) e entrega as correções para o usuário aplicar no editor, sem dar push na branch (regra no `CLAUDE.md`).
 
-## 5. Seções refeitas (05 e 06/11): PR #13
+## 5. Seções refeitas (05 e 06/11): PR #13, já em produção
+
+- **Na branch `feature/sobre`** (sem commit ainda):
+  - Sobre refeita (`DESIGN.md` §21): a frase viva e os quatro cartões.
+  - O adesivo de descolar de volta, melhorado; Soluções só com a solução (§22).
+  - A vitrine de vidro dos Projetos e a abertura em vidro (§23); a moldura de estúdio da §22 foi reprovada e saiu.
+  - Aguardando o usuário conferir.
 
 - **Nova versão** na branch `feature/seguranca` (`DESIGN.md` §13, "Refeita em 05/11/2026"): três histórias, cada uma num site comum e depois num site Connections Hub. O cofre 3D (`vault.tsx`, `lib/cipher/renderer.ts`) foi removido.
 - O usuário aprovou ("gostei").

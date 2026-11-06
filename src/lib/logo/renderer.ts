@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { COLOURWAYS } from './colourways';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 
 /*
@@ -39,8 +40,13 @@ export type Placement = { x: number; y: number; half: number };
 
 export type LogoRenderer = {
   draw: (placement: Placement, pose: Pose) => void;
-  /** A drop of ink at (x, y) in canvas pixels; returns where it landed on the symbol (tile half-sizes), or null. */
-  splash: (x: number, y: number) => { x: number; y: number } | null;
+  /**
+   * A drop of ink at (x, y) in canvas pixels, in the colourway `to` (the next one when absent);
+   * returns where it landed on the symbol (tile half-sizes), or null.
+   */
+  splash: (x: number, y: number, to?: number) => { x: number; y: number } | null;
+  /** The colourway the symbol wears, or is being inked into. */
+  readonly colourway: number;
   /** True while ink is still spreading (the caller keeps drawing). */
   readonly inking: boolean;
   resize: (width: number, height: number) => void;
@@ -49,14 +55,7 @@ export type LogoRenderer = {
   readonly stats: { frames: number; ratio: number };
 };
 
-const NAVY = '#183255', ORANGE = '#C16042', PAPER = '#F8F6F0';
-/** The symbol's official colourways: symbol-navy, logo-light, symbol-light, logo. */
-const COLOURWAYS = [
-  { tile: NAVY, mark: ORANGE, sheen: '#9FB2CC' },
-  { tile: ORANGE, mark: PAPER, sheen: '#F2C7B4' },
-  { tile: PAPER, mark: NAVY, sheen: '#FFFFFF' },
-  { tile: NAVY, mark: PAPER, sheen: '#9FB2CC' },
-] as const;
+const NAVY = '#183255', ORANGE = '#C16042';
 const INK_TIME = 1700; // ms for the ink to cover the whole object
 const DROPS = 11;
 const DRIPS = 3;
@@ -352,8 +351,8 @@ export async function createLogoRenderer(canvas: HTMLCanvasElement, options: { d
   const pointer = new THREE.Vector2();
   const random = () => Math.random();
   let inkDisabled = false;
-  const splash = (x: number, y: number) => {
-    if (inkStart >= 0 || inkDisabled) return null;
+  const splash = (x: number, y: number, to?: number) => {
+    if (inkStart >= 0 || inkDisabled || to === colourway) return null;
     pointer.set((x / cssWidth) * 2 - 1, -(y / cssHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObject(object, true);
@@ -367,7 +366,7 @@ export async function createLogoRenderer(canvas: HTMLCanvasElement, options: { d
       drop.set(Math.cos(angle) * distance, Math.sin(angle) * distance, 0.014 + Math.pow(random(), 2) * 0.07 * (1.2 - reach), 0.2 + reach * 1.3);
     }
     for (const drip of ink.uDrips.value) drip.set((random() - 0.5) * 1.1, 0.025 + random() * 0.03, 0.25 + random() * 0.45, 0);
-    inkTarget = (colourway + 1) % COLOURWAYS.length;
+    inkTarget = to ?? (colourway + 1) % COLOURWAYS.length;
     tileInk.value.set(COLOURWAYS[inkTarget].tile);
     markInk.value.set(COLOURWAYS[inkTarget].mark);
     inkStart = performance.now();
@@ -438,6 +437,7 @@ export async function createLogoRenderer(canvas: HTMLCanvasElement, options: { d
   return {
     draw, resize, setTheme, stats, splash,
     get inking() { return inkStart >= 0; },
+    get colourway() { return inkStart >= 0 ? inkTarget : colourway; },
     dispose: () => {
       canvas.removeEventListener('webglcontextlost', handleLost);
       for (const g of [tile.geometry, markGeometry, dotGeometry, page.geometry]) g.dispose();

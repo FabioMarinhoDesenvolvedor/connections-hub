@@ -37,6 +37,9 @@ export const ja: Dictionary = {
     secondary: 'ソリューションを見る',
     index: 'ソリューション',
     symbol: 'Connections Hubのシンボル(3D)',
+    colours: "シンボルの公式カラー",
+    names: ["ネイビーとテラコッタ", "テラコッタとペーパー", "ペーパーとネイビー", "ネイビーとペーパー"],
+    hint: "ドラッグで回転 · クリックで塗る",
   },
   about: {
     label: '私たちについて',
@@ -51,6 +54,7 @@ export const ja: Dictionary = {
       { term: '範囲', detail: '診断から導入まで。各段階の成果物をご確認いただけます。' },
       { term: '体制', detail: '自社で書いたコードと、開発者と直接話せる体制。' },
     ],
+    board: {"rotate": "つくるもの:", "words": ["Webサイト", "業務システム・ERP", "ダッシュボード", "ECサイト", "アプリ"], "links": ["ソリューションを見る", "プロジェクトを見る", "プロセスを見る", "相談する"], "problem": "注文がWhatsAppで行方不明になる。", "solved": "解決", "steps": ["理解する", "計画する", "開発する", "導入する"], "you": "あなた", "dev": "開発者", "ask": "このボタン、変えられますか?", "answer": "変えました。ページを更新してください。", "direct": "仲介なし"},
   },
   security: {
     label: "セキュリティ",
@@ -99,7 +103,6 @@ export const ja: Dictionary = {
     label: 'ソリューション',
     title: ['課題から、', 'ソリューションへ。'],
     intro: '業務に必要なことから、お客様と一緒に定める4つの領域。ひとつのプロジェクトで複数を組み合わせることもできます。',
-    modes: { problem: '課題', solution: 'ソリューション', label: '課題とソリューションを切り替え' },
     replay: 'もう一度',
     solvesLabel: '解決すること',
     includesLabel: '含められる内容',
@@ -139,30 +142,21 @@ export const ja: Dictionary = {
     },
     scenes: {
       sites: {
-        query: '近くの動物病院',
-        results: [{ name: 'しあわせ動物病院', url: 'shiawase-vet.jp' }, { name: '24時間ベットセンター', url: 'vetcenter24.jp' }, { name: 'ペットクリニック桜', url: 'sakura-pet.jp' }],
-        missing: 'あなたの病院は表示されない', leads: '今週のサイトからの問い合わせ',
         domain: 'vet-tomo.jp', rank: '検索1位', cta: '診察を予約',
         toast: 'サイトから新しい問い合わせ', toastText: '土曜日に診察を予約したいです。',
       },
       sistemas: {
         files: ['受注_最終_v3.xlsx', '在庫 (2).xlsx', '経理-佐藤.xlsx', '顧客_旧.xlsx'],
-        stock: '在庫', conflict: 'どちらが正しい?', note: '更新できるのは佐藤さんだけ', rework: '同じ注文を3回入力',
         modules: ['受注', '在庫', '請求', '財務'], orders: '本日の注文',
         rows: ['#1042 · 中央マーケット', '#1043 · 日向ベーカリー', '#1044 · ベラストア'], statuses: ['新規', 'ピッキング済み', '請求済み'],
         stockLabel: '在庫 · 塗料 18 L', team: ['営業', '在庫', '経理'], shared: '全員が同じ数字を見る', toast: '在庫が自動で更新',
       },
       dashboards: {
-        ask: '今月の売上はいくら?', answer: 'スプレッドシートをまとめます。3日後にできます。', days: ['月', '火', '水'],
-        waiting: 'レポート待ち', unknown: '今月の売上',
         title: '売上', period: '今月', unit: '全店舗', live: 'たった今更新',
         kpis: [{ label: '売上高', prefix: '¥', value: 248, suffix: '万' }, { label: '注文数', prefix: '', value: 312, suffix: '' }, { label: '目標達成率', prefix: '', value: 92, suffix: '%' }],
         trend: '日別の売上', target: '目標', units: ['中央', '北', '南', '東'], act: '南店が目標未達',
       },
       ecommerce: {
-        inbox: 'メッセージ', unread: '未読12件',
-        messages: [{ text: 'Mサイズはありますか?', time: '23:12' }, { text: '送料はいくらですか?', time: '23:20' }, { text: '青はまだありますか?', time: '23:31' }, { text: 'もしもし??', time: '23:40' }],
-        away: '返信は明日の9時から', lost: '人のお客様が今夜あきらめた',
         product: 'ベーシックTシャツ ブルー', price: '¥2,980', sizes: ['S', 'M', 'L'], add: 'カートに入れる',
         shipping: '送料', shippingValue: '¥600', total: '合計', totalValue: '¥3,580', pay: 'カード', paid: '決済完了',
         order: '注文 #1042 支払い済み', orderTime: '23:41 · あなたが寝ている間に', stock: '在庫 M: 8 → 7',
@@ -193,7 +187,7 @@ export const ja: Dictionary = {
     phone: 'お電話:',
     form: {"need": "必要なものは?", "kinds": ["Webサイト", "業務システム・ERP", "ダッシュボード", "ECサイト", "まだわからない"], "topics": ["Webサイト", "業務システム・ERP", "ダッシュボード", "ECサイト"], "about": "ひとことで教えてください", "placeholder": "例:お客様にサイトから予約してほしい。", "name": "お名前", "optional": "任意", "preview": "メッセージ", "hello": "こんにちは。", "helloNamed": "こんにちは、{name}です。", "want": "{topic}について相談したいです。", "unsure": "何が必要かまだわかりませんが、相談したいです。", "whatsapp": "WhatsAppで送る", "email": "メールで送る", "subject": "サイトからのお問い合わせ", "note": "このサイトからは何も送信されません。メッセージはお使いのWhatsAppまたはメールで開き、確認してから送れます。"},
   },
-  sticker: {"flip": "Connections Hubのステッカーを裏返す", "hint": "ステッカーをどうぞ。カーソルを乗せて、クリックで裏返せます。", "found": "裏面を見つけました。", "role": "このサイトのデザインと開発", "back": "表に戻す"},
+  sticker: {"peel": "Connections Hubのステッカーをはがす", "hint": "角をつまんで、はがしてみて", "found": "ステッカーを見つけましたね。", "role": "このサイトのデザインと開発", "back": "元に戻す"},
   projects: {
     label: 'プロジェクト',
     title: ['動いているコード。', '内側まで開く。'],
@@ -268,6 +262,7 @@ export const ja: Dictionary = {
     github: 'GitHubのリポジトリ',
     note: '各システムのデザインをもとに、架空のデータで再構成したインターフェースです。モジュール、ルート、テーブルの名前はコードのままです。',
     story: {"for": "対象", "challenge": "課題", "built": "作ったもの", "happened": "いま起きたこと", "idle": "上のインターフェースを操作してみてください。操作ごとに、ここにわかりやすく表示されます。"},
+    showcase: {"of": "/", "next": "スクロールで次のプロジェクトへ", "inside": "3Dで中身を見る", "watch": "動きを見る", "stop": "停止", "close": "閉じる"},
     plain: {"interface": "見える部分", "services": "処理する部分", "data": "保存する場所", "infra": "つながる相手"},
     items: {
       marketing: {

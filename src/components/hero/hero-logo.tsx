@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { COLOURWAYS } from '@/lib/logo/colourways';
 import type { LogoRenderer, Pose } from '@/lib/logo/renderer';
 
 /*
@@ -19,6 +20,11 @@ import type { LogoRenderer, Pose } from '@/lib/logo/renderer';
   Until the 3D engine is ready (or without WebGL2, with data saver or on a weak device) the
   official symbol file is shown; it spins in with CSS if the 3D does not arrive. With reduced
   motion the official symbol simply stands there.
+
+  Behind it, a pane of frosted glass with soft brand light under it; both drift with the
+  pointer, a little, so the symbol floats in front of real depth. Under it, in a glass pill,
+  the four official colourways: one is the colour it wears, and choosing another drops that ink
+  on it. A quiet hint says it can be turned and painted, until the visitor does either.
 */
 
 const ENTRANCE = 2600;          // ms
@@ -84,8 +90,14 @@ function entrance(t: number): Pose {
 
 type Mode = 'waiting' | 'gl' | 'css' | 'still';
 
-export function HeroLogo({ label }: { label: string }) {
+type Copy = { symbol: string; colours: string; names: [string, string, string, string]; hint: string };
+
+export function HeroLogo({ t }: { t: Copy }) {
   const root = useRef<HTMLDivElement>(null);
+  const paint = useRef<(index: number) => void>(() => {});
+  const [gl, setGl] = useState(false);
+  const [colour, setColour] = useState(0);
+  const [used, setUsed] = useState(false);
 
   useEffect(() => {
     const stage = root.current;
@@ -184,6 +196,8 @@ export function HeroLogo({ label }: { label: string }) {
         clearTimeout(budget);
         measure();
         setMode('gl');
+        setGl(true);
+        setColour(created.colourway);
         began = performance.now();
         request();
       } catch { playCss(); }
@@ -228,17 +242,25 @@ export function HeroLogo({ label }: { label: string }) {
       delete stage.dataset.dragging;
       if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId);
       if (event.timeStamp - lastMove > 90) spinVel = [0, 0, 0]; // held still before letting go
+      if (dragMoved >= 4) setUsed(true);
       settling = false;
       if (dragMoved < 4 && !caught && renderer && performance.now() - began > ENTRANCE * 0.8) {
         // a click on a resting symbol: a drop of ink lands where the pointer is
         const rect = canvas.getBoundingClientRect();
         const landed = renderer.splash(event.clientX - rect.left, event.clientY - rect.top);
-        if (landed) { hit = performance.now(); push = landed; }
+        if (landed) { hit = performance.now(); push = landed; setColour(renderer.colourway); setUsed(true); }
       }
       caught = false;
     };
 
-    const onTheme = () => { renderer?.setTheme(isDark()); request(); };
+    const onTheme = () => { renderer?.setTheme(isDark()); if (renderer) setColour(renderer.colourway); request(); };
+    // A swatch: that colourway's ink lands a little above the middle of the symbol.
+    paint.current = (index: number) => {
+      if (!renderer || mode !== 'gl' || performance.now() - began < ENTRANCE * 0.8) return;
+      const half = placement().half;
+      const landed = renderer.splash(box.width / 2 + (Math.random() - 0.5) * half * 0.4, box.height / 2 - half * 0.35, index);
+      if (landed) { hit = performance.now(); push = landed; setColour(index); setUsed(true); request(); }
+    };
     const onVisibility = () => { if (!document.hidden) request(); };
     const onPreference = () => {
       if (!reduced.matches) return;
@@ -266,6 +288,15 @@ export function HeroLogo({ label }: { label: string }) {
     stage.dataset.ready = '';
 
     window.addEventListener('pointermove', onMove, { passive: true });
+    // The glass and the light drift with the pointer (from the stage's centre, -1..1).
+    const holder = stage.parentElement as HTMLElement;
+    const onDrift = (event: PointerEvent) => {
+      if (reduced.matches || event.pointerType !== 'mouse') return;
+      const b = holder.getBoundingClientRect();
+      holder.style.setProperty('--px', (((event.clientX - b.left) / b.width) * 2 - 1).toFixed(3));
+      holder.style.setProperty('--py', (((event.clientY - b.top) / b.height) * 2 - 1).toFixed(3));
+    };
+    window.addEventListener('pointermove', onDrift, { passive: true });
     stage.addEventListener('pointerdown', onDown);
     const noDrag = (event: Event) => event.preventDefault();
     stage.addEventListener('dragstart', noDrag);
@@ -281,6 +312,7 @@ export function HeroLogo({ label }: { label: string }) {
       cancelAnimationFrame(frame);
       visibility.disconnect(); resizer.disconnect();
       window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointermove', onDrift);
       stage.removeEventListener('pointerdown', onDown);
       stage.removeEventListener('dragstart', noDrag);
       window.removeEventListener('pointerup', onUp);
@@ -292,12 +324,21 @@ export function HeroLogo({ label }: { label: string }) {
     };
   }, []);
 
-  return <div className="hero-logo" ref={root} role="img" aria-label={label}>
-    {/* The official symbol files, never redrawn: shown before (or instead of) the 3D. */}
-    <span className="hero-symbol" aria-hidden="true">
-      <img className="for-light" src="/brand/symbol-navy.svg" width="632" height="632" alt="" draggable={false} />
-      <span className="for-dark"><img src="/brand/logo-light.svg" width="1408" height="311" alt="" draggable={false} /></span>
-    </span>
-    <canvas className="hero-canvas" aria-hidden="true" />
+  return <div className="hero-stage" data-gl={gl || undefined}>
+    <span className="hero-glow" aria-hidden="true"><i /><i /><i /></span>
+    <span className="hero-glass" aria-hidden="true" />
+    <div className="hero-logo" ref={root} role="img" aria-label={t.symbol}>
+      {/* The official symbol files, never redrawn: shown before (or instead of) the 3D. */}
+      <span className="hero-symbol" aria-hidden="true">
+        <img className="for-light" src="/brand/symbol-navy.svg" width="632" height="632" alt="" draggable={false} />
+        <span className="for-dark"><img src="/brand/logo-light.svg" width="1408" height="311" alt="" draggable={false} /></span>
+      </span>
+      <canvas className="hero-canvas" aria-hidden="true" />
+    </div>
+    <div className="hero-colours" role="group" aria-label={t.colours} hidden={!gl}>
+      {COLOURWAYS.map((way, i) => <button key={i} type="button" className="hero-swatch" aria-pressed={colour === i} aria-label={t.names[i]} title={t.names[i]}
+        style={{ '--tile': way.tile, '--mark': way.mark } as CSSProperties} onClick={() => paint.current(i)} />)}
+      <span className="hero-hint" data-used={used || undefined}>{t.hint}</span>
+    </div>
   </div>;
 }
