@@ -196,6 +196,30 @@ export const pt: Dictionary = {
   },
   sticker: {"peel": "Descolar o adesivo da Connections Hub", "hint": "Puxe pelo canto", "found": "Você achou o adesivo.", "role": "Design e desenvolvimento deste site", "back": "Colar de volta"},
   // Facts from the repositories (src/data/projects.ts). No usage numbers: none were measured.
+  monitor: {
+    label: "Monitor ao vivo",
+    title: ["Status de TI", "em tempo real."],
+    intro: "O HubMonitor reúne o status oficial de Cloudflare, Google Cloud, Azure e GitHub num só painel. Quando algo cai, você sabe antes do primeiro chamado.",
+    open: "Abrir o monitor",
+    note: "Dados públicos dos próprios fornecedores, lidos a cada 2 minutos. Um produto da Connections Hub.",
+    windowLabel: "Prévia ao vivo do HubMonitor",
+    read: "lido às {time}",
+    state: {
+      clear: "Nenhum impacto informado pelos fornecedores",
+      impactOne: "1 serviço informa impacto agora",
+      impact: "{n} serviços informam impacto agora",
+      partial_data: "Nenhum impacto nas fontes em dia",
+      no_data: "Sem leituras recentes das fontes",
+    },
+    status: {
+      operational: "Operacional", no_incident: "Sem incidente", maintenance: "Manutenção",
+      degraded: "Degradado", partial_outage: "Falha parcial", major_outage: "Indisponível", unknown: "Sem leitura",
+    },
+    stale: "Sem leitura atual",
+    axis: { start: "24 h atrás", now: "agora" },
+    stripLabel: "{name} nas últimas 24 horas",
+    caption: "Cada faixa mostra as últimas 24 horas em blocos de 20 minutos. Espaços vazios são períodos sem leitura.",
+  },
   projects: {
     label: 'Projetos',
     title: ['Código em uso.', 'Aberto por dentro.'],

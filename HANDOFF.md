@@ -8,6 +8,14 @@ Estado do que foi feito e do que está em andamento. Leia antes de continuar o t
 - O editor de posts no painel (`/admin/posts`) está na branch `feature/editor-posts` (seção 4c). Ele precisa de um token do GitHub que o usuário cria.
 - O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
 
+**HubMonitor (13/11/2026, branch `feature/hubmonitor-preview`, sem commit):**
+- Nova seção "Monitor ao vivo" na home, antes de Projetos: uma janela do console do HubMonitor (estado, serviços e faixas de 24 h), em PT/EN/JA.
+- Os dados são lidos **no servidor** de `https://monitor.connectionshub.com.br/api/v1/summary` (`src/lib/monitor.ts`, ISR 120 s). O CSP continua `connect-src 'self'`.
+- Se o monitor não responder, a seção não aparece. Hoje o subdomínio ainda não existe, então em produção ela fica oculta até o deploy do monitor.
+- Arquivos: `src/components/sections/monitor.tsx`, `src/lib/monitor.ts`, chave `monitor` em `src/i18n/*`, bloco `.monitor` no fim do `globals.css`, `page.tsx`, `.env.example`.
+- Verificação: `tsc`, `next build` (homes `/pt`, `/en`, `/ja` agora em ISR 120 s) e `verify` ok, exceto `Referências/`. Visual conferido em 1440 e 390 com o monitor local.
+- Documentação do monitor e deploy: `/home/fabio/Projects/HubMonitor/HANDOFF.md` e `docs/DEPLOY.md`.
+
 **Antes de mexer no código:**
 - Rode `npm install` e leia o guia do Next em `node_modules/next/dist/docs/` (exigência do `AGENTS.md`).
 - Rode `git fetch` antes de começar: em 22/10, outra sessão publicou três commits da seção Segurança direto no `main`, e este handoff não sabia deles até 03/11.

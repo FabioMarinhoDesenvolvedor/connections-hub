@@ -3,6 +3,7 @@ import { Hero } from '@/components/hero/hero';
 import { About } from '@/components/sections/about';
 import { BlogLatest } from '@/components/sections/blog-latest';
 import { Contact } from '@/components/sections/contact';
+import { Monitor } from '@/components/sections/monitor';
 import { Process } from '@/components/sections/process';
 import { Projects } from '@/components/sections/projects';
 import { Security } from '@/components/sections/security';
@@ -34,6 +35,7 @@ export default async function Home({ params }: PageProps<'/[lang]'>) {
     <About t={t.about} />
     <Security t={t.security} />
     <Solutions t={t.solutions} />
+    <Monitor t={t.monitor} locale={localeInfo[lang].html} />
     <Projects t={t.projects} ui={t.ui} locale={localeInfo[lang].html} lang={lang} />
     <Process t={t.process} />
     <BlogLatest t={t.blog} locale={lang} />

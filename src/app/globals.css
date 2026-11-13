@@ -2218,3 +2218,61 @@ html.js:lang(ja) .hero-copy .actions { flex-wrap: wrap; }
   .editor-preview { padding: var(--space-5); }
   .editor-discard { margin-left: 0; }
 }
+
+/* ---------- HubMonitor preview (components/sections/monitor.tsx) ----------
+   A navy band with a live window onto monitor.connectionshub.com.br. Status tones are the
+   monitor's own (muted, legible on navy); colour is never the only signal (each state has text). */
+.monitor { padding-block: var(--section-space); overflow: hidden; }
+.monitor { --tone-ok: #4cc497; --tone-warn: #ecb44f; --tone-crit: #f37c68; --tone-info: #7aa8e0; --tone-neutral: #8a9db2; --tone-unknown: #6a7c90; }
+.monitor .tone-ok { --tone: var(--tone-ok); }
+.monitor .tone-warn { --tone: var(--tone-warn); }
+.monitor .tone-crit { --tone: var(--tone-crit); }
+.monitor .tone-info { --tone: var(--tone-info); }
+.monitor .tone-neutral { --tone: var(--tone-neutral); }
+.monitor .tone-unknown { --tone: var(--tone-unknown); }
+.monitor-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-16); align-items: center; }
+.monitor-copy { display: grid; gap: var(--space-8); align-content: start; }
+.monitor-note { max-width: 40ch; font-size: var(--text-small); color: var(--text-on-deep-muted); opacity: .8; }
+
+.monitor-window {
+  margin: 0; padding: var(--space-6); border-radius: var(--radius-m);
+  background: #0d1726; border: 1px solid var(--rule-on-deep);
+  box-shadow: 0 30px 80px -40px rgb(0 0 0 / 60%);
+  color: #d7dfe5; font-variant-numeric: tabular-nums;
+}
+.monitor-bar { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding-bottom: var(--space-4); border-bottom: 1px solid var(--rule-on-deep); font-family: var(--font-mono); font-size: 12px; color: var(--mist); }
+.monitor-host { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.monitor-read { display: inline-flex; align-items: center; gap: var(--space-2); white-space: nowrap; color: var(--sand); }
+.monitor-live { width: 7px; height: 7px; border-radius: 50%; background: var(--tone-ok); }
+@media (prefers-reduced-motion: no-preference) {
+  .monitor-live { animation: monitor-pulse 2.4s var(--ease-out) infinite; }
+}
+@keyframes monitor-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tone-ok) 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 6px transparent; } }
+
+.monitor-state { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-5); font-size: clamp(18px, 1.6vw, 22px); font-weight: 500; letter-spacing: -0.02em; color: var(--off-white); }
+.monitor-state .monitor-dot { width: 10px; height: 10px; }
+.monitor-dot { display: inline-block; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--tone); }
+
+.monitor-axis { display: grid; grid-template-columns: minmax(0, 24%) minmax(0, 18%) minmax(0, 1fr); gap: var(--space-4); margin-top: var(--space-6); padding-bottom: var(--space-2); font-family: var(--font-mono); font-size: 11px; color: var(--sand); }
+.monitor-scale { display: flex; justify-content: space-between; padding-inline: 1px; border-inline: 1px solid color-mix(in srgb, var(--sand) 45%, transparent); padding: 0 6px; }
+.monitor-rows { list-style: none; margin: var(--space-2) 0 0; padding: 0; }
+.monitor-rows li { display: grid; grid-template-columns: minmax(0, 24%) minmax(0, 18%) minmax(0, 1fr); align-items: center; gap: var(--space-4); padding-block: var(--space-3); border-top: 1px solid var(--rule-on-deep); }
+.monitor-name { display: grid; font-size: 15px; font-weight: 500; color: var(--off-white); min-width: 0; }
+.monitor-name small { font-size: 12px; font-weight: 400; color: var(--mist); opacity: .75; }
+.monitor-status { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; font-weight: 500; color: var(--tone); white-space: nowrap; }
+.monitor-strip { display: grid; grid-template-columns: repeat(72, minmax(0, 1fr)); gap: 2px; height: 26px; }
+.monitor-strip i { border-radius: 1px; background: var(--tone); }
+.monitor-strip i.tone-neutral { background: color-mix(in srgb, var(--tone) 55%, transparent); }
+.monitor-strip i.tone-unknown { background: rgb(204 214 219 / 7%); }
+.monitor-caption { margin-top: var(--space-4); font-size: 12px; line-height: 1.5; color: var(--mist); opacity: .7; }
+
+@media (max-width: 1099px) {
+  .monitor-grid { grid-template-columns: 1fr; gap: var(--space-12); }
+}
+@media (max-width: 599px) {
+  .monitor-window { padding: var(--space-4); margin-inline: calc(var(--space-2) * -1); }
+  .monitor-rows li { grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2) var(--space-3); }
+  .monitor-strip { grid-column: 1 / -1; height: 18px; gap: 1px; }
+  .monitor-axis { grid-template-columns: 1fr; }
+  .monitor-axis > span:not(.monitor-scale) { display: none; }
+}
