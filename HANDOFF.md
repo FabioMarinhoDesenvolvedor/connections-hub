@@ -1,14 +1,20 @@
-# Handoff — atualizado em 03/11/2026
+# Handoff — atualizado em 13/11/2026
 
 Estado do que foi feito e do que está em andamento. Leia antes de continuar o trabalho no site ou no Tasks.
 
-**Agora:**
+**Último (13/11/2026): HubMonitor integrado e domínio raiz corrigido.** Tudo em produção:
+- PR #15: seção "Monitor ao vivo" na home, ligada a https://monitor.connectionshub.com.br (o monitor está no ar no Render).
+- PR #16: "Novidades" e "Monitor ↗" no menu, mais a pílula do último anúncio na home.
+- DNS (GoDaddy): o registro A "WebsiteBuilder Site" foi removido. `connectionshub.com.br` vai só para a Vercel e redireciona para `www`.
+- Detalhes do monitor: `/home/fabio/Projects/HubMonitor/HANDOFF.md` (repo privado `FabioMarinhoDesenvolvedor/hubmonitor`).
+
+**Agora (estado de 03/11, pode estar desatualizado):**
 - O blog está pronto na branch `feature/blog`, em PR (#8). Detalhes na seção 4.
 - Os comentários com aprovação estão na branch `feature/comentarios`, feita em cima do blog (seção 4b). Eles dependem de três configurações que o usuário faz na Vercel e no GitHub.
 - O editor de posts no painel (`/admin/posts`) está na branch `feature/editor-posts` (seção 4c). Ele precisa de um token do GitHub que o usuário cria.
 - O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
 
-**Menu + Novidades (13/11/2026, branch `feature/monitor-e-novidades`):**
+**Menu + Novidades (13/11/2026, PR #16, mesclado e em produção):**
 - Menu (desktop e celular): **Novidades** (vai para `/blog/anuncios`) e **Monitor ↗** (https://monitor.connectionshub.com.br).
 - **Pílula "Novidade"** acima do título da home, com o anúncio mais recente do blog (`kind: anuncio`, `src/lib/news.ts`). Para anunciar um lançamento, publique um post do tipo **anúncio** pelo editor: a pílula e o menu se atualizam no próximo deploy.
 - O pontinho em "Novidades" aparece enquanto o último anúncio tem até 14 dias. É calculado no navegador, sem guardar nada, então o aviso de privacidade continua verdadeiro.
@@ -17,7 +23,7 @@ Estado do que foi feito e do que está em andamento. Leia antes de continuar o t
 **HubMonitor (13/11/2026, branch `feature/hubmonitor-preview`, mesclado no PR #15):**
 - Nova seção "Monitor ao vivo" na home, antes de Projetos: uma janela do console do HubMonitor (estado, serviços e faixas de 24 h), em PT/EN/JA.
 - Os dados são lidos **no servidor** de `https://monitor.connectionshub.com.br/api/v1/summary` (`src/lib/monitor.ts`, ISR 120 s). O CSP continua `connect-src 'self'`.
-- Se o monitor não responder, a seção não aparece. Hoje o subdomínio ainda não existe, então em produção ela fica oculta até o deploy do monitor.
+- Se o monitor não responder, a seção não aparece (nunca mostra dado falso). O monitor está no ar desde 13/11/2026 e a seção aparece em produção.
 - Arquivos: `src/components/sections/monitor.tsx`, `src/lib/monitor.ts`, chave `monitor` em `src/i18n/*`, bloco `.monitor` no fim do `globals.css`, `page.tsx`, `.env.example`.
 - Verificação: `tsc`, `next build` (homes `/pt`, `/en`, `/ja` agora em ISR 120 s) e `verify` ok, exceto `Referências/`. Visual conferido em 1440 e 390 com o monitor local.
 - Documentação do monitor e deploy: `/home/fabio/Projects/HubMonitor/HANDOFF.md` e `docs/DEPLOY.md`.
