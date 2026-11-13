@@ -117,6 +117,22 @@ export type Dictionary = {
     };
   };
   sticker: { peel: string; hint: string; found: string; role: string; back: string };
+  /** HubMonitor preview (components/sections/monitor.tsx). {n}, {time} and {name} are filled in. */
+  monitor: {
+    label: string;
+    title: string[];
+    intro: string;
+    open: string;
+    note: string;
+    windowLabel: string;
+    read: string;
+    state: { clear: string; impactOne: string; impact: string; partial_data: string; no_data: string };
+    status: { operational: string; no_incident: string; maintenance: string; degraded: string; partial_outage: string; major_outage: string; unknown: string };
+    stale: string;
+    axis: { start: string; now: string };
+    stripLabel: string;
+    caption: string;
+  };
   projects: {
     label: string;
     title: string[];
