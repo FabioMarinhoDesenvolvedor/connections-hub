@@ -8,7 +8,13 @@ Estado do que foi feito e do que está em andamento. Leia antes de continuar o t
 - O editor de posts no painel (`/admin/posts`) está na branch `feature/editor-posts` (seção 4c). Ele precisa de um token do GitHub que o usuário cria.
 - O próximo trabalho é refazer a seção Segurança (seção 5), que o usuário deixou para o fim.
 
-**HubMonitor (13/11/2026, branch `feature/hubmonitor-preview`, sem commit):**
+**Menu + Novidades (13/11/2026, branch `feature/monitor-e-novidades`):**
+- Menu (desktop e celular): **Novidades** (vai para `/blog/anuncios`) e **Monitor ↗** (https://monitor.connectionshub.com.br).
+- **Pílula "Novidade"** acima do título da home, com o anúncio mais recente do blog (`kind: anuncio`, `src/lib/news.ts`). Para anunciar um lançamento, publique um post do tipo **anúncio** pelo editor: a pílula e o menu se atualizam no próximo deploy.
+- O pontinho em "Novidades" aparece enquanto o último anúncio tem até 14 dias. É calculado no navegador, sem guardar nada, então o aviso de privacidade continua verdadeiro.
+- Opção escolhida pelo dono entre 3 prévias (pílula + menu / pop-up / bloco de lançamentos).
+
+**HubMonitor (13/11/2026, branch `feature/hubmonitor-preview`, mesclado no PR #15):**
 - Nova seção "Monitor ao vivo" na home, antes de Projetos: uma janela do console do HubMonitor (estado, serviços e faixas de 24 h), em PT/EN/JA.
 - Os dados são lidos **no servidor** de `https://monitor.connectionshub.com.br/api/v1/summary` (`src/lib/monitor.ts`, ISR 120 s). O CSP continua `connect-src 'self'`.
 - Se o monitor não responder, a seção não aparece. Hoje o subdomínio ainda não existe, então em produção ela fica oculta até o deploy do monitor.

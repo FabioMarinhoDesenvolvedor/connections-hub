@@ -196,7 +196,9 @@ export const pt: Dictionary = {
   },
   sticker: {"peel": "Descolar o adesivo da Connections Hub", "hint": "Puxe pelo canto", "found": "Você achou o adesivo.", "role": "Design e desenvolvimento deste site", "back": "Colar de volta"},
   // Facts from the repositories (src/data/projects.ts). No usage numbers: none were measured.
+  news: { nav: "Novidades", pill: "Novidade", pillLabel: "Última novidade: {title}", fresh: "há novidade recente" },
   monitor: {
+    nav: "Monitor",
     label: "Monitor ao vivo",
     title: ["Status de TI", "em tempo real."],
     intro: "O HubMonitor reúne o status oficial de Cloudflare, Google Cloud, Azure e GitHub num só painel. Quando algo cai, você sabe antes do primeiro chamado.",

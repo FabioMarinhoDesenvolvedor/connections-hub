@@ -188,7 +188,9 @@ export const en: Dictionary = {
     form: {"need": "What do you need?", "kinds": ["Website", "System or ERP", "Dashboard", "E-commerce", "Not sure yet"], "topics": ["a website", "a system or ERP", "a dashboard", "an e-commerce shop"], "about": "Tell us in a few words", "placeholder": "E.g. I want my clients to book through the site.", "name": "Your name", "optional": "optional", "preview": "Your message", "hello": "Hello!", "helloNamed": "Hello! I am {name}.", "want": "I would like to talk about {topic}.", "unsure": "I am not sure yet what I need and would like to talk.", "whatsapp": "Send on WhatsApp", "email": "Send by e-mail", "subject": "Contact from the website", "note": "Nothing is sent by this site: the message opens in your WhatsApp or e-mail, for you to check before sending."},
   },
   sticker: {"peel": "Peel off the Connections Hub sticker", "hint": "Pull it by the corner", "found": "You found the sticker.", "role": "Design and development of this site", "back": "Stick it back"},
+  news: { nav: "News", pill: "New", pillLabel: "Latest news: {title}", fresh: "recent news" },
   monitor: {
+    nav: "Monitor",
     label: "Live monitor",
     title: ["IT status,", "in real time."],
     intro: "HubMonitor brings the official status of Cloudflare, Google Cloud, Azure and GitHub into one console. When something breaks, you know before the first ticket.",

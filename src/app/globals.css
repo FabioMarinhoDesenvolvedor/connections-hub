@@ -69,7 +69,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .brand-link .logo-light { position: absolute; inset: 0; visibility: hidden; }
 .site-header[data-theme="dark"] .logo-light, :root[data-theme="dark"] .logo-light { visibility: visible; }
 .site-header[data-theme="dark"] .logo-default, :root[data-theme="dark"] .logo-default { visibility: hidden; }
-.desktop-navigation { display: flex; gap: var(--space-8); margin-left: auto; }
+.desktop-navigation { display: flex; gap: var(--space-6); margin-left: auto; }
 .desktop-navigation a { position: relative; display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 500; opacity: .78; transition: opacity var(--duration-micro) var(--ease-standard); }
 .desktop-navigation a:hover, .desktop-navigation a[aria-current] { opacity: 1; }
 /* The meeting point marks the section being read. */
@@ -109,7 +109,8 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .mobile-tools .theme-toggle { display: none; }
 @media (max-width: 1180px) and (min-width: 900px) {
   .navigation { gap: var(--space-6); }
-  .desktop-navigation { gap: var(--space-5); }
+  .desktop-navigation { gap: var(--space-4); }
+  .desktop-navigation a { font-size: 14px; }
 }
 @media (max-width: 899px) {
   .desktop-navigation, .header-contact, .header-tools .languages { display: none; }
@@ -2275,4 +2276,31 @@ html.js:lang(ja) .hero-copy .actions { flex-wrap: wrap; }
   .monitor-strip { grid-column: 1 / -1; height: 18px; gap: 1px; }
   .monitor-axis { grid-template-columns: 1fr; }
   .monitor-axis > span:not(.monitor-scale) { display: none; }
+}
+
+/* ---------- Launch news + monitor link (lib/news.ts, navigation.tsx, hero.tsx) ----------
+   Sober by design: one pill above the hero title with the newest announcement, a small dot on
+   "Novidades" while it is recent, and an external-link mark on "Monitor". Nothing stored. */
+.nav-dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: top; transform: translateY(-2px); }
+.desktop-navigation a .nav-dot { align-self: flex-start; margin-top: 12px; }
+.nav-external { margin-left: 3px; opacity: .6; transition: transform var(--duration-micro) var(--ease-standard), opacity var(--duration-micro) var(--ease-standard); }
+.nav-monitor:hover .nav-external { opacity: 1; transform: translate(1px, -1px); }
+.mobile-navigation .nav-external { width: 18px; height: 18px; align-self: center; }
+
+.news-pill {
+  display: inline-flex; align-items: center; gap: var(--space-3); max-width: 100%;
+  padding: 5px 14px 5px 5px; border-radius: var(--radius-pill);
+  border: 1px solid var(--rule-strong); background: color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(8px); color: var(--text-strong); font-size: 14px; line-height: 1.2;
+  transition: border-color var(--duration-ui) var(--ease-standard), background-color var(--duration-ui) var(--ease-standard);
+}
+.news-pill:hover { border-color: var(--text-strong); }
+.news-pill-tag { flex-shrink: 0; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--accent); color: #fff; font-size: 12px; font-weight: 500; letter-spacing: .02em; }
+.news-pill-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.news-pill-date { flex-shrink: 0; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.news-pill .arrow { flex-shrink: 0; }
+.news-pill:hover .arrow { transform: translateX(3px); }
+@media (max-width: 599px) {
+  .news-pill { font-size: 13px; gap: var(--space-2); padding-right: 12px; }
+  .news-pill-date { display: none; }
 }
