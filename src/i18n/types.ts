@@ -117,8 +117,11 @@ export type Dictionary = {
     };
   };
   sticker: { peel: string; hint: string; found: string; role: string; back: string };
+  /** Launch news: the hero pill and the "Novidades" menu item, fed by blog posts of kind "anuncio". */
+  news: { nav: string; pill: string; pillLabel: string; fresh: string };
   /** HubMonitor preview (components/sections/monitor.tsx). {n}, {time} and {name} are filled in. */
   monitor: {
+    nav: string;
     label: string;
     title: string[];
     intro: string;

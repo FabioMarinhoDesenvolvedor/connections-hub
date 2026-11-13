@@ -9,6 +9,7 @@ import { Projects } from '@/components/sections/projects';
 import { Security } from '@/components/sections/security';
 import { Solutions } from '@/components/sections/solutions';
 import { site, siteOrigin, solutionIds } from '@/data/site';
+import { latestNews } from '@/lib/news';
 import { getDictionary, isLocale, localeInfo } from '@/i18n';
 
 export default async function Home({ params }: PageProps<'/[lang]'>) {
@@ -31,7 +32,7 @@ export default async function Home({ params }: PageProps<'/[lang]'>) {
   };
   return <main id="conteudo">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
-    <Hero t={t} />
+    <Hero t={t} news={latestNews(lang)} locale={localeInfo[lang].html} />
     <About t={t.about} />
     <Security t={t.security} />
     <Solutions t={t.solutions} />

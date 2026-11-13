@@ -11,7 +11,19 @@ import { ThemeToggle } from './theme-toggle';
 
 const NAV_LINE = 40; // px from the top where the bar samples the surface underneath
 
-type Props = { locale: Locale; t: Pick<Dictionary, 'ui' | 'nav'> & { blog: string } };
+type Props = {
+  locale: Locale;
+  t: Pick<Dictionary, 'ui' | 'nav'> & { blog: string; news: Dictionary['news']; monitor: string };
+  /** Public HubMonitor address and the announcements index, with the newest announcement's date. */
+  links: { monitor: string; news: string; newsDate: string | null; freshDays: number };
+};
+
+/** External link mark for the monitor (it opens another site). */
+function External() {
+  return <svg className="nav-external" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>;
+}
 
 /** The studio's repositories: an icon in the bar, named for assistive tech. */
 function GithubLink({ t, onPick }: { t: Pick<Dictionary['ui'], 'github' | 'newTab'>; onPick?: () => void }) {
@@ -35,7 +47,7 @@ function Languages({ locale, label, inBlog, onPick }: { locale: Locale; label: s
   </nav>;
 }
 
-export function Navigation({ locale, t }: Props) {
+export function Navigation({ locale, t, links }: Props) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
@@ -50,6 +62,13 @@ export function Navigation({ locale, t }: Props) {
   const blogPath = localePath(locale, '/blog');
   const inBlog = pathname.startsWith(blogPath);
   const to = (hash: string) => (onHome ? hash : `${home}${hash}`);
+  const inNews = pathname.startsWith(links.news);
+  // "New" dot: decided in the browser after hydration (the page is static), from the post date only.
+  const [fresh, setFresh] = useState(false);
+  useEffect(() => {
+    if (links.newsDate) setFresh(Date.now() - new Date(links.newsDate).getTime() < links.freshDays * 86_400_000);
+  }, [links.newsDate, links.freshDays]);
+  const newsLabel = <>{t.news.nav}{fresh && <span className="nav-dot" aria-hidden="true" />}{fresh && <span className="sr-only"> ({t.news.fresh})</span>}</>;
 
   useEffect(() => {
     // The bar takes the tone of the surface beneath it, and marks the section being read.
@@ -115,7 +134,9 @@ export function Navigation({ locale, t }: Props) {
         </a>
         <nav className="desktop-navigation" aria-label={t.ui.mainNav}>
           {t.nav.map(item => <a key={item.href} href={to(item.href)} aria-current={onHome && active === item.href ? 'location' : undefined}>{item.label}</a>)}
-          <a href={blogPath} aria-current={inBlog ? 'page' : undefined}>{t.blog}</a>
+          <a href={links.news} aria-current={inNews ? 'page' : undefined}>{newsLabel}</a>
+          <a href={blogPath} aria-current={inBlog && !inNews ? 'page' : undefined}>{t.blog}</a>
+          <a href={links.monitor} className="nav-monitor">{t.monitor}<External /></a>
         </nav>
         <div className="header-tools">
           <Languages locale={locale} label={t.ui.language} inBlog={inBlog} />
@@ -131,9 +152,11 @@ export function Navigation({ locale, t }: Props) {
     <nav id="mobile-navigation" className="mobile-navigation" aria-label={t.ui.mobileNav} data-open={open} inert={!open}>
       <div className="shell">
         {t.nav.map((item, index) => <a key={item.href} href={to(item.href)} onClick={close} style={{ '--i': index } as React.CSSProperties}>{item.label}</a>)}
-        <a href={blogPath} onClick={close} aria-current={inBlog ? 'page' : undefined} style={{ '--i': t.nav.length } as React.CSSProperties}>{t.blog}</a>
-        <a className="mobile-contact" href={to('#contato')} onClick={close} style={{ '--i': t.nav.length + 1 } as React.CSSProperties}>{t.ui.contactShort}<Arrow /></a>
-        <div className="mobile-tools" style={{ '--i': t.nav.length + 2 } as React.CSSProperties}>
+        <a href={links.news} onClick={close} aria-current={inNews ? 'page' : undefined} style={{ '--i': t.nav.length } as React.CSSProperties}>{newsLabel}</a>
+        <a href={blogPath} onClick={close} aria-current={inBlog && !inNews ? 'page' : undefined} style={{ '--i': t.nav.length + 1 } as React.CSSProperties}>{t.blog}</a>
+        <a href={links.monitor} onClick={close} className="nav-monitor" style={{ '--i': t.nav.length + 2 } as React.CSSProperties}>{t.monitor}<External /></a>
+        <a className="mobile-contact" href={to('#contato')} onClick={close} style={{ '--i': t.nav.length + 3 } as React.CSSProperties}>{t.ui.contactShort}<Arrow /></a>
+        <div className="mobile-tools" style={{ '--i': t.nav.length + 4 } as React.CSSProperties}>
           <Languages locale={locale} label={t.ui.language} inBlog={inBlog} onPick={close} />
           <GithubLink t={t.ui} onPick={close} />
           <ThemeToggle labels={t.ui.theme} />

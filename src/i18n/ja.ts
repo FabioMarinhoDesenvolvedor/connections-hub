@@ -188,7 +188,9 @@ export const ja: Dictionary = {
     form: {"need": "必要なものは?", "kinds": ["Webサイト", "業務システム・ERP", "ダッシュボード", "ECサイト", "まだわからない"], "topics": ["Webサイト", "業務システム・ERP", "ダッシュボード", "ECサイト"], "about": "ひとことで教えてください", "placeholder": "例:お客様にサイトから予約してほしい。", "name": "お名前", "optional": "任意", "preview": "メッセージ", "hello": "こんにちは。", "helloNamed": "こんにちは、{name}です。", "want": "{topic}について相談したいです。", "unsure": "何が必要かまだわかりませんが、相談したいです。", "whatsapp": "WhatsAppで送る", "email": "メールで送る", "subject": "サイトからのお問い合わせ", "note": "このサイトからは何も送信されません。メッセージはお使いのWhatsAppまたはメールで開き、確認してから送れます。"},
   },
   sticker: {"peel": "Connections Hubのステッカーをはがす", "hint": "角をつまんで、はがしてみて", "found": "ステッカーを見つけましたね。", "role": "このサイトのデザインと開発", "back": "元に戻す"},
+  news: { nav: "お知らせ", pill: "新着", pillLabel: "最新のお知らせ: {title}", fresh: "新しいお知らせあり" },
   monitor: {
+    nav: "モニター",
     label: "ライブモニター",
     title: ["ITのステータスを、", "リアルタイムで。"],
     intro: "HubMonitorは Cloudflare、Google Cloud、Azure、GitHub の公式ステータスを一つの画面にまとめます。障害が起きたら、最初の問い合わせより先に分かります。",

@@ -3,6 +3,7 @@ import { Arrow } from '@/components/arrow';
 import { HeroLogo } from '@/components/hero/hero-logo';
 import { solutionIds } from '@/data/site';
 import type { Dictionary } from '@/i18n';
+import type { LatestNews } from '@/lib/news';
 
 /*
   01 — Opening. One screen: the copy on the left (above, on phones) and, beside it, the
@@ -10,11 +11,17 @@ import type { Dictionary } from '@/i18n';
   its official colourways (hero-logo.tsx, DESIGN.md §12). A numbered index of the solutions
   closes it. No pinning. All copy is server-rendered HTML.
 */
-export function Hero({ t }: { t: Dictionary }) {
+export function Hero({ t, news, locale }: { t: Dictionary; news: LatestNews | null; locale: string }) {
   return <section id="inicio" className="hero" aria-labelledby="hero-title">
     <div className="hero-paper" aria-hidden="true" />
     <div className="shell hero-grid">
       <header className="hero-copy">
+        {news && <a className="news-pill hero-rise" style={{ '--i': 0 } as CSSProperties} href={news.href} aria-label={t.news.pillLabel.replace('{title}', news.title)}>
+          <span className="news-pill-tag">{t.news.pill}</span>
+          <span className="news-pill-title">{news.title}</span>
+          <time className="news-pill-date" dateTime={news.date}>{new Intl.DateTimeFormat(locale, { timeZone: 'America/Sao_Paulo', day: '2-digit', month: 'short' }).format(new Date(news.date))}</time>
+          <Arrow />
+        </a>}
         <p className="label hero-rise" style={{ '--i': 0 } as CSSProperties}><span className="point" aria-hidden="true" />{t.hero.eyebrow}</p>
         <h1 id="hero-title" className="hero-title">
           {t.hero.lines.map(line => <span key={line}>{line}</span>)}

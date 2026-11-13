@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { site, siteOrigin } from '@/data/site';
 import { getDictionary, isLocale, localeInfo, locales } from '@/i18n';
 import { Navigation } from '@/components/navigation';
+import { MONITOR_URL } from '@/lib/monitor';
+import { latestNews, newsIndex, NEWS_FRESH_DAYS } from '@/lib/news';
 import { Footer } from '@/components/footer';
 import { AnchorJump } from '@/components/anchor-jump';
 import { ScrollEffects } from '@/components/scroll-effects';
@@ -83,7 +85,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
     </head>
     <body>
       <a className="skip-link" href="#conteudo">{t.ui.skip}</a>
-      <Navigation locale={lang} t={{ ui: t.ui, nav: t.nav, blog: t.blog.nav }} />
+      <Navigation locale={lang} t={{ ui: t.ui, nav: t.nav, blog: t.blog.nav, news: t.news, monitor: t.monitor.nav }} links={{ monitor: MONITOR_URL, news: newsIndex(lang), newsDate: latestNews(lang)?.date ?? null, freshDays: NEWS_FRESH_DAYS }} />
       {children}
       <Footer t={t} locale={lang} />
       <ScrollEffects />
